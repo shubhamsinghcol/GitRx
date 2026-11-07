@@ -1,0 +1,30 @@
+name: Portable native backend
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  installed-wheel:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.11', '3.14']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip wheel --no-deps . --wheel-dir dist
+      - run: python -m pip install dist/gitrx-*.whl pytest==9.2.0
+      - run: cp tests/test_backend_portable.py "$RUNNER_TEMP/test_backend_portable.py"
+      - name: Run installed package away from checkout
+        working-directory: ${{ runner.temp }}
+        run: |
+          python -m pytest -c /dev/null test_backend_portable.py -q
+          gitrx-selftest --output "$RUNNER_TEMP/synthetic-release"
+      - name: Copy maintained native regression tests
+        run: |
+          mkdir -p "$RUNNER_TEMP/native-tests"
+          cp tests/test_backend_portable.py tests/test_core_workflow.py tests/test_query_limits.py tests/test_release_cycle.py tests/test_section_diff_v2.py tests/test_web.py tests/test_native_mcp_transport.py tests/test_occurrence_pagination.py tests/test_evidence_metadata.py tests/test_phrase_history.py tests/test_evidence_history_web.py tests/test_evidence_history_clients.py tests/test_mcp_discovery.py tests/test_operational_status.py tests/test_benchmark.py tests/test_changes.py tests/test_change_clients.py tests/test_change_browser.py tests/test_mcp_cancellation.py tests/test_research_helpers.py tests/test_qualification.py "$RUNNER_TEMP/native-tests/"
+      - name: Run maintained native regressions against installed wheel
+        working-directory: ${{ runner.temp }}
+        run: python -B -m pytest -c /dev/null native-tests -q

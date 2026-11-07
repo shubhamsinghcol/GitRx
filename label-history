@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+GITRX_PROJECT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+cd "$GITRX_PROJECT"
+GITRX_DEFAULT_CONFIG="$GITRX_PROJECT/reports/backend-foundation-20261106/local-config.json"
+if [ -f "$GITRX_PROJECT/runtime/native-config.json" ]; then
+  GITRX_DEFAULT_CONFIG="$GITRX_PROJECT/runtime/native-config.json"
+fi
+if [ -f "$GITRX_PROJECT/runtime/release-cycles/current.json" ]; then
+  GITRX_DEFAULT_CONFIG="$GITRX_PROJECT/runtime/release-cycles/current.json"
+fi
+exec "$GITRX_PROJECT/.venv/bin/python" -B -m gitrx_backend.cli --config "${GITRX_CONFIG:-$GITRX_DEFAULT_CONFIG}" "$@"

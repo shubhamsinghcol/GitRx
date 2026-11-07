@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gitrx"
+version = "0.10.0"
+requires-python = ">=3.11"
+dependencies = ["lxml==6.1.3"]
+
+[project.scripts]
+gitrx = "gitrx.current.cli:main"
+gitrx-web = "gitrx_backend.web:main"
+gitrx-native = "gitrx_backend.cli:main"
+gitrx-cycle = "gitrx_backend.jobs:main"
+gitrx-native-mcp = "gitrx_backend.mcp:main"
+gitrx-selftest = "gitrx_backend.selftest:main"
+gitrx-recovery = "gitrx_backend.recovery:main"
+
+[project.optional-dependencies]
+test = ["pytest==9.2.0"]
+
+[tool.setuptools.packages.find]
+include = ["gitrx*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
