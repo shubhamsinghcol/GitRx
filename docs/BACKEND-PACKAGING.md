@@ -1,5 +1,13 @@
 # Portable package and module boundaries
 
+The private source repository is [shubhamsinghcol/GitRx](https://github.com/shubhamsinghcol/GitRx).
+[Remote CI](https://github.com/shubhamsinghcol/GitRx/actions/workflows/backend.yml)
+builds and installs the wheel on fresh Ubuntu runners with Python 3.11/3.14,
+then exercises synthetic releases and the maintained native regressions away
+from the source checkout. Raw evidence and generated release repositories are
+excluded from source control. The disposable runners remove unused Android/.NET
+SDKs to meet the existing 20 GiB archive disk guard; application guards are unchanged.
+
 The installed interface is `gitrx-native`; the repeatable offline build check is
 `gitrx-selftest`. Both use the installed wheel, not scripts reached through the
 checkout. Python >=3.11, Git with SHA-1 repository support, and pinned lxml are

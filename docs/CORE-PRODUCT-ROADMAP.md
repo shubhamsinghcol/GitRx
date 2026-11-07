@@ -230,3 +230,13 @@ selective local shard installation; descriptive research figures retain input pi
 Live checks/build qualification are distinct from automatic freshness. Remote CI,
 another-machine installation and hosted operation need an owning external target;
 local matrix tests do not establish those outcomes.
+
+## Private source repository — November 7
+
+The owner authorized creation of the private source repository
+[shubhamsinghcol/GitRx](https://github.com/shubhamsinghcol/GitRx).
+Its [Ubuntu CI matrix](https://github.com/shubhamsinghcol/GitRx/actions/workflows/backend.yml)
+builds installed wheels and runs portable synthetic acceptance outside the checkout.
+Source control excludes retained raw evidence, runtime state, generated histories,
+human validation exports and held-out answers. A CI run is code/fixture qualification;
+full-corpus hosting and distribution remain separate operating decisions.
