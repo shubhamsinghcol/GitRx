@@ -1,0 +1,178 @@
+# Full DailyMed preparation result
+
+November 7, 2026. Step 1 is complete for the current-listing discovery frame.
+The selected 7,239-family / 51,357-version release is unchanged. Broad historical
+ZIP backfill has not started, and nothing was uploaded or published.
+
+## Storage decision
+
+Use the attached SSD for new backfill work. It has about **555 GB free** after
+this preparation. The laptop has about **202 GB free** after cleanup. There is
+no demonstrated need to purchase a larger drive before starting bounded batches.
+There is also no measured upper bound for the entire archived-only universe.
+
+| Component | Current-listing planning scenario |
+|---|---:|
+| Original source ZIPs | About **120–200 GB** |
+| Parsed SQLite storage | About **190 GB** |
+| Compressed export payloads | About **10 GB** |
+| One packed Git history release | About **21 GB** |
+| Retained data total | About **340–420 GB** |
+| Additional working/staging allowance | **50 GB** |
+| Minimum free-space reserve | **20 GiB** |
+
+These are projections, not a completed national build. The raw ZIP point estimate
+is 121.2 GB from a 32-family simple random sample of valid current setids, with up
+to two uniformly sampled listed positive versions/family. An exploratory family
+bootstrap gave 85.9–161.0 GB, but excludes within-family sampling uncertainty,
+unseen extremes, archived-only scope and source changes. The 200 GB planning
+allowance also considers the much noisier three-family-per-type supplemental
+estimates, whose filter expansions sum to about 198 GB. That sum is a sensitivity
+check, not a reconciled category census or a confidence bound.
+
+The same overall sample projects roughly 412,000 listed positive versions.
+The Git scenario scales the actual existing pack bytes/version; it is not an
+actual full-scope Git export. SQLite is a page-growth projection, not a compressed
+download size. None of these numbers establishes complete historical coverage.
+
+For the next acquisition stage, configure a **450 GB retained-data cap**, a
+**50 GB staging allowance** and the **20 GiB free reserve**. Those proposed limits
+fit the presently available SSD with additional headroom. They are not an already
+running broad-backfill quota. If measured growth exceeds the budget, checkpoint
+and stop; preserve evidence and reassess storage instead of filling the disk.
+
+Store original ZIPs once in a shared content-addressed store. Use source pointers
+or same-volume hardlinks for per-batch views. Do not duplicate network bodies into
+separate permanent tranche stores, retain a permanent parser spool, or keep repeated
+whole-corpus checkpoint exports. Retain old release evidence and refs.
+
+## What was finished
+
+- All **1,590 listing pages** captured and hash-verified: **158,967 rows**, comprising
+  **158,963 valid setids** and **four malformed setid rows retained separately**.
+  Eighteen nonpositive source version values are retained, not repaired or admitted
+  as ordinary positive-version label identities.
+- Official ZIP metadata has the **exact same valid-setid membership** and the same
+  four malformed IDs. Its published MD5 also matches the downloaded ZIP. Raw
+  source SHA-256 and page provenance are retained.
+- **7,220** existing release families intersect that current frame; **19** existing
+  families are outside it and are retained as known noncurrent candidates. This
+  does not infer withdrawal or market status. Current families outside the existing
+  release total **151,743**.
+- Completed a **56-family** size/extraction sample: 32 global probability-sample
+  families plus three families from each of eight document-type filters. Their
+  histories agreed across maintained capture passes and listed **169 versions**.
+  **88 sampled version ZIPs** (26.0 MB total) downloaded and passed identity checks.
+  The maintained parser reported **66 complete and 22 partial** extractions.
+  These samples are not promoted into the selected release or independent clinical
+  validation.
+- Verified an additive candidate using the existing `exact-text-cas-1` storage
+  layout. All **88 versions** retained exact native narrative-row parity, but
+  sample SQLite size increased from 43.7 MB to 46.5 MB. No storage reduction is
+  assumed in the budget and the original sample database was not modified.
+
+The eight filter counts are separately observed, not a full membership partition:
+Human Rx 52,441; historical highlights 16; human OTC 100,452; prescription animal
+1,102; OTC animal 2,428; bulk ingredient 514; vaccine 119; medical device 198.
+Other types remain represented by the unfiltered census/global sample. Homeopathic
+and marketing categories are not interchangeable with these document types.
+
+## Cleanup performed
+
+Removed the reproducible parser spool and 47,120 abandoned-backup objects only
+after matching each backup object and retained original by SHA-256. Actual internal
+free space increased by **43.72 GB / 40.72 GiB**. The copied backup objects shared
+APFS blocks, so deleting their 20.3 GB logical content freed little extra space.
+About **4.4 GiB** of unverified backup leftovers remains; no assumption was made
+that those bytes were disposable.
+
+Original raw evidence, source databases, every Git repository/ref, frozen
+validation material and historical reports were preserved. Selected-manifest,
+native-configuration and protected-baseline hashes remained unchanged. Native
+release description and an existing family's version read still work.
+
+## Sleep and restart behavior
+
+The finite preparation runner is installed under
+`~/Library/Application Support/GitRx/`. Its login LaunchAgent is
+`~/Library/LaunchAgents/org.gitrx.full-dailymed-census.plist` and has RunAtLoad and
+StartOnMount enabled. It resumes the **same pinned finite job** at login or when a
+volume mounts. It does not schedule fresh censuses or recurring collection.
+After completion it verifies retained outputs and makes no network requests.
+
+- `caffeinate -i` inhibits idle sleep while work runs. Closed-lid sleep pauses work;
+  shutdown stops it. No claim is made that computation runs while powered off.
+- SQLite transactions, fsynced content objects and atomic checkpoints preserve
+  committed work. Interrupted transfers remain failed prefixes and cannot become
+  successful cached responses. Transport failures after waking are retried within
+  finite request/byte/restart budgets; Retry-After survives restarts.
+- Volume/mount/marker checks run before writes and during transfers. A missing or
+  wrong SSD leaves the job waiting; it does not create a replacement data directory
+  on the laptop. Integrity, scope and capacity errors stop for attention.
+- The census was force-killed and resumed. The sampler was force-killed after 18
+  completed families; the supervisor restarted it automatically and it continued
+  to all 56, with SQLite integrity `ok`. A subsequent completed restart made **zero
+  new requests**, kept both frozen output hashes unchanged and finished normally.
+- **28 focused tests passed**, including partial-transfer recovery, byte caps,
+  missing-volume refusal, wake-time transport retries, URL/observation identity,
+  tamper detection, checkpoint adoption and finite-runner recovery. Physical power
+  loss and unsafe SSD removal were not tested and cannot be guaranteed harmless.
+
+Manual pause/resume is documented in the earlier runbook. `STOP` in the main SSD
+workspace pauses before stages; `STOP` in `capacity/` pauses between sample
+families. Remove the relevant STOP file and use:
+
+```sh
+launchctl kickstart gui/$(id -u)/org.gitrx.full-dailymed-census
+```
+
+This preparation is now complete; leaving the login runner installed only verifies
+that completed job. Its current status is `complete`.
+
+## Distribution direction
+
+Keep software on GitHub. Keep original evidence outside Git in content-addressed
+R2 objects, with small provenance/checksum manifests and resumable downloads.
+Distribute optional profiles: Git histories, original evidence, and a local SQLite
+projection. A researcher need not install every working representation.
+
+The existing sixteen history shards total **2.60 GB packed**; the largest is
+**190.7 MB**. Preserve them and their old refs. For a new full-scope release, measure
+prefix sizes and use finer setid prefixes when needed. R2-hosted Git bundles are a
+practical default to avoid managing hundreds of GitHub data repositories; GitHub
+mirrors can remain optional. Prefix routing and installers must be qualified before
+changing the existing sixteen-shard contract. No bucket, mirror or upload was
+created in this preparation.
+
+## Next substantial phase
+
+Implement and run bounded full-current-frame acquisition through the maintained
+collector/parser and shared release-cycle machinery, with explicit new-family
+admission, one shared raw store, persistent checkpoints, the budget above and
+separate candidate builds. Include the 19 retained noncurrent candidates and keep
+source anomalies visible. Do not rebuild the entire Git history after each family.
+
+A comprehensive archived-only frame remains unresolved. The official archive UI
+says its default listing covers the current year and directs all-label date requests
+to NLM support; the current listing and current ZIP mapping do not establish that
+universe. No external message was sent. Archived-only discovery needs an explicitly
+qualified source route; it must not be silently excluded from a claim of “all
+historical DailyMed.” This limitation does not prevent acquiring the measured
+current frame.
+
+## Evidence
+
+[Captured measurement artifacts](../../../reports/full-dailymed-preparation-20261107)
+include census/source pins, reconciliation, cleanup journal, capacity measurements,
+storage budget, layout parity and restart checks. Original HTTP bodies and full
+sample provenance remain on the SSD at
+`/Volumes/Untitled/GitRx/full-dailymed-20261107/`.
+
+Official references checked for this work:
+[DailyMed listing API](https://dailymed.nlm.nih.gov/dailymed/webservices-help/v2/spls_api.cfm),
+[ZIP metadata semantics](https://dailymed.nlm.nih.gov/dailymed/app-support-mapping-files.cfm),
+[bulk downloads](https://dailymed.nlm.nih.gov/dailymed/spl-resources-all-drug-labels.cfm),
+[archive scope](https://dailymed.nlm.nih.gov/dailymed/archives/index.cfm),
+[FDA document types](https://www.fda.gov/industry/structured-product-labeling-resources/document-type-including-content-labeling-type),
+[GitHub repository limits](https://docs.github.com/en/repositories/creating-and-managing-repositories/repository-limits),
+[R2 pricing](https://developers.cloudflare.com/r2/pricing/).

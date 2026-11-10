@@ -63,7 +63,7 @@ def _capture(c,sid,p,latest,fetch,record,identity_handler=None):
     c.execute('UPDATE release1_history_passes SET status=?,signature=?,canonical_json=?,anomalies_json=? WHERE id=?',
               (state,signature,json.dumps(canonical),json.dumps(info),p['id']));c.commit()
 
-def collect(c,sid,latest,fetch,record,sleep=time.sleep,identity_handler=None):
+def collect(c,sid,latest,fetch,record,sleep=time.sleep,identity_handler=None,pass_started=None):
     init(c)
     chosen=c.execute('SELECT p.* FROM release1_history_selection s JOIN release1_history_passes p ON p.id=s.pass_id WHERE s.setid=?',(sid,)).fetchone()
     if chosen:
@@ -73,7 +73,7 @@ def collect(c,sid,latest,fetch,record,sleep=time.sleep,identity_handler=None):
         p=c.execute('SELECT * FROM release1_history_passes WHERE setid=? AND pass_number=?',(sid,number)).fetchone()
         if p is None:
             if number>1 and (number==3 or previous is None or previous['status']!='complete'):sleep(min(30,2**(number-1)))
-            c.execute("INSERT INTO release1_history_passes(setid,pass_number,started_at,status) VALUES(?,?,?,'running')",(sid,number,utc()));c.commit()
+            c.execute("INSERT INTO release1_history_passes(setid,pass_number,started_at,status) VALUES(?,?,?,'running')",(sid,number,(pass_started(number) if pass_started else None) or utc()));c.commit()
             p=c.execute('SELECT * FROM release1_history_passes WHERE setid=? AND pass_number=?',(sid,number)).fetchone()
         if p['status']=='running':
             try:_capture(c,sid,p,latest,fetch,record,identity_handler)
@@ -108,11 +108,66 @@ def fetch_into_store(runner,c,root,fetcher,sid,latest):
     except HistoryIdentityConflict:
         result={'state':'history_identity_conflict','pass_id':None}
         c.execute("UPDATE retrievals SET state='history_identity_conflict' WHERE id IN (SELECT h.retrieval_id FROM release1_history_pages h JOIN release1_history_passes p ON p.id=h.pass_id WHERE p.setid=? AND p.status='identity_conflict')",(sid,));c.commit()
-    passes=[{'number':p['pass_number'],'status':p['status'],'signature':p['signature'],'observations':json.loads(p['anomalies_json'] or '{}')} for p in c.execute('SELECT * FROM release1_history_passes WHERE setid=? ORDER BY pass_number',(sid,))]
-    row=c.execute('SELECT metadata_json FROM families WHERE setid=?',(sid,)).fetchone();md=json.loads(row[0]);md['history_capture']={'state':result['state'],'passes':passes,'accepted_pass':result['pass_id'],'duplicate_versions_deduped':True}
+    scope_path=runner.root/'scope.json'
+    scope=json.loads(scope_path.read_bytes())
+    return persist_inventory(c,sid,result,scope['records'][sid],hash_file(scope_path),scope['captures'])
+
+
+def persist_inventory(c,sid,result,item,scope_sha256,captures,run_id=1):
+    """Persist captured inventory/publication evidence shared by acquisition jobs.
+
+    The family must already be explicitly approved/inserted by the caller. Full
+    source pass records remain authoritative. Nonpositive upstream versions are
+    retained in metadata/source pages, never invented into ordinary ZIP targets.
+    Listing-only positive targets have no inferred publication observation.
+    """
+    init(c)
+    c.executescript("""CREATE TABLE IF NOT EXISTS tranche_publication_observations(
+      setid TEXT,version INTEGER,ordinal INTEGER,publication_raw TEXT,publication_date TEXT,
+      PRIMARY KEY(setid,version,ordinal));
+      CREATE TABLE IF NOT EXISTS release1_listing_only_targets(
+      setid TEXT,version INTEGER,provenance_json TEXT,PRIMARY KEY(setid,version));""")
+    row=c.execute('SELECT metadata_json FROM families WHERE setid=?',(sid,)).fetchone()
+    if row is None:raise ValueError('Inventory family must be approved before persistence')
+    passes=[{'number':p['pass_number'],'status':p['status'],'signature':p['signature'],
+             'observations':json.loads(p['anomalies_json'] or '{}')}
+            for p in c.execute('SELECT * FROM release1_history_passes WHERE setid=? ORDER BY pass_number',(sid,))]
+    canonical=result.get('canonical') or []
+    saved_pages=[]
+    if result['state']=='accepted':
+        from collections import defaultdict
+        observed=defaultdict(set)
+        selected=c.execute('SELECT * FROM release1_history_passes WHERE id=? AND setid=?',
+                           (result['pass_id'],sid)).fetchone()
+        if selected is None or selected['status']!='complete' or json.loads(selected['canonical_json'])!=canonical:
+            raise ValueError('Accepted history does not match retained source pass')
+        for page in c.execute('SELECT * FROM release1_history_pages WHERE pass_id=? ORDER BY page',(result['pass_id'],)).fetchall():
+            response=json.loads(page['response_json'])
+            if hash_file(response['path'])!=response['sha256']:raise Stop('PROTECTED_HISTORY_HASH_CHANGED')
+            data=json.loads(Path(response['path']).read_bytes())
+            if data['data']['spl']['setid'].lower()!=sid:raise Stop('HISTORY_IDENTITY_MISMATCH')
+            for source_row in data['data']['history']:
+                observed[int(source_row['spl_version'])].add(source_row.get('published_date'))
+            saved_pages.append((page,data))
+        source_canonical=[[v,sorted(dates,key=lambda d:'' if d is None else d)] for v,dates in sorted(observed.items())]
+        source_signature=hashlib.sha256(json.dumps(source_canonical,separators=(',',':')).encode()).hexdigest()
+        if source_canonical!=canonical or source_signature!=selected['signature']:
+            raise Stop('HISTORY_SOURCE_INVENTORY_MISMATCH')
+    latest=item.get('latest_versions_seen',[])
+    if not latest and item.get('spl_version') is not None:latest=[item['spl_version']]
+    latest=[int(v) for v in latest]
+    capture={'state':result['state'],'passes':passes,'accepted_pass':result.get('pass_id'),
+             'duplicate_versions_deduped':True}
+    nonpositive=[{'version':int(v),'publication_raw_values':dates} for v,dates in canonical if int(v)<1]
+    if nonpositive:capture['nonpositive_history_versions']=nonpositive
+    if any(v<1 for v in latest):capture['nonpositive_listing_versions']=[v for v in latest if v<1]
+    md=json.loads(row[0]);md['history_capture']=capture
     c.execute('UPDATE families SET metadata_json=? WHERE setid=?',(json.dumps(md),sid));c.commit()
     if result['state']!='accepted':return result['state']
-    for version,dates in result['canonical']:
+    c.execute('INSERT OR IGNORE INTO ingest_runs(id,started_at) VALUES(?,?)',(run_id,utc()))
+    for version,dates in canonical:
+        version=int(version)
+        if version<1:continue
         c.execute('INSERT OR IGNORE INTO versions(setid,version) VALUES(?,?)',(sid,version))
         c.execute('INSERT OR IGNORE INTO release1_current_history VALUES(?,?,?)',(sid,version,result['pass_id']))
         for raw in dates:
@@ -121,26 +176,31 @@ def fetch_into_store(runner,c,root,fetcher,sid,latest):
             if not c.execute('SELECT 1 FROM tranche_publication_observations WHERE setid=? AND version=? AND publication_raw IS ?',(sid,version,raw)).fetchone():
                 ordinal=c.execute('SELECT COUNT(*) FROM tranche_publication_observations WHERE setid=? AND version=?',(sid,version)).fetchone()[0]
                 c.execute('INSERT INTO tranche_publication_observations VALUES(?,?,?,?,?)',(sid,version,ordinal,raw,date))
-    for page in c.execute('SELECT * FROM release1_history_pages WHERE pass_id=? ORDER BY page',(result['pass_id'],)).fetchall():
-        response=json.loads(page['response_json']);d=json.loads(Path(response['path']).read_bytes());m=d['metadata']
-        c.execute('INSERT OR IGNORE INTO history_pages VALUES(?,?,?,?,?,?)',(1,sid,page['page'],page['retrieval_id'],int(m['total_elements']),int(m['total_pages'])))
-        for item in d['data']['history']:
-            vid=c.execute('SELECT id FROM versions WHERE setid=? AND version=?',(sid,int(item['spl_version']))).fetchone()[0];raw=item.get('published_date')
+    for page,d in saved_pages:
+        m=d['metadata']
+        c.execute('INSERT OR IGNORE INTO history_pages VALUES(?,?,?,?,?,?)',(run_id,sid,page['page'],page['retrieval_id'],int(m['total_elements']),int(m['total_pages'])))
+        for item_row in d['data']['history']:
+            number=int(item_row['spl_version'])
+            if number<1:continue
+            version_row=c.execute('SELECT id FROM versions WHERE setid=? AND version=?',(sid,number)).fetchone()
+            if version_row is None:raise ValueError('Source history page version absent from accepted inventory')
+            raw=item_row.get('published_date')
             try:date=datetime.strptime(raw,'%b %d, %Y').date().isoformat()
             except (TypeError,ValueError):date=None
-            c.execute('INSERT OR IGNORE INTO history_entries VALUES(?,?,?,?,?)',(1,vid,page['retrieval_id'],raw or '',date))
-    c.execute('CREATE TABLE IF NOT EXISTS release1_listing_only_targets(setid TEXT,version INTEGER,provenance_json TEXT,PRIMARY KEY(setid,version))')
-    scope_path=runner.root/'scope.json'
-    scope=json.loads(scope_path.read_bytes())
-    item=scope['records'][sid]
-    history_versions={v for v, dates in result['canonical']}
-    for version in item['latest_versions_seen']:
-        if version in history_versions:continue
+            c.execute('INSERT OR IGNORE INTO history_entries VALUES(?,?,?,?,?)',(run_id,version_row[0],page['retrieval_id'],raw or '',date))
+    history_versions={int(v) for v,dates in canonical if int(v)>0}
+    for version in latest:
+        if version<1 or version in history_versions:continue
         c.execute('INSERT OR IGNORE INTO versions(setid,version) VALUES(?,?)',(sid,version))
-        c.execute('INSERT OR IGNORE INTO release1_listing_only_targets VALUES(?,?,?)',(sid,version,json.dumps({'basis':'frozen_category_listing_only','scope_sha256':hash_file(scope_path),'scope_captures':scope['captures'],'history_pass_id':result['pass_id'],'publication_date':'unknown; no history observation'})))
-    c.commit();return None
+        c.execute('INSERT OR IGNORE INTO release1_listing_only_targets VALUES(?,?,?)',(sid,version,json.dumps({
+            'basis':'frozen_category_listing_only','scope_sha256':scope_sha256,
+            'scope_captures':captures,'history_pass_id':result['pass_id'],
+            'publication_date':'unknown; no history observation'})))
+    c.commit()
+    flag_publication_inversions(c,sid,run_id=run_id)
+    return None
 
-def flag_publication_inversions(c,sid):
+def flag_publication_inversions(c,sid,run_id=1):
     # Same existing lower-version/later-publication rule; all duplicate-date observations retained.
     rows=c.execute('''SELECT v.id,v.version,p.publication_date FROM versions v
         JOIN tranche_publication_observations p ON p.setid=v.setid AND p.version=v.version
@@ -148,6 +208,6 @@ def flag_publication_inversions(c,sid):
     for lower in rows:
         for higher in rows:
             if lower['version']<higher['version'] and lower['publication_date']>higher['publication_date']:
-                c.execute('INSERT OR IGNORE INTO date_anomalies VALUES(?,?,?,?,?)',(1,lower['id'],higher['id'],lower['publication_date'],higher['publication_date']))
+                c.execute('INSERT OR IGNORE INTO date_anomalies VALUES(?,?,?,?,?)',(run_id,lower['id'],higher['id'],lower['publication_date'],higher['publication_date']))
                 c.execute('UPDATE versions SET date_anomaly=1 WHERE id IN (?,?)',(lower['id'],higher['id']))
     c.commit()

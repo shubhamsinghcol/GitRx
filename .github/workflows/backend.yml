@@ -34,3 +34,27 @@ jobs:
       - name: Run maintained native regressions against installed wheel
         working-directory: ${{ runner.temp }}
         run: python -B -m pytest -c /dev/null native-tests -q
+      - name: Run acquisition preparation regressions against installed wheel
+        working-directory: ${{ runner.temp }}
+        run: |
+          cp "$GITHUB_WORKSPACE/tests/test_census.py" "$RUNNER_TEMP/test_census.py"
+          cp "$GITHUB_WORKSPACE/tests/test_capacity.py" "$RUNNER_TEMP/test_capacity.py"
+          cp "$GITHUB_WORKSPACE/tests/test_acquisition_runner.py" "$RUNNER_TEMP/test_acquisition_runner.py"
+          cp "$GITHUB_WORKSPACE/tests/test_backfill.py" "$RUNNER_TEMP/test_backfill.py"
+          cp "$GITHUB_WORKSPACE/tests/test_backfill_inventory.py" "$RUNNER_TEMP/test_backfill_inventory.py"
+          cp "$GITHUB_WORKSPACE/tests/test_scope_admission.py" "$RUNNER_TEMP/test_scope_admission.py"
+          python -B -m pytest -c /dev/null test_census.py test_capacity.py test_acquisition_runner.py test_backfill.py test_backfill_inventory.py test_scope_admission.py -q
+      - name: Run recovery, controls and processing regressions
+        working-directory: ${{ runner.temp }}
+        run: |
+          cp "$GITHUB_WORKSPACE/tests/test_backfill_control.py" "$RUNNER_TEMP/test_backfill_control.py"
+          cp "$GITHUB_WORKSPACE/tests/test_backfill_guardian.py" "$RUNNER_TEMP/test_backfill_guardian.py"
+          cp "$GITHUB_WORKSPACE/tests/test_backfill_processing.py" "$RUNNER_TEMP/test_backfill_processing.py"
+          cp "$GITHUB_WORKSPACE/tests/test_backfill_recovery.py" "$RUNNER_TEMP/test_backfill_recovery.py"
+          cp "$GITHUB_WORKSPACE/tests/test_hot_storage.py" "$RUNNER_TEMP/test_hot_storage.py"
+          cp "$GITHUB_WORKSPACE/tests/test_transport_policy.py" "$RUNNER_TEMP/test_transport_policy.py"
+          cp "$GITHUB_WORKSPACE/tests/test_raw_journal.py" "$RUNNER_TEMP/test_raw_journal.py"
+          cp "$GITHUB_WORKSPACE/tests/test_download_buffer.py" "$RUNNER_TEMP/test_download_buffer.py"
+          cp "$GITHUB_WORKSPACE/tests/test_parallel_downloads.py" "$RUNNER_TEMP/test_parallel_downloads.py"
+          cp "$GITHUB_WORKSPACE/tests/test_mobile_control.py" "$RUNNER_TEMP/test_mobile_control.py"
+          python -B -m pytest -c /dev/null test_backfill_control.py test_backfill_guardian.py test_backfill_processing.py test_backfill_recovery.py test_hot_storage.py test_transport_policy.py test_raw_journal.py test_download_buffer.py test_parallel_downloads.py test_mobile_control.py -q

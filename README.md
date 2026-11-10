@@ -4,6 +4,9 @@ GitRx lets researchers find a drug-label family, read captured versions, compare
 sections, trace the first observed wording, and copy a release-pinned citation.
 CLI, local MCP and a plain local browser use the shared native query library.
 
+[Start here](docs/START-HERE.md) · [Document map](docs/DOCUMENT-MAP.md) ·
+[DailyMed collection protocol](docs/DAILYMED-ACQUISITION.md).
+
 This private source repository contains software, current guides and synthetic
 engineering regressions. Raw archives, source databases, generated Git histories,
 runtime configurations and validation answers remain in the local evidence
@@ -89,7 +92,7 @@ do not restart collection. The [release-cycle guide](docs/RELEASE-CYCLES.md)
 documents explicit refresh, build, selection and rollback commands. No recurring
 scheduler is installed, and new source checks do not happen during queries.
 
-[Build status](docs/BUILD-STATUS.md) · [current product roadmap](docs/CORE-PRODUCT-ROADMAP.md) ·
+[Historical build status](docs/BUILD-STATUS.md) · [current product roadmap](docs/CORE-PRODUCT-ROADMAP.md) ·
 [project explanation](docs/START-HERE.md) · [document map](docs/DOCUMENT-MAP.md).
 
 The [historical pilot workflow](docs/HISTORICAL-PILOT-WORKFLOW.md) preserves the

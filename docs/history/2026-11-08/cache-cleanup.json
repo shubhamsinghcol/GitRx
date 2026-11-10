@@ -1,0 +1,10 @@
+[
+  {
+    "path": "build",
+    "logical_bytes": 2420976
+  },
+  {
+    "path": ".pytest_cache",
+    "logical_bytes": 73442
+  }
+]

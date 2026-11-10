@@ -1,0 +1,20 @@
+[
+  {
+    "path": "docs/START-HERE.md",
+    "sha256": "c9cdd4d9837da7ae95667f07cdc4474c845e16b7dca79e7920ef142f8dc2fc70",
+    "bytes": 30422,
+    "exact_preimage": "docs/history/2026-11-08/START-HERE.md.original"
+  },
+  {
+    "path": "docs/DOCUMENT-MAP.md",
+    "sha256": "c902aab810731448a388b27379a9c8dd9d178d4e70b7cf7507e524206fb130fb",
+    "bytes": 42441,
+    "exact_preimage": "docs/history/2026-11-08/DOCUMENT-MAP.md.original"
+  },
+  {
+    "path": "docs/CORE-PRODUCT-ROADMAP.md",
+    "sha256": "7dc87aa7df477ad72542102ca19a1503c94a0707a49ce2a7d863d1aa1474e914",
+    "bytes": 16589,
+    "exact_preimage": "docs/history/2026-11-08/CORE-PRODUCT-ROADMAP.md.original"
+  }
+]

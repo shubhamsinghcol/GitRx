@@ -35,6 +35,15 @@ def sha(path):
     with Path(path).open('rb') as f:
         for b in iter(lambda:f.read(1024*1024),b''):h.update(b)
     return h.hexdigest()
+def sync_body(stream):
+    """Flush raw bytes, including the device-cache barrier on macOS if supported."""
+    stream.flush();os.fsync(stream.fileno())
+    import sys,errno
+    if sys.platform=='darwin':
+        try:fcntl.fcntl(stream.fileno(),getattr(fcntl,'F_FULLFSYNC',51));return True
+        except OSError as exc:
+            if exc.errno not in (errno.EINVAL,errno.ENOTSUP,errno.ENOTTY):raise
+    return False
 def atomic(path,value):
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True);tmp=path.with_name(path.name+'.tmp')
     with tmp.open('w') as f:f.write(dumps(value)+'\n');f.flush();os.fsync(f.fileno())
@@ -49,59 +58,150 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 class HTTP:
     """One shared workspace ledger; failed bodies and interrupted files retained."""
-    def __init__(self,root,cap=1000,spacing=2):
-        if not 1<=cap<=120000 or spacing<2:raise ValueError('Request cap must be 1..120000; spacing at least 2 seconds')
+    def __init__(self,root,cap=1000,spacing=2,guard=None,max_bytes=None,max_response_seconds=120,retain_completed_partials=True,transport_policy=None,ledger_path=None,raw_journal=None,body_fallback=None,threaded_coordinator=False):
+        if not 1<=cap<=1000000 or spacing<2:raise ValueError('Request cap must be 1..1000000; baseline spacing at least 2 seconds')
         self.root=Path(root);self.cap=cap;self.spacing=spacing
+        self.guard=guard or (lambda: None);self.guard()
+        if max_bytes is not None and (type(max_bytes) is not int or max_bytes<1):raise ValueError('Positive byte budget required')
+        self.max_bytes=max_bytes
+        if max_response_seconds<=0:raise ValueError('Positive response deadline required')
+        self.max_response_seconds=max_response_seconds
+        self.retain_completed_partials=retain_completed_partials
+        self.raw_journal=raw_journal
+        self.body_fallbacks=[Path(p) for p in (body_fallback if isinstance(body_fallback,(list,tuple)) else [body_fallback])] if body_fallback else []
         (self.root/'bodies').mkdir(parents=True,exist_ok=True);(self.root/'partial').mkdir(exist_ok=True)
-        self.c=sqlite3.connect(self.root/'ledger.sqlite');self.c.row_factory=sqlite3.Row
+        self.c=sqlite3.connect(Path(ledger_path) if ledger_path is not None else self.root/'ledger.sqlite',check_same_thread=not threaded_coordinator);self.c.row_factory=sqlite3.Row
+        self.c.executescript('PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA fullfsync=ON; PRAGMA checkpoint_fullfsync=ON;')
         self.c.execute('CREATE TABLE IF NOT EXISTS requests(id INTEGER PRIMARY KEY,url,started REAL,status,sha256,error,headers_json)');self.c.commit()
         if 'headers_json' not in {r[1] for r in self.c.execute('PRAGMA table_info(requests)')}:
             self.c.execute('ALTER TABLE requests ADD COLUMN headers_json');self.c.commit()
+        if 'bytes' not in {r[1] for r in self.c.execute('PRAGMA table_info(requests)')}:
+            self.c.execute('ALTER TABLE requests ADD COLUMN bytes INTEGER DEFAULT 0');self.c.commit()
+        self.c.execute('CREATE TABLE IF NOT EXISTS transport_state(key TEXT PRIMARY KEY,value REAL)')
+        self.c.execute('CREATE INDEX IF NOT EXISTS requests_url_id ON requests(url,id DESC)')
+        self.c.execute('CREATE INDEX IF NOT EXISTS requests_started ON requests(started)')
+        columns={r[1] for r in self.c.execute('PRAGMA table_info(requests)')}
+        for name in ('latency_seconds','spacing_seconds','connection_serial'):
+            if name not in columns:self.c.execute('ALTER TABLE requests ADD COLUMN '+name+' REAL')
+        self.c.commit()
+        self.pacing=None;self.opener=None
+        if transport_policy is not None:
+            from .transport_policy import AdaptivePacing
+            from gitrx_services.release1_connection import SingleConnection
+            self.pacing=AdaptivePacing(self.root,transport_policy,ledger_path);self.opener=SingleConnection()
+        # A request start is durable before its body. A killed process must
+        # never turn a retained response prefix into a successful cached body.
+        for row in self.c.execute('SELECT id FROM requests WHERE status IS NULL').fetchall():
+            part=self.root/'partial'/str(row['id']);digest=None
+            if part.exists():
+                with part.open('rb') as f:os.fsync(f.fileno())
+                digest=sha(part);target=self.root/'bodies'/digest
+                if not target.exists():os.link(part,target)
+                directory=os.open(target.parent,os.O_RDONLY)
+                try:os.fsync(directory)
+                finally:os.close(directory)
+            with self.c:self.c.execute("UPDATE requests SET status=0,error='Interrupted transfer retained; not reusable',sha256=?,bytes=? WHERE id=?",(digest,part.stat().st_size if part.exists() else 0,row['id']))
+        self.bytes_received=max(self.c.execute('SELECT COALESCE(SUM(bytes),0) FROM requests').fetchone()[0],sum(p.stat().st_size for p in (self.root/'partial').iterdir() if p.is_file()))
+        self.request_count=self.c.execute('SELECT COUNT(*) FROM requests').fetchone()[0]
     def get(self,url,reuse=False):
+        self.guard()
         if reuse:
             row=self.c.execute('SELECT sha256 FROM requests WHERE url=? AND status=200 AND error IS NULL ORDER BY id DESC LIMIT 1',(url,)).fetchone()
             if row:
-                cached=self.root/'bodies'/row['sha256']
-                if sha(cached)!=row['sha256']:raise ValueError('Cached response hash mismatch')
+                cached=self.body_path(row['sha256'])
+                if sha(cached)!=row['sha256']:raise RuntimeError('Cached response hash mismatch')
                 return cached
         original=url
         for attempt in range(3):
             for hop in range(6):
                 u=urlsplit(url)
                 if u.scheme!='https' or not (u.hostname=='nlm.nih.gov' or (u.hostname or '').endswith('.nlm.nih.gov')):raise ValueError('Official NLM HTTPS URLs only')
-                if self.c.execute('SELECT COUNT(*) FROM requests').fetchone()[0]>=self.cap:raise RuntimeError('Workspace request cap reached')
+                if self.request_count>=self.cap:raise RuntimeError('Workspace request cap reached')
+                if self.max_bytes is not None and self.bytes_received>=self.max_bytes:raise RuntimeError('Workspace byte cap reached')
                 last=self.c.execute('SELECT MAX(started) FROM requests').fetchone()[0] or 0
-                time.sleep(max(0,last+self.spacing-time.time()));ensure_space(self.root,100*1024**2)
+                deferred=self.c.execute("SELECT value FROM transport_state WHERE key='retry_after'").fetchone()
+                while deferred and deferred[0]>time.time():
+                    if not (self.pacing and self.pacing.policy.get('wait_for_retry_after',False)):
+                        raise RuntimeError('Retry deferred by upstream Retry-After; retained in ledger')
+                    self.guard();time.sleep(min(.1,max(0,deferred[0]-time.time())))
+                    deferred=self.c.execute("SELECT value FROM transport_state WHERE key='retry_after'").fetchone()
+                spacing=self.pacing.spacing if self.pacing else self.spacing
+                time.sleep(max(0,last+spacing-time.time()));ensure_space(self.root,100*1024**2)
+                self.guard()
                 with self.c:ident=self.c.execute('INSERT INTO requests(url,started) VALUES(?,?)',(url,time.time())).lastrowid
-                part=self.root/'partial'/str(ident);status=0;failure=None;headers={}
+                self.request_count+=1
+                part=self.root/'partial'/str(ident);status=0;failure=None;headers={};retryable_failure=False
+                response_started=time.monotonic()
                 try:
-                    request=urllib.request.Request(url,headers={'User-Agent':'GitRx/0.5 native history archive; sequential 2-second spacing','Accept-Encoding':'identity'})
-                    try:response=urllib.request.build_opener(NoRedirect).open(request,timeout=30)
+                    agent='GitRx/0.10 local DailyMed research archive; bounded adaptive transport' if self.pacing else 'GitRx/0.10 native history archive; sequential >=2 seconds'
+                    request=urllib.request.Request(url,headers={'User-Agent':agent,'Accept-Encoding':'identity'})
+                    try:response=(self.opener or urllib.request.build_opener(NoRedirect)).open(request,timeout=30)
                     except urllib.error.HTTPError as exc:response=exc
                     with response,part.open('xb') as f:
                         status=response.code;headers={k.lower():v for k,v in response.headers.items()};total=0
                         while chunk:=response.read(1024*1024):
+                            if time.monotonic()-response_started>self.max_response_seconds:raise TimeoutError('Response execution deadline exceeded')
+                            self.guard()
+                            ensure_space(self.root,2*1024**2)
+                            if self.max_bytes is not None and self.bytes_received+len(chunk)>self.max_bytes:
+                                prefix=chunk[:max(0,self.max_bytes-self.bytes_received)]
+                                f.write(prefix);self.bytes_received+=len(prefix)
+                                sync_body(f)
+                                raise ValueError('Workspace byte cap reached; response prefix retained')
                             total+=len(chunk)
                             if total>100*1024**2:raise ValueError('Response exceeds 100 MiB')
-                            f.write(chunk)
-                        f.flush();os.fsync(f.fileno())
-                except (OSError,ValueError,http.client.HTTPException) as exc:failure=str(exc)
+                            f.write(chunk);self.bytes_received+=len(chunk)
+                        self.fullfsync_supported=sync_body(f)
+                except (OSError,http.client.HTTPException) as exc:failure=str(exc);retryable_failure=True
+                except ValueError as exc:failure=str(exc)
+                if failure and self.opener:self.opener.close()
+                self.guard()
                 if not part.exists():part.write_bytes(b'')
                 digest=sha(part);target=self.root/'bodies'/digest
-                if not target.exists():os.link(part,target)
-                with self.c:self.c.execute('UPDATE requests SET status=?,sha256=?,error=?,headers_json=? WHERE id=?',(status,digest,failure,json.dumps(headers),ident))
+                if target.exists():
+                    if sha(target)!=digest:raise RuntimeError('Existing HTTP content hash changed')
+                else:os.link(part,target)
+                directory=os.open(target.parent,os.O_RDONLY)
+                try:os.fsync(directory)
+                finally:os.close(directory)
+                if self.raw_journal:self.raw_journal.store(target,digest,external_path=target)
+                if headers.get('retry-after'):
+                    from gitrx.current.archive import retry_delay
+                    until=time.time()+retry_delay(list(headers.items()),0)
+                    with self.c:self.c.execute("INSERT OR REPLACE INTO transport_state VALUES('retry_after',?)",(until,))
+                with self.c:self.c.execute('UPDATE requests SET status=?,sha256=?,error=?,headers_json=?,bytes=? WHERE id=?',(status,digest,failure,json.dumps(headers),part.stat().st_size,ident))
+                latency=time.monotonic()-response_started
+                with self.c:self.c.execute('UPDATE requests SET latency_seconds=?,spacing_seconds=?,connection_serial=? WHERE id=?',(latency,spacing,self.opener.serial if self.opener else None,ident))
+                if self.pacing:self.pacing.note(status,failure,latency,headers)
+                if not self.retain_completed_partials and not failure:part.unlink()
                 if status in (301,302,303,307,308) and not failure:
                     from urllib.parse import urljoin
                     url=urljoin(url,headers.get('location',''));continue
                 if status==200 and not failure:return target
-                if status not in (0,429,500,502,503,504) or attempt==2:raise ValueError(f'HTTP {status}: {failure or original}')
+                if (not retryable_failure and status not in (0,408,429,500,502,503,504)) or attempt==2:raise ValueError(f'HTTP {status}: {failure or original}')
                 # Do not defeat an upstream Retry-After with a short retry loop.
-                if headers.get('retry-after'):raise RuntimeError('Retry deferred by upstream Retry-After; retained in ledger')
+                if headers.get('retry-after') and not (self.pacing and self.pacing.policy.get('wait_for_retry_after',False)):
+                    raise RuntimeError('Retry deferred by upstream Retry-After; retained in ledger')
                 break
             else:raise ValueError('Redirect limit exceeded')
             url=original
         raise ValueError('Retrieval failed')
-    def close(self):self.c.close()
+    def body_path(self,digest):
+        local=self.root/'bodies'/digest
+        if local.exists():return local
+        for directory in self.body_fallbacks:
+            candidate=directory/digest
+            if candidate.exists():return candidate
+        return local
+
+    def get_many(self,urls,interrupt=None,on_result=None,reuse=True):
+        from .parallel_downloads import get_many
+        return get_many(self,urls,interrupt=interrupt,on_result=on_result,reuse=reuse)
+
+    def close(self):
+        if getattr(self,'download_pool',None):self.download_pool.close()
+        if self.opener:self.opener.close()
+        self.c.close()
 
 class Base:
     """Union exporter adapter with prepared payloads and exact raw source pointers."""
@@ -128,6 +228,33 @@ class Job:
         if self.config['format']!='gitrx-job-config-1' or self.config['parser_version']!=PARSER_VERSION:raise ValueError('Unsupported job/parser version')
         self.root=(self.path.parent/self.config['workspace']).resolve()
         if 'search_projection' in self.config and type(self.config['search_projection']) is not bool:raise ValueError('search_projection must be boolean')
+        if 'promote' in self.config and type(self.config['promote']) is not bool:raise ValueError('promote must be boolean')
+        admission_keys={'admission_scope_path','admission_scope_sha256'} & self.config.keys()
+        if admission_keys and (len(admission_keys)!=2 or not self.config.get('admission_scope_path') or not self.config.get('admission_scope_sha256')):
+            raise ValueError('Admission scope requires both path and SHA-256 pin')
+    def admitted_scope(self,parent_config,parent_path):
+        """Explicit additive register; retained family records are never rewritten."""
+        original=(Path(parent_path).parent/parent_config['scope_path']).resolve()
+        original_raw=original.read_bytes();old=json.loads(original_raw)['records']
+        release=(Path(parent_path).parent/parent_config['release_root']).resolve()
+        parent_raw=(release/'reports/EXPANDED-SELECTION.json').read_bytes().removesuffix(b'\n')
+        if hashlib.sha256(parent_raw).hexdigest()!=parent_config['snapshot']:raise ValueError('Parent selection pin mismatch')
+        expected_scope=json.loads(parent_raw).get('scope_sha256')
+        if expected_scope and hashlib.sha256(original_raw).hexdigest()!=expected_scope:
+            raise ValueError('Parent scope pin mismatch')
+        if 'admission_scope_path' not in self.config:return original,original_raw,old
+        path=(self.path.parent/self.config['admission_scope_path']).resolve()
+        raw=path.read_bytes()
+        if hashlib.sha256(raw).hexdigest()!=self.config['admission_scope_sha256']:
+            raise ValueError('Admission scope SHA-256 pin mismatch')
+        scope=json.loads(raw);records=scope['records']
+        if not isinstance(records,dict):raise ValueError('Admission scope records must be a register')
+        for sid,row in records.items():
+            if str(UUID(sid))!=sid or not isinstance(row,dict) or not isinstance(row.get('title'),str) or not row['title'].strip():
+                raise ValueError('Admission scope requires canonical setids and nonempty titles')
+        if any(records.get(sid)!=row for sid,row in old.items()):
+            raise ValueError('Admission scope must preserve every parent family record unchanged')
+        return path,raw,records
     @contextmanager
     def lock(self):
         self.root.mkdir(parents=True,exist_ok=True)
@@ -138,6 +265,42 @@ class Job:
         current=self.root/'current.json'
         return current if current.exists() else (self.path.parent/self.config['parent_config']).resolve()
     def status(self):return operational_status(self.root,self.parent())
+    @staticmethod
+    def publication_observations(rows):
+        """Preserve source date strings; ISO dates are derived, not replacements."""
+        from datetime import date,datetime
+        result={}
+        def iso(day):
+            if not isinstance(day,str) or date.fromisoformat(day).isoformat()!=day:
+                raise ValueError('Publication dates require YYYY-MM-DD')
+            return day
+        for row in rows:
+            supplied={iso(day) for day in row.get('publication_dates',[]) if day}
+            if 'publication_observations' not in row:
+                for day in supplied:result.setdefault((day,day),{'published_date':day,'published_raw':day})
+                continue
+            observations=row['publication_observations']
+            if not isinstance(observations,list):raise ValueError('Publication observations must be a list')
+            known=set()
+            for observed in observations:
+                if not isinstance(observed,dict):raise ValueError('Publication observation must be a record')
+                for left,right in (('publication_raw','published_raw'),('publication_date','published_date')):
+                    if left in observed and right in observed and observed[left]!=observed[right]:
+                        raise ValueError('Conflicting publication observation aliases')
+                raw=observed.get('publication_raw',observed.get('published_raw'))
+                if raw is not None and not isinstance(raw,str):raise ValueError('Raw publication date must be text or null')
+                try:derived=datetime.strptime(raw,'%b %d, %Y').date().isoformat()
+                except (ValueError,TypeError):derived=None
+                given=observed.get('publication_date',observed.get('published_date',derived))
+                if given is not None:iso(given)
+                if given!=derived:raise ValueError('Publication date does not match retained source string')
+                if derived is not None:known.add(derived)
+                normalized={k:v for k,v in observed.items() if k not in ('publication_raw','publication_date','published_raw','published_date')}
+                normalized.update(published_date=derived,published_raw=raw)
+                result.setdefault((derived,raw),normalized)
+            if 'publication_dates' in row and supplied!=known:
+                raise ValueError('Publication dates do not match retained source observations')
+        return [result[key] for key in sorted(result,key=lambda key:(key[0] or '',key[1] or ''))]
     @tracked('activate')
     def activate(self,target,expected_snapshot):
         """Select a retained, verified release without modifying its evidence or refs."""
@@ -177,9 +340,10 @@ class Job:
         with self.lock():
             config=json.loads(self.parent().read_bytes());release=(self.parent().parent/config['release_root']).resolve()
             manifest=json.loads((release/'reports/EXPANDED-SELECTION.json').read_bytes());known={(v['setid'],v['version']):v for v in manifest['versions']}
+            _,_,approved=self.admitted_scope(config,self.parent())
             http=HTTP(self.root/'network',self.config.get('request_cap',1000),self.config.get('spacing_seconds',2));entries=[];incidents=[]
-            known_families={sid for sid,_ in known}
-            if len(setids)>7239:raise ValueError('Refresh scope exceeds 7239 families')
+            known_families=set(approved) if 'admission_scope_path' in self.config else {sid for sid,_ in known}
+            if len(setids)>len(known_families):raise ValueError('Refresh scope exceeds pinned family register')
             sid=None;verified=False;attempted_ids=[]
             try:
                 for sid in setids:
@@ -198,6 +362,7 @@ class Job:
                             rows.extend((int(r['spl_version']),r.get('published_date')) for r in data['history'])
                             if page>=pages:break
                         if not rows or len(rows)!=total or pages>100:raise ValueError('Incomplete/empty history inventory')
+                        if any(version<1 for version,_ in rows):raise ValueError('History contains nonpositive version identities; retained source requires reconciliation')
                         inventories.append(sorted(set(rows)))
                     if inventories[0]!=inventories[1]:raise ValueError('History passes disagree; retry a later cycle')
                     verified=True;before_entries=len(entries)
@@ -230,6 +395,8 @@ class Job:
     @tracked('cycle')
     def cycle(self,inbox):
         with self.lock():
+            scope_parent=self.parent();scope_config=json.loads(scope_parent.read_bytes())
+            admitted_path,admitted_raw,admitted_records=self.admitted_scope(scope_config,scope_parent)
             inbox=Path(inbox).resolve();input_data=json.loads(inbox.read_bytes())
             if input_data.get('incidents'):raise ValueError('Resolve retained acquisition incidents before promotion')
             entries=[]
@@ -237,9 +404,14 @@ class Job:
                 path=(inbox.parent/r['zip_path']).resolve();ensure_space(self.root,256*1024**2)
                 if path.stat().st_size>100*1024**2:raise ValueError('ZIP exceeds 100 MiB')
                 entries.append(dict(r,setid=str(UUID(r['setid'])),zip_path=str(path),sha256=sha(path)))
-            identity=hashlib.sha256(dumps({'entries':sorted(entries,key=lambda r:(r['setid'],r['version'],r['sha256'])),'parser_version':PARSER_VERSION,'section_codes':sorted(self.config['section_codes']),'search_projection':self.config.get('search_projection','inherit')}).encode()).hexdigest()
+            identity_input={'entries':sorted(entries,key=lambda r:(r['setid'],r['version'],r['sha256'])),'parser_version':PARSER_VERSION,'section_codes':sorted(self.config['section_codes']),'search_projection':self.config.get('search_projection','inherit')}
+            if 'admission_scope_path' in self.config:identity_input['admission_scope_sha256']=self.config['admission_scope_sha256']
+            if not self.config.get('promote',True):identity_input['promote']=False
+            identity=hashlib.sha256(dumps(identity_input).encode()).hexdigest()
             job=self.root/'jobs'/identity;job.mkdir(parents=True,exist_ok=True)
             if (job/'DONE.json').exists():
+                if 'admission_scope_path' in self.config and (job/'SCOPE.json').read_bytes()!=admitted_raw:
+                    raise ValueError('Frozen admission scope changed')
                 done=json.loads((job/'DONE.json').read_bytes())
                 current=json.loads(self.parent().read_bytes())['snapshot']
                 selected=done.get('snapshot')==current
@@ -258,7 +430,14 @@ class Job:
             parent_cache=json.loads((parent_root/'export-payloads/INDEX.json').read_bytes())
             pin=json.loads((parent_root/'reports/NATIVE-INDEX.json').read_bytes())
             if parent_cache['expanded_snapshot']!=config['snapshot'] or sha(parent_root/'export-payloads/INDEX.json')!=pin['cache_index_sha256']:raise ValueError('Parent cache pin mismatch')
-            scope=(parent_path.parent/config['scope_path']).resolve();scope_raw=scope.read_bytes();names=json.loads(scope_raw)['records']
+            scope=admitted_path;names=admitted_records
+            if 'admission_scope_path' in self.config:
+                # A candidate keeps an exact, immutable copy rather than a
+                # mutable operator path that could invalidate old citations.
+                scope=job/'SCOPE.json'
+                if scope.exists() and scope.read_bytes()!=admitted_raw:raise ValueError('Frozen admission scope changed')
+                if not scope.exists():
+                    with scope.open('xb') as f:f.write(admitted_raw);f.flush();os.fsync(f.fileno())
             c=connect(job/'source/data/gitrx.sqlite');accepted=[];quarantine=[];updates=[];groups={}
             for r in entries:groups.setdefault((r['setid'],r['version']),[]).append(r)
             try:
@@ -271,22 +450,32 @@ class Job:
                     vid=c.execute('SELECT id FROM versions WHERE setid=? AND version=?',key).fetchone()[0]
                     observations=[]
                     for row in rows:
-                        rid=Fetcher(c,job/'source',None).record({'url':'file:'+row['zip_path'],'retrieved_at':now(),'status':200,'headers':[]},Path(row['zip_path']).read_bytes(),'label',vid)
+                        observation={'url':'file:'+row['zip_path'],'retrieved_at':now(),'status':200,'headers':[]}
+                        if row.get('source_observation') is not None:
+                            observed=dict(row['source_observation'])
+                            if observed.get('sha256')!=row['sha256'] or observed.get('status')!=200 or observed.get('error'):
+                                raise ValueError('Source observation must pin successful matching ZIP bytes')
+                            if not isinstance(observed.get('url'),str) or not isinstance(observed.get('retrieved_at'),str):raise ValueError('Source observation requires URL and retrieval time')
+                            observation={k:observed[k] for k in ('url','retrieved_at','status','headers','final_url','error','attempt') if k in observed}
+                            observation.setdefault('headers',[])
+                            if isinstance(observation['headers'],dict):observation['headers']=list(observation['headers'].items())
+                        rid=Fetcher(c,job/'source',None).record(observation,Path(row['zip_path']).read_bytes(),'label',vid)
+                        if row.get('source_observation') is not None:
+                            c.execute('CREATE TABLE IF NOT EXISTS job_source_observations(retrieval_id INTEGER PRIMARY KEY,observation_json TEXT NOT NULL)')
+                            c.execute('INSERT OR IGNORE INTO job_source_observations VALUES(?,?)',(rid,dumps(row['source_observation'])))
                         checked=validate_label(c,job/'source',rid,sid,version)
                         observations.append((row,rid,checked))
                     if len({r['sha256'] for r in rows})>1 or any(v['state']!='downloaded' for _,_,v in observations):
                         quarantine.append({'identity':key,'reason':'Competing bytes or invalid XML/ZIP identity','hashes':[r['sha256'] for r in rows]});continue
                     row,rid,checked=observations[0]
-                    dates=sorted({day for r in rows for day in r.get('publication_dates',[]) if day})
-                    from datetime import date
-                    for day in dates:
-                        if date.fromisoformat(day).isoformat()!=day:raise ValueError('Publication dates require YYYY-MM-DD')
+                    publication_observations=self.publication_observations(rows)
                     if key in selected:
                         if selected[key]['selected_sha256']!=row['sha256']:
                             quarantine.append({'identity':key,'reason':'Competing bytes against pinned parent','sha256':row['sha256']});continue
-                        previous={o['published_date'] for o in selected[key]['publication_observations']}
-                        if set(dates)-previous:
-                            updated=dict(selected[key],publication_observations=selected[key]['publication_observations']+[{'published_date':day,'published_raw':day,'job':identity} for day in dates if day not in previous])
+                        previous={(o.get('published_date'),o.get('published_raw')) for o in selected[key]['publication_observations']}
+                        additions=[dict(o,job=identity) for o in publication_observations if (o['published_date'],o['published_raw']) not in previous]
+                        if additions:
+                            updated=dict(selected[key],publication_observations=selected[key]['publication_observations']+additions)
                             selected[key]=updated;updates.append(key)
                         continue
                     c.execute("UPDATE versions SET state='downloaded',selected_sha256=?,xml_member=?,effective_date=? WHERE id=?",(row['sha256'],checked['xml_member'],checked['effective_date'],vid));c.commit()
@@ -294,9 +483,9 @@ class Job:
                     persist_document(c,job/'source',v,set(self.config['section_codes']))
                     v=dict(c.execute('SELECT * FROM versions WHERE id=?',(vid,)).fetchone())
                     parses=[dict(p) for p in c.execute('SELECT * FROM parse_runs WHERE version_id=? ORDER BY id',(vid,))]
-                    if len(parses)!=1 or parses[0]['status']=='failed':
+                    if len(parses)!=1 or parses[0]['status'] not in ('complete','partial'):
                         quarantine.append({'identity':key,'reason':'Failed or ambiguous parse'});continue
-                    v['parse_runs']=parses;v['publication_observations']=[{'published_date':day,'published_raw':day} for day in dates]
+                    v['parse_runs']=parses;v['publication_observations']=publication_observations
                     v['retrievals']=[dict(r) for r in c.execute('SELECT * FROM retrievals WHERE version_id=?',(vid,))];accepted.append(v)
                 atomic(job/'QUARANTINE.json',quarantine)
                 if quarantine:
@@ -310,15 +499,18 @@ class Job:
             prefix='job'+identity[:16];sources=dict(parent['sources']);sources[prefix]={'root':str(job/'source'),'snapshot':source_snapshot,'database_sha256':sha(job/'source/data/gitrx.sqlite')}
             for v in accepted:
                 v=dict(v,id=prefix+':'+str(v['id']),parse_runs=[dict(p,id=prefix+':'+str(p['id'])) for p in v['parse_runs']]);selected[(v['setid'],v['version'])]=v
+            new_families={v['setid'] for v in accepted}-{v['setid'] for v in parent['versions']}
+            unknown_histories=sorted(set(parent.get('upstream_history_unknown_families',[]))|new_families)
             manifest={'format':'gitrx-expanded-release-1','versions':[selected[k] for k in sorted(selected)],'sources':sources,
                       'scope_sha256':sha(scope),'parent_selection_sha256':config['snapshot'],'parser_version':PARSER_VERSION,
-                      'growth_policy':'immutable-separately-tagged-expanded-snapshots','historical_completeness_claim':False,'upstream_history_unknown_families':parent.get('upstream_history_unknown_families',[]),'known_target_failures':parent.get('known_target_failures'),'job':identity,'parser_configuration':{'version':PARSER_VERSION,'section_codes_sha256':hashlib.sha256(dumps(sorted(self.config['section_codes'])).encode()).hexdigest()}}
+                      'growth_policy':'immutable-separately-tagged-expanded-snapshots','historical_completeness_claim':False,'upstream_history_unknown_families':unknown_histories,'known_target_failures':None if new_families else parent.get('known_target_failures'),'job':identity,'parser_configuration':{'version':PARSER_VERSION,'section_codes_sha256':hashlib.sha256(dumps(sorted(self.config['section_codes'])).encode()).hexdigest()}}
             prepared={'manifest':manifest,'accepted':accepted,'parent_cache':parent_cache,'parent_root':str(parent_root),'scope':str(scope),'config':config,'updates':updates}
             atomic(job/'BUILD-INPUT.json',prepared)
             return self._build(job,identity,**prepared)
 
     def _build(self,job,identity,manifest,accepted,parent_cache,parent_root,scope,config,updates):
         parent_root=Path(parent_root);scope=Path(scope);prefix='job'+identity[:16]
+        if sha(scope)!=manifest['scope_sha256']:raise ValueError('Frozen candidate scope pin mismatch')
         raw=dumps(manifest);snapshot=hashlib.sha256(raw.encode()).hexdigest();release=self.root/'releases'/snapshot;release.mkdir(parents=True,exist_ok=True)
         atomic(job/'CHECKPOINT.json',{'state':'building','snapshot':snapshot,'parent':config['snapshot']})
         operation_progress(self.root,self._operation_id,'payloads',{'job':identity,'snapshot':snapshot})
@@ -396,6 +588,9 @@ class Job:
                     b=next(v for v in g.versions(sid) if v['version']==version)
                     if a!={k:v for k,v in b.items() if k!='commit'}:raise ValueError('Changed release metadata parity failure')
             atomic(release/'COMPLETE.json',{'snapshot':snapshot,'parent':config['snapshot'],'versions':len(manifest['versions']),'job':identity})
+            if not self.config.get('promote',True):
+                result={'state':'staged','job':identity,'snapshot':snapshot,'new_versions':len(accepted),'date_updates':len(updates),'config':str(release/'backend.json'),'promoted':False}
+                atomic(job/'DONE.json',result);return result
             live=json.loads(self.parent().read_bytes())
             if live['snapshot'] not in (config['snapshot'],snapshot):raise ValueError('Parent changed; rebase this cycle before promotion')
             operation_progress(self.root,self._operation_id,'selection',{'job':identity,'snapshot':snapshot})

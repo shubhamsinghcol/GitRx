@@ -194,5 +194,5 @@ Dates are observed DailyMed publication dates, SPL effective dates and
 retrieval timestamps, each labeled. No market status or FDA approval claim.
 
 Local evidence, iteration/golden classification, rollback and census details:
-[Block 1c reports](../reports/block1c/). No public release is authorized before
+[Block 1c reports](../reports/block1c). No public release is authorized before
 the fresh independent anchored-validation gate passes.

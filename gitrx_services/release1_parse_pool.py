@@ -31,7 +31,7 @@ def plain(rows):
             n=excerpt['narrative'];excerpt['narrative']=SimpleNamespace(blocks=n.blocks,tables=n.tables,diagnostics=n.diagnostics)
     return rows
 
-def extraction(path,version,registry,spool):
+def extraction(path,version,registry,spool,report_errors=False):
     from gitrx.current.spl_parser_v1 import parse_document,CONFIG
     from gitrx.current.db import dumps
     from gitrx.current.archive import read_xml,NS
@@ -47,7 +47,11 @@ def extraction(path,version,registry,spool):
     with zipfile.ZipFile(path) as z:xml=z.read(version['xml_member'])
     doc=read_xml(xml);sid=doc.find('s:setId',NS);num=doc.find('s:versionNumber',NS)
     if sid is None or num is None or sid.get('root','').lower()!=version['setid'] or int(num.get('value'))!=version['version']:raise Stop('PARSER_BOUNDARY_IDENTITY_MISMATCH')
-    rows,diagnostics=parse_document(xml,set(registry));data=pickle.dumps({'rows':plain(rows),'diagnostics':diagnostics},protocol=5)
+    try:rows,diagnostics=parse_document(xml,set(registry))
+    except (ValueError,TypeError,KeyError) as exc:
+        if not report_errors:raise
+        return {'extraction_error':{'type':type(exc).__name__,'message':str(exc)}}
+    data=pickle.dumps({'rows':plain(rows),'diagnostics':diagnostics},protocol=5)
     if len(data)>256*1024**2:raise MemoryError('Derived parse payload exceeds coordinator budget')
     guard(base,len(data)+64*1024**2);tmp=base/('payload-'+str(os.getpid())+'-'+str(time.time_ns())+'.partial')
     with tmp.open('xb') as f:f.write(data);f.flush();os.fsync(f.fileno())

@@ -131,3 +131,92 @@ def test_changed_http_cycle_rollback_and_old_citations(job,tmp_path,monkeypatch)
     with pytest.raises(ValueError,match='incomplete'):job.activate(new_cfg,result['snapshot'])
     assert (job.root/'current.json').read_bytes()==pointer
     complete.write_bytes(saved)
+
+def test_retry_after_deadline_survives_restart(tmp_path,monkeypatch):
+    import gitrx_backend.jobs as module
+    class Response(io.BytesIO):
+        code=503;headers={'Retry-After':'3600'}
+    class Opener:
+        def open(self,*a,**kw):return Response(b'busy')
+    monkeypatch.setattr(module.urllib.request,'build_opener',lambda *a:Opener())
+    http=module.HTTP(tmp_path/'network')
+    with pytest.raises(RuntimeError,match='Retry deferred'):
+        http.get('https://dailymed.nlm.nih.gov/a')
+    http.close()
+    http=module.HTTP(tmp_path/'network')
+    with pytest.raises(RuntimeError,match='Retry deferred'):
+        http.get('https://dailymed.nlm.nih.gov/b')
+    assert http.c.execute('SELECT COUNT(*) FROM requests').fetchone()[0]==1
+    http.close()
+
+def test_interrupted_http_prefix_never_becomes_success(tmp_path,monkeypatch):
+    import gitrx_backend.jobs as module
+    root=tmp_path/'network';http=module.HTTP(root)
+    with http.c:
+        ident=http.c.execute('INSERT INTO requests(url,started) VALUES(?,?)',('https://dailymed.nlm.nih.gov/file',0)).lastrowid
+    (root/'partial'/str(ident)).write_bytes(b'prefix')
+    http.close()
+    http=module.HTTP(root)
+    row=http.c.execute('SELECT * FROM requests').fetchone()
+    assert row['status']==0 and row['error'] and row['sha256']==module.sha(root/'partial'/str(ident))
+    assert (root/'bodies'/row['sha256']).read_bytes()==b'prefix'
+    assert http.bytes_received==6
+    http.close()
+
+
+def test_http_byte_cap_and_mount_guard(tmp_path,monkeypatch):
+    import gitrx_backend.jobs as module
+    class Response(io.BytesIO):
+        code=200;headers={}
+    class Opener:
+        def open(self,*a,**kw):return Response(b'oversized')
+    monkeypatch.setattr(module.urllib.request,'build_opener',lambda *a:Opener())
+    http=module.HTTP(tmp_path/'network',max_bytes=4)
+    with pytest.raises(ValueError,match='byte cap'):http.get('https://dailymed.nlm.nih.gov/file')
+    assert http.bytes_received==4
+    assert http.c.execute('SELECT error FROM requests').fetchone()[0]
+    http.close()
+    http=module.HTTP(tmp_path/'network',max_bytes=4)
+    with pytest.raises(RuntimeError,match='byte cap'):http.get('https://dailymed.nlm.nih.gov/file')
+    http.close()
+    missing=tmp_path/'missing'
+    def guard():raise RuntimeError('volume unavailable')
+    with pytest.raises(RuntimeError,match='volume unavailable'):module.HTTP(missing,guard=guard)
+    assert not missing.exists()
+
+def test_http_mid_body_timeout_retries_without_reusing_prefix(tmp_path,monkeypatch):
+    import gitrx_backend.jobs as module
+    attempts=[]
+    class Response(io.BytesIO):
+        code=200;headers={}
+        def read(self,n=-1):
+            if len(attempts)==1:raise TimeoutError('read timed out after wake')
+            return super().read(n)
+    class Opener:
+        def open(self,*a,**kw):attempts.append(1);return Response(b'complete')
+    monkeypatch.setattr(module.urllib.request,'build_opener',lambda *a:Opener())
+    monkeypatch.setattr(module.time,'sleep',lambda seconds:None)
+    http=module.HTTP(tmp_path/'network')
+    p=http.get('https://dailymed.nlm.nih.gov/file')
+    assert p.read_bytes()==b'complete' and len(attempts)==2
+    rows=http.c.execute('SELECT error FROM requests ORDER BY id').fetchall()
+    assert rows[0]['error'] and rows[1]['error'] is None
+    http.close()
+
+def test_single_cas_mode_keeps_transfer_budget_after_partial_cleanup(tmp_path,monkeypatch):
+    import gitrx_backend.jobs as module
+    class Response(io.BytesIO):
+        code=200;headers={}
+    class Opener:
+        def open(self,*a,**kw):return Response(b'four')
+    monkeypatch.setattr(module.urllib.request,'build_opener',lambda *a:Opener())
+    monkeypatch.setattr(module.time,'sleep',lambda seconds:None)
+    http=module.HTTP(tmp_path/'network',max_bytes=8,retain_completed_partials=False)
+    first=http.get('https://dailymed.nlm.nih.gov/one');assert first.read_bytes()==b'four'
+    assert not list((http.root/'partial').iterdir());http.close()
+    http=module.HTTP(tmp_path/'network',max_bytes=8,retain_completed_partials=False)
+    assert http.bytes_received==4
+    http.get('https://dailymed.nlm.nih.gov/two')
+    assert len(list((http.root/'bodies').iterdir()))==1 and http.bytes_received==8
+    with pytest.raises(RuntimeError,match='byte cap'):http.get('https://dailymed.nlm.nih.gov/three')
+    http.close()

@@ -1,0 +1,92 @@
+[
+  {
+    "original_path": "docs/BUFFERED-ACQUISITION-20261108.md",
+    "sha256": "9da36fbf0dfc7ca4084594ca26ed506f69460da4c51ea13aa72172d5bb6efbd3",
+    "bytes": 4332,
+    "archive_path": "docs/history/dailymed/BUFFERED-ACQUISITION-20261108.md"
+  },
+  {
+    "original_path": "docs/CONTINUOUS-DOWNLOAD-20261108.md",
+    "sha256": "6cd2e6d5e24d55f4f7e161acea9e5e3469c7144b9d9bf2d1c41dfc2db32d8cd0",
+    "bytes": 1942,
+    "archive_path": "docs/history/dailymed/CONTINUOUS-DOWNLOAD-20261108.md"
+  },
+  {
+    "original_path": "docs/DOWNLOAD-SCHEDULING-FIX-20261108.md",
+    "sha256": "42a01fe5d3b8aaf5019771f1085d772f2c4fe94be4ed64197bfddb647e91dbf5",
+    "bytes": 3147,
+    "archive_path": "docs/history/dailymed/DOWNLOAD-SCHEDULING-FIX-20261108.md"
+  },
+  {
+    "original_path": "docs/DOWNLOAD-THROUGHPUT-TRIAL-20261108.md",
+    "sha256": "82cd476bf5175a4f72882bc5afc71655bc8315fe5c49d36d4d9ffdf6d9e6f570",
+    "bytes": 2116,
+    "archive_path": "docs/history/dailymed/DOWNLOAD-THROUGHPUT-TRIAL-20261108.md"
+  },
+  {
+    "original_path": "docs/FULL-DAILYMED-RECOVERY-20261108.md",
+    "sha256": "8b771fee89623bee706bd46bdd0a18382ead16f4c065a173b40e1a1b05a0d81a",
+    "bytes": 4468,
+    "archive_path": "docs/history/dailymed/FULL-DAILYMED-RECOVERY-20261108.md"
+  },
+  {
+    "original_path": "docs/HANDOFF-PIPELINE-20261108.md",
+    "sha256": "cad59829e77beaac0f500d21acdb9ea43dfc1c61bbcbe72294cedec780ea4882",
+    "bytes": 3910,
+    "archive_path": "docs/history/dailymed/HANDOFF-PIPELINE-20261108.md"
+  },
+  {
+    "original_path": "docs/MOBILE-SSD-WORKFLOW-20261108.md",
+    "sha256": "c928f223412eafadfd5086487a1b976e224f637075e6c8d11f17b4d4423a8ece",
+    "bytes": 4510,
+    "archive_path": "docs/history/dailymed/MOBILE-SSD-WORKFLOW-20261108.md"
+  },
+  {
+    "original_path": "docs/PIPELINE-PROFILE-20261108.md",
+    "sha256": "ed291048b376e60a3630081140227c55d1025ffd615e7fa0560d419c11648a50",
+    "bytes": 6196,
+    "archive_path": "docs/history/dailymed/PIPELINE-PROFILE-20261108.md"
+  },
+  {
+    "original_path": "docs/RESCUE-STAGING-STATUS-20261108.md",
+    "sha256": "05ee93f9b6aa2e953e44a2d44fc037f427d78070015573641e057f2ee6ea072f",
+    "bytes": 4983,
+    "archive_path": "docs/history/dailymed/RESCUE-STAGING-STATUS-20261108.md"
+  },
+  {
+    "original_path": "docs/THROUGHPUT-20261108.md",
+    "sha256": "3faf94b27ddcbc6fe3e7e40ce37b33562293b928d7d33d3180a78e7f1b55bf13",
+    "bytes": 5647,
+    "archive_path": "docs/history/dailymed/THROUGHPUT-20261108.md"
+  },
+  {
+    "original_path": "docs/TWO-LANE-TRANSPORT-20261108.md",
+    "sha256": "30738760545ee135503ec09173529db2393c11a286dfd7d1eabe7f72057db572",
+    "bytes": 2117,
+    "archive_path": "docs/history/dailymed/TWO-LANE-TRANSPORT-20261108.md"
+  },
+  {
+    "original_path": "docs/FULL-DAILYMED-BACKFILL.md",
+    "sha256": "c521ba3754835b8b6586aa42174cda5695a53d74feb4770e72a6acd8e9e99b69",
+    "bytes": 9973,
+    "archive_path": "docs/history/dailymed/FULL-DAILYMED-BACKFILL.md"
+  },
+  {
+    "original_path": "docs/FULL-DAILYMED-BACKFILL-RUNNING.md",
+    "sha256": "1ca24eb16cb2e9d6efcf8dcbd6ca9f3a4985fca30e81b86ca0efc4f02e285322",
+    "bytes": 7078,
+    "archive_path": "docs/history/dailymed/FULL-DAILYMED-BACKFILL-RUNNING.md"
+  },
+  {
+    "original_path": "docs/FULL-DAILYMED-PREPARATION-RESULT.md",
+    "sha256": "bc2d4d0871af520e9e9d6028352fa8c576f55924322eff79a4a4904869f7b9a0",
+    "bytes": 10586,
+    "archive_path": "docs/history/dailymed/FULL-DAILYMED-PREPARATION-RESULT.md"
+  },
+  {
+    "original_path": "docs/HANDOFF-FULL-DAILYMED-COVERAGE.md",
+    "sha256": "439c479b9a9f34ab39c0eccd8f7aaeee11a4c9741187cb470a73a53d5a6cceed",
+    "bytes": 13154,
+    "archive_path": "docs/history/dailymed/HANDOFF-FULL-DAILYMED-COVERAGE.md"
+  }
+]
