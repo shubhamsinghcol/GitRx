@@ -17,7 +17,10 @@
 - **Interpretation:** source codes can repeat or be miscoded. Context rules
   are derived; default/unknown instances cannot support confident named-section
   headlines. Anchored status is evidence found by a rule, not a probability.
-- **Validation:** the original fresh sample had 59/60 agreement, with one IFU
+- **Validation — corrected 2026-11-10:** the 59/60 and 60/60 results below were
+  AI-graded, not human-reviewed; the parser currently has no human validation.
+  See [validation correction](docs/VALIDATION-CORRECTION-2026-11-10.md).
+  Original text retained: the original fresh sample had 59/60 agreement, with one IFU
   human label later corrected by the owner under the existing taxonomy.
   Adjudicated agreement is 60/60, not a second blind pass. This anchored-only
   tranche1 sample cannot establish global recall or release1-wide accuracy.

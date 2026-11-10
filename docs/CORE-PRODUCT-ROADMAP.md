@@ -44,8 +44,9 @@ means proven introduction. No silent clinical interpretation or family merging.
 The owner authorized broader DailyMed scope and one finite resumable acquisition
 job. This does not authorize automatic recurring collection or public distribution.
 Independent backups remain outside scope; the stopped restore drill is incomplete.
-The original held-out packet remains sealed/excluded. The 60/60 owner-adjudicated
-sample is not an independent blind pass or full-corpus validation.
+The original held-out packet remains sealed/excluded. The 60/60 "owner-adjudicated"
+sample was AI-graded, not human-reviewed (corrected 2026-11-10); the parser has no
+human validation. See [validation correction](VALIDATION-CORRECTION-2026-11-10.md).
 
 Defer additional regulators, semantic search, clinical summaries, RxNorm merging,
 community annotation infrastructure and broader analytics until a demonstrated

@@ -37,6 +37,8 @@ Run focused maintained tests for changed behavior. Preserve the original held-ou
 packet boundary; do not open sealed answers or run its excluded tests. Completed
 tranche1 labels and separate owner adjudication do not establish full-corpus recall
 or independent clinical validation. Do not edit historical scoring records.
+The tranche1 59/60 and 60/60 scores were AI-graded, not human-reviewed; never cite
+them as validation (docs/VALIDATION-CORRECTION-2026-11-10.md).
 
 Current product priorities and owner constraints are in
 `docs/CORE-PRODUCT-ROADMAP.md`. Independent backups remain outside current scope;
