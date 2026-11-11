@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="http://www.fda.gov/oc/datacouncil/stylesheets/spl/spl.xsl" type="text/xsl"?>
+<document xmlns="urn:hl7-org:v3" xmlns:voc="http://www.hl7.org/v3/voc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 http://www.fda.gov/oc/datacouncil/schemas/spl/spl.xsd">
+<id root="6E979070-5035-4076-E09C-B52466BE3C68" />
+<code code="34391-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Human prescription drug label" />
+<title mediaType="text/x-hl7-title+xml">MANGANESE<br />0.1 mg/mL<br />Manganese Chloride<br />Injection, USP</title>
+<effectiveTime value="20060804" />
+<setId root="6E979070-5035-4076-E09C-B52466BE3C68" />
+<versionNumber value="1" />
+<author>
+<time />
+<assignedEntity>
+<id root="27F43E6A-E678-4CFA-84BA-DFDCC765B8EF" />
+<representedOrganization>
+<name>Hospira, Inc.</name>
+<addr />
+</representedOrganization>
+</assignedEntity>
+</author>
+<component>
+<structuredBody>
+<component>
+<section>
+<id root="6B43AB05-001A-9695-8BEF-D9100F3B637E" />
+<effectiveTime value="20060804" />
+<subject>
+<manufacturedProduct>
+<manufacturedMedicine>
+<code code="0409-4091" codeSystem="2.16.840.1.113883.6.69" />
+<name>MANGANESE</name>
+<formCode code="C42945" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="INJECTION, SOLUTION" />
+<activeIngredient>
+<quantity>
+<numerator unit="mg" value="0.1">
+<translation code="C28253" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="MILLIGRAM" value="0.1" />
+</numerator>
+<denominator unit="mL" value="1">
+<translation code="C28254" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="MILLILITER" value="1" />
+</denominator>
+</quantity>
+<activeIngredientSubstance>
+<code code="QQE170PANO" codeSystem="2.16.840.1.113883.4.9" codeSystemName="FDA SRS" />
+<name>Manganese Chloride</name>
+<activeMoiety>
+<activeMoiety>
+<code code="H6EP7W5457" codeSystem="2.16.840.1.113883.4.9" codeSystemName="FDA SRS" />
+<name>Manganese, ion (MN2+)</name>
+</activeMoiety>
+</activeMoiety>
+</activeIngredientSubstance>
+</activeIngredient>
+<asEntityWithGeneric>
+<genericMedicine>
+<name>Manganese Chloride</name>
+</genericMedicine>
+</asEntityWithGeneric>
+<inactiveIngredient>
+<quantity>
+<numerator unit="mg" value="9">
+<translation code="C28253" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="MILLIGRAM" value="9" />
+</numerator>
+<denominator unit="mL" value="1">
+<translation code="C28254" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="MILLILITER" value="1" />
+</denominator>
+</quantity>
+<inactiveIngredientSubstance>
+<code code="451W47IQ8X" codeSystem="2.16.840.1.113883.4.9" codeSystemName="FDA SRS" />
+<name>Sodium Chloride</name>
+</inactiveIngredientSubstance>
+</inactiveIngredient>
+<inactiveIngredient>
+<inactiveIngredientSubstance>
+<code code="QTT17582CB" codeSystem="2.16.840.1.113883.4.9" codeSystemName="FDA SRS" />
+<name>Hydrochloric Acid</name>
+</inactiveIngredientSubstance>
+</inactiveIngredient>
+<inactiveIngredient>
+<inactiveIngredientSubstance>
+<code code="55X04QC32I" codeSystem="2.16.840.1.113883.4.9" codeSystemName="FDA SRS" />
+<name>Sodium Hydroxide</name>
+</inactiveIngredientSubstance>
+</inactiveIngredient>
+<asContent>
+<quantity>
+<numerator unit="mL" value="10">
+<translation code="C28254" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="MILLILITER" value="10" />
+</numerator>
+<denominator value="1">
+<translation value="1" />
+</denominator>
+</quantity>
+<containerPackagedMedicine>
+<code />
+<formCode code="C43214" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="VIAL, PLASTIC" />
+<asContent>
+<quantity>
+<numerator value="25">
+<translation code="C48551" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="VIAL" value="25" />
+</numerator>
+<denominator value="1">
+<translation value="1" />
+</denominator>
+</quantity>
+<containerPackagedMedicine>
+<code />
+<formCode code="C53438" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="TRAY" />
+<asContent>
+<quantity>
+<numerator value="1">
+<translation code="C54704" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="TRAY" value="1" />
+</numerator>
+<denominator value="1">
+<translation value="1" />
+</denominator>
+</quantity>
+<containerPackagedMedicine>
+<code code="0409-4091-01" codeSystem="2.16.840.1.113883.6.69" codeSystemName="NDC" />
+<formCode code="C43184" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="CASE" />
+</containerPackagedMedicine>
+</asContent>
+</containerPackagedMedicine>
+</asContent>
+</containerPackagedMedicine>
+</asContent>
+</manufacturedMedicine>
+<consumedIn>
+<substanceAdministration>
+<routeCode code="C38276" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="INTRAVENOUS" />
+</substanceAdministration>
+</consumedIn>
+</manufacturedProduct>
+</subject>
+</section>
+</component>
+<component>
+<section>
+<id root="2F4AC56D-C846-585C-AB53-DC1B73976A6F" />
+<code />
+<title mediaType="text/x-hl7-title+xml" />
+<text><paragraph>FOR I.V. USE ONLY AFTER DILUTION</paragraph><paragraph>Plastic
+Vial</paragraph><paragraph>R<sub>x</sub> only</paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="B025B20A-F11E-90B2-73F8-234F5875A08E" />
+<code code="34089-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="DESCRIPTION SECTION" />
+<title mediaType="text/x-hl7-title+xml">DESCRIPTION </title>
+<text><paragraph>Manganese 0.1 mg/mL (Manganese Chloride Injection, USP) is
+a sterile, nonpyrogenic solution intended for use as an additive to intravenous
+solutions for total parenteral nutrition (TPN). Each mL of solution contains
+0.36 mg manganese chloride, tetrahydrate and 9 mg sodium chloride. The solution
+contains no bacteriostat, antimicrobial agent or added buffer. The pH is 2.0
+(1.5 to 2.5); product may contain hydrochloric acid and sodium hydroxide for
+pH adjustment. The osmolarity is 0.313 mOsmol/mL (calc.).</paragraph><paragraph>Manganese
+Chloride, USP is chemically designated manganese chloride, tetrahydrate (MnCl<sub>2</sub>&#8226;
+4H<sub>2</sub>O), a deliquescent, crystalline compound soluble in water.</paragraph><paragraph>Sodium
+Chloride, USP is chemically designated NaCl, a white, crystalline compound
+freely soluble in water.</paragraph><paragraph>The semi-rigid vial is fabricated
+from a specially formulated polyolefin. It is a copolymer of ethylene and
+propylene. The safety of the plastic has been confirmed by tests in animals
+according to USP biological standards for plastic containers. The small amount
+of water vapor that can pass through the plastic container wall will not significantly
+alter the drug concentration.</paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="21370DA3-3087-9AAE-3D7E-36EFC1286CAD" />
+<code code="34090-1" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="CLINICAL PHARMACOLOGY SECTION" />
+<title mediaType="text/x-hl7-title+xml">CLINICAL PHARMACOLOGY </title>
+<text><paragraph>Manganese is an essential nutrient which serves as an activator
+for enzymes such as polysaccharide polymerase, liver arginase, cholinesterase
+and pyruvate carboxylase. Providing manganese during TPN helps prevent development
+of deficiency symptoms such as nausea and vomiting, weight loss, dermatitis
+and changes in growth and color of hair.</paragraph><paragraph>Under conditions
+of minimal intake, 20 mcg manganese/day is retained. Manganese is bound to
+a specific transport protein, transmanganin, a beta-l-globulin. Manganese
+is widely distributed but concentrates in the mitochondria rich tissues suchas brain, kidney, pancreas, and liver. Assays for manganese in whole blood
+result in concentrations ranging from 6 to 12 mcg/manganese/liter. </paragraph><paragraph>Excretion
+of manganese occurs mainly through the bile, but in the event of obstruction,
+ancillary excretion routes include pancreatic juice, or return into the lumen
+of the duodenum, jejunum, or ileum. Urinary excretion of manganese is negligible.</paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="1E29C284-CC40-B6EE-8FB8-E4AB5FF8F8AB" />
+<code code="34067-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="INDICATIONS &amp; USAGE SECTION" />
+<title mediaType="text/x-hl7-title+xml">INDICATIONS AND USAGE</title>
+<text><paragraph>Manganese 0.1 mg/mL (Manganese Chloride Injection, USP) is
+indicated for use as a supplement to intravenous solutions given for total
+parenteral nutrition (TPN). </paragraph><paragraph>Administration helps to
+maintain manganese serum levels and to prevent depletion of endogenous stores
+and subsequent deficiency symptoms.</paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="5934BCE1-1DC0-4EFA-5F86-5506A7CE9BDD" />
+<code code="34070-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="CONTRAINDICATIONS SECTION" />
+<title mediaType="text/x-hl7-title+xml">CONTRAINDICATIONS</title>
+<text><paragraph>None known.</paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="FE35EEDD-5A75-65AE-E9C9-10BBE74502DD" />
+<code code="34071-1" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="WARNINGS SECTION" />
+<title mediaType="text/x-hl7-title+xml">WARNINGS</title>
+<text><paragraph>Direct intramuscular or intravenous injection of Manganese
+0.1 mg/mL (Manganese Chloride Injection, USP) is contraindicated as the acidic
+pH of the solution (pH 2.0) may cause considerable tissue irritation.</paragraph><paragraph>Liver
+and/or biliary tract dysfunction may require omission or reduction of copper
+and manganese doses because these elements are primarily eliminated in the
+bile.</paragraph><paragraph>WARNING: This product contains aluminum that may
+be toxic. Aluminum may reach toxic levels with prolonged parenteral administration
+if kidney function is impaired. Premature neonates are particularly at risk
+because their kidneys are immature, and they require large amounts of calcium
+and phosphate solutions, which contain aluminum. </paragraph><paragraph>Research
+indicates that patients with impaired kidney function, including premature
+neonates, who receive parenteral levels of aluminum at greater than 4 to 5
+mcg/kg/day accumulate aluminum at levels associated with central nervous system
+and bone toxicity. Tissue loading may occur at even lower rates of administration. </paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="91A0E3BE-4CFC-1E69-1D59-CA1FD562DCAD" />
+<code code="42232-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="PRECAUTIONS SECTION" />
+<title mediaType="text/x-hl7-title+xml">PRECAUTIONS</title>
+<effectiveTime value="20060804" />
+<component>
+<section>
+<id root="45F40A95-9855-EB23-9DC7-7C49D12397CB" />
+<code code="34072-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="GENERAL PRECAUTIONS SECTION" />
+<title mediaType="text/x-hl7-title+xml">General</title>
+<text><paragraph>Do not use unless solution is clear and seal is intact.</paragraph><paragraph>Manganese
+0.1 mg/mL (Manganese Chloride Injection, USP) should only be used in conjunction
+with a pharmacy directed admixture program using aseptic technique in a laminar
+flow environment; it should be used promptly and in a single operation without
+any repeated penetrations. Solution contains no preservatives; discard unused
+portion immediately after admixture procedure is completed.</paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="A5B217E3-2F23-C66C-03F8-1CBBCA85B97B" />
+<code code="34075-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="LABORATORY TESTS SECTION" />
+<title mediaType="text/x-hl7-title+xml">Laboratory Tests</title>
+<text><paragraph>Serum manganese levels can be measured periodically at the
+discretion of the investigator. Because of the low serum concentration normally
+present, samples will usually be analyzed by a reference laboratory.</paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="78E39D41-4DB2-6595-E5D2-48BFE0FF5492" />
+<code code="34083-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Carcinogenesis and Mutagenesis and Impairment of Fertility section" />
+<title mediaType="text/x-hl7-title+xml">Carcinogenesis, Mutagenesis, and Impairment of Fertility</title>
+<text><paragraph>Long-term animal studies to evaluate the carcinogenic potential
+of Manganese 0.1 mg/mL (Manganese Chloride Injection, USP) have not been performed,
+nor have studies been done to assess mutagenesis or impairment of fertility.</paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="953E715B-EC10-EC8F-25C2-1FC5B24CD61B" />
+<code code="34080-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="NURSING MOTHERS SECTION" />
+<title mediaType="text/x-hl7-title+xml">Nursing Mothers</title>
+<text><paragraph>It is not known whether this drug is excreted in human milk.
+Because many drugs are excreted in human milk, caution should be exercised
+when Manganese 0.1 mg/mL (Manganese Chloride Injection, USP) additive is administered
+to a nursing woman. </paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="B30E2B5A-38D1-D4E1-4463-9F815C27CCDC" />
+<code code="34081-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="PEDIATRIC USE SECTION" />
+<title mediaType="text/x-hl7-title+xml">Pediatric Use</title>
+<text><paragraph>See DOSAGE AND ADMINISTRATION section. Safety and effectiveness
+in pediatric patients have not been established.</paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="EFA97907-4B95-8BF9-6338-531D4F175083" />
+<code code="42228-7" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Pregnancy section" />
+<title mediaType="text/x-hl7-title+xml">Pregnancy Category C.</title>
+<text><paragraph>Animal reproduction studies have not been conducted with
+manganese chloride. It is also not known whether manganese chloride can cause
+fetal harm when administered to a pregnant woman or can affect reproductive
+capacity. Manganese chloride should be given to a pregnant woman only if clearly
+indicated.</paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="AAF64843-222B-295C-F2E3-0B520AA0BAD4" />
+<code code="34082-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="GERIATRIC USE SECTION" />
+<title mediaType="text/x-hl7-title+xml">Geriatric Use</title>
+<text><paragraph>An evaluation of current literature revealed no clinical
+experience identifying differences in response between elderly and younger
+patients. In general, dose selection for an elderly patient should be cautious,
+usually starting at the low end of the dosing range, reflecting the greater
+frequency of decreased hepatic, renal, or cardiac function, and of concomitant
+disease or other drug therapy.</paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+</section>
+</component>
+<component>
+<section>
+<id root="592EC176-B624-A518-4FBF-EF8FA48347E1" />
+<code code="34084-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="ADVERSE REACTIONS SECTION" />
+<title mediaType="text/x-hl7-title+xml">ADVERSE REACTIONS</title>
+<text><paragraph>None known. </paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="BE485880-A350-BD68-0094-D1B2A2F94978" />
+<code code="34086-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="ABUSE SECTION" />
+<title mediaType="text/x-hl7-title+xml">DRUG ABUSE AND DEPENDENCE</title>
+<text><paragraph>None known. </paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="68B5C55F-7223-D195-C7BF-0F45AAEFF659" />
+<code code="34088-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="OVERDOSAGE SECTION" />
+<title mediaType="text/x-hl7-title+xml">OVERDOSAGE</title>
+<text><paragraph>Manganese toxicity in TPN patients has not been reported.</paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="52F30F6C-797A-A50E-1EEA-F253ECC24426" />
+<code code="34068-7" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="DOSAGE &amp; ADMINISTRATION SECTION" />
+<title mediaType="text/x-hl7-title+xml">DOSAGE AND ADMINISTRATION </title>
+<text><paragraph>Manganese 0.1 mg/mL (Manganese Chloride Injection, USP) contains
+0.1 mg manganese/mL and is administered intravenously only after dilution.
+The additive should be administered in a volume of fluid not less than 100
+mL. For the adult receiving TPN, the suggested additive dosage for manganese
+is 0.15 to 0.8 mg/day (1.5 to 8 mL/day). For pediatric patients, a dosage
+of 2 to 10 mcg manganese/kg/day (0.02 to 0.1 mL/kg/day) is recommended.</paragraph><paragraph>Periodic
+monitoring of manganese plasma levels is suggested as a guideline for subsequent
+administration.</paragraph><paragraph>Parenteral products should be inspected
+visually for particulate matter and discoloration prior to administration,
+whenever solution and container permit. See PRECAUTIONS. </paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+<component>
+<section>
+<id root="2BBF81F2-5261-37F8-AB1F-A1459E794D12" />
+<code code="34069-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="HOW SUPPLIED SECTION" />
+<title mediaType="text/x-hl7-title+xml">HOW SUPPLIED</title>
+<text><paragraph>Manganese 0.1 mg/mL (Manganese Chloride Injection, USP) is
+supplied in 10 mL Plastic Vials (List No. 4091). </paragraph><paragraph>Store
+at controlled room temperature 15&#176; to 30&#176;C (59&#176; to 86&#176;F)
+[See USP.]</paragraph><table frame="void"><caption />
+<colgroup>
+<col />
+<col />
+<col />
+</colgroup>
+<tbody>
+<tr><td valign="top" /><td valign="top" /><td align="right" valign="top" /></tr>
+<tr><td valign="top"><paragraph>&#169;Hospira 2004</paragraph></td><td align="center" valign="top"><paragraph>EN-0077</paragraph></td><td align="right" valign="top"><paragraph>Printed in USA</paragraph></td></tr>
+</tbody>
+</table><paragraph><content styleCode="italics">HOSPIRA, INC., LAKE FOREST,
+IL 60045 USA</content></paragraph></text>
+<effectiveTime value="20060804" />
+</section>
+</component>
+</structuredBody>
+</component>
+</document>

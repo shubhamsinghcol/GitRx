@@ -17,9 +17,16 @@
 !/gitrx/
 !/gitrx_backend/
 !/gitrx_services/
+!/gitrx_core/
 !/docs/
 !/tests/
 /tests/*
+!/tests/test_core_*.py
+!/tests/fixtures/
+/tests/fixtures/*
+!/tests/fixtures/core_spl/
+!/tests/fixtures/core_srlc/
+!/tests/fixtures/core_golden/
 !/tests/test_backend_portable.py
 !/tests/test_core_workflow.py
 !/tests/test_query_limits.py

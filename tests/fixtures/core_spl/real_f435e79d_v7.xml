@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="http://www.accessdata.fda.gov/spl/stylesheet/spl.xsl" type="text/xsl"?>
+<document xmlns="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 http://www.accessdata.fda.gov/spl/schema/spl.xsd">
+   <id root="1b7217fd-3093-49b7-b09a-514af6ae5418"/>
+   <code code="72090-4" codeSystem="2.16.840.1.113883.6.1" displayName="IDENTIFICATION OF CBER-REGULATED GENERIC DRUG FACILITY"/>
+   <effectiveTime value="20150515"/>
+   <setId root="f435e79d-dea3-49dc-8268-146c60ba52a1"/>
+   <versionNumber value="7"/>
+   <author>
+      <time/>
+      <assignedEntity>
+         <representedOrganization>
+            <assignedEntity>
+               <assignedOrganization>
+                  <id extension="141588017" root="1.3.6.1.4.1.519.1"/>
+                  <name>Hospira, Inc.</name>
+                  <contactParty>
+                     <addr>
+                        <streetAddressLine>275 N. Field Drive</streetAddressLine>
+                        <city>Lake Forest</city>
+                        <state>IL</state>
+                        <postalCode>60045</postalCode>
+                        <country>USA</country>
+                     </addr>
+                     <telecom value="tel:+1-224-212-4842"/>
+                     <telecom value="mailto:kathleen.lins@hospira.com"/>
+                     <contactPerson>
+                        <name>Kathleen Marie Lins</name>
+                     </contactPerson>
+                  </contactParty>
+                  <assignedEntity>
+                     <assignedOrganization>
+                        <id extension="012660999" root="1.3.6.1.4.1.519.1"/>
+                        <id extension="1628454" root="2.16.840.1.113883.4.82"/>
+                        <name>Hospira, Inc.</name>
+                        <addr>
+                           <streetAddressLine>3900 Howard Lane</streetAddressLine>
+                           <city>Austin</city>
+                           <state>TX</state>
+                           <postalCode>78728</postalCode>
+                           <country>USA</country>
+                        </addr>
+                        <contactParty>
+                           <addr>
+                              <streetAddressLine>275 N. Field Drive</streetAddressLine>
+                              <city>Lake Forest</city>
+                              <state>IL</state>
+                              <postalCode>60045</postalCode>
+                              <country>USA</country>
+                           </addr>
+                           <telecom value="tel:+1-224-212-4842"/>
+                           <telecom value="mailto:kathleen.lins@hospira.com"/>
+                           <contactPerson>
+                              <name>Ms. Kathleen Marie Lins</name>
+                           </contactPerson>
+                        </contactParty>
+                     </assignedOrganization>
+                     <performance>
+                        <actDefinition>
+                           <code code="C101510" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="FDF MANUFACTURE"/>
+                           <subjectOf>
+                              <approval>
+                                 <code code="C101886" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="Manufactures Non-Generics"/>
+                              </approval>
+                           </subjectOf>
+                        </actDefinition>
+                     </performance>
+                  </assignedEntity>
+                  <assignedEntity>
+                     <assignedOrganization>
+                        <id extension="827731089" root="1.3.6.1.4.1.519.1"/>
+                        <id extension="3004591926" root="2.16.840.1.113883.4.82"/>
+                        <name>Hospira, Inc.</name>
+                        <addr>
+                           <streetAddressLine>375 N. Field Drive</streetAddressLine>
+                           <city>Lake Forest</city>
+                           <state>IL</state>
+                           <postalCode>60045</postalCode>
+                           <country>USA</country>
+                        </addr>
+                        <contactParty>
+                           <addr>
+                              <streetAddressLine>275 N. Field Drive</streetAddressLine>
+                              <city>Lake Forest</city>
+                              <state>IL</state>
+                              <postalCode>60045</postalCode>
+                              <country>USA</country>
+                           </addr>
+                           <telecom value="tel:+1-224-212-4842"/>
+                           <telecom value="mailto:kathleen.lins@hospira.com"/>
+                           <contactPerson>
+                              <name>Ms. Kathleen Marie Lins</name>
+                           </contactPerson>
+                        </contactParty>
+                     </assignedOrganization>
+                     <performance>
+                        <actDefinition>
+                           <code code="C101509" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="API/FDF ANALYTICAL TESTING"/>
+                           <subjectOf>
+                              <approval>
+                                 <code code="C101886" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="Manufactures Non-Generics"/>
+                              </approval>
+                           </subjectOf>
+                        </actDefinition>
+                     </performance>
+                  </assignedEntity>
+                  <assignedEntity>
+                     <assignedOrganization>
+                        <id extension="093132819" root="1.3.6.1.4.1.519.1"/>
+                        <id extension="1021343" root="2.16.840.1.113883.4.82"/>
+                        <name>Hospira, Inc.</name>
+                        <addr>
+                           <streetAddressLine>Highway 301 North</streetAddressLine>
+                           <city>Rocky Mount</city>
+                           <state>NC</state>
+                           <postalCode>27801</postalCode>
+                           <country>USA</country>
+                        </addr>
+                        <contactParty>
+                           <addr>
+                              <streetAddressLine>275 N. Field Drive</streetAddressLine>
+                              <city>Lake Forest</city>
+                              <state>IL</state>
+                              <postalCode>60045</postalCode>
+                              <country>USA</country>
+                           </addr>
+                           <telecom value="tel:+1-224-212-4842"/>
+                           <telecom value="mailto:kathleen.lins@hospira.com"/>
+                           <contactPerson>
+                              <name>Ms. Kathleen Marie Lins</name>
+                           </contactPerson>
+                        </contactParty>
+                     </assignedOrganization>
+                     <performance>
+                        <actDefinition>
+                           <code code="C101509" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="API/FDF ANALYTICAL TESTING"/>
+                           <subjectOf>
+                              <approval>
+                                 <code code="C101886" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="Manufactures Non-Generics"/>
+                              </approval>
+                           </subjectOf>
+                        </actDefinition>
+                     </performance>
+                  </assignedEntity>
+                  <assignedEntity>
+                     <assignedOrganization>
+                        <id extension="963711309" root="1.3.6.1.4.1.519.1"/>
+                        <id extension="3005564767" root="2.16.840.1.113883.4.82"/>
+                        <name>Hospira Worldwide, Inc.</name>
+                        <addr>
+                           <streetAddressLine>10501 80th Avenue</streetAddressLine>
+                           <city>Pleasant Prairie</city>
+                           <state>WI</state>
+                           <postalCode>53158</postalCode>
+                           <country>USA</country>
+                        </addr>
+                        <contactParty>
+                           <addr>
+                              <streetAddressLine>275 N. Field Drive</streetAddressLine>
+                              <city>Lake Forest</city>
+                              <state>IL</state>
+                              <postalCode>60045</postalCode>
+                              <country>USA</country>
+                           </addr>
+                           <telecom value="tel:+1-224-212-4842"/>
+                           <telecom value="mailto:kathleen.lins@hospira.com"/>
+                           <contactPerson>
+                              <name>Ms. Kathleen Marie Lins</name>
+                           </contactPerson>
+                        </contactParty>
+                     </assignedOrganization>
+                     <performance>
+                        <actDefinition>
+                           <code code="C101509" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="API/FDF ANALYTICAL TESTING"/>
+                           <subjectOf>
+                              <approval>
+                                 <code code="C101886" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="Manufactures Non-Generics"/>
+                              </approval>
+                           </subjectOf>
+                        </actDefinition>
+                     </performance>
+                  </assignedEntity>
+               </assignedOrganization>
+            </assignedEntity>
+         </representedOrganization>
+      </assignedEntity>
+   </author>
+   <component>
+      <nonXMLBody>
+         <text/>
+      </nonXMLBody>
+   </component>
+</document>

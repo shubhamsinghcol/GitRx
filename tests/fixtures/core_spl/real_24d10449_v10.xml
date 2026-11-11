@@ -1,0 +1,1611 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="http://www.accessdata.fda.gov/spl/stylesheet/spl.xsl" type="text/xsl"?>
+<document xmlns="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 http://www.accessdata.fda.gov/spl/schema/spl.xsd">
+   <id root="a69ffa20-50cf-11e1-b86c-0800200c9a66"/>
+   <code code="34391-3" codeSystem="2.16.840.1.113883.6.1" displayName="HUMAN PRESCRIPTION DRUG LABEL"/>
+   <title>
+      <content styleCode="bold">These highlights do not include all the information needed to use ABRAXANE safely and effectively. See full prescribing information for ABRAXANE<br/>
+         <br/> ABRAXANE® for Injectable Suspension (paclitaxel protein-bound particles for injectable suspension) (albumin-bound)<br/> Initial U.S. Approval: 2005</content>
+   </title>
+   <effectiveTime value="20120131"/>
+   <setId root="24d10449-2936-4cd3-b7db-a7683db721e4"/>
+   <versionNumber value="10"/>
+   <author>
+      <time/>
+      <assignedEntity>
+         <representedOrganization>
+            <id extension="832108497" root="1.3.6.1.4.1.519.1"/>
+            <name>Abraxis BioScience, LLC</name>
+            <assignedEntity>
+               <assignedOrganization>
+                  <id extension="832108497" root="1.3.6.1.4.1.519.1"/>
+                  <name>Abraxis BioScience, LLC </name>
+               </assignedOrganization>
+            </assignedEntity>
+         </representedOrganization>
+      </assignedEntity>
+   </author>
+   <component>
+      <structuredBody>
+         <component>
+            <section ID="DLDE">
+               <id root="f6a6c3b7-31a3-11e1-b86c-0800200c9a66"/>
+               <code code="48780-1" codeSystem="2.16.840.1.113883.6.1" displayName="SPL PRODUCT DATA ELEMENTS SECTION"/>
+               <effectiveTime value="20111231"/>
+               <subject>
+                  <manufacturedProduct>
+                     <manufacturedProduct>
+                        <code code="68817-134" codeSystem="2.16.840.1.113883.6.69"/>
+                        <name>ABRAXANE</name>
+                        <formCode code="C42958" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="INJECTION, POWDER, LYOPHILIZED, FOR SUSPENSION"/>
+                        <asEntityWithGeneric>
+                           <genericMedicine>
+                              <name>Paclitaxel</name>
+                           </genericMedicine>
+                        </asEntityWithGeneric>
+                        <ingredient classCode="ACTIB">
+                           <quantity>
+                              <numerator value="100" unit="mg"/>
+                              <denominator value="20" unit="mL"/>
+                           </quantity>
+                           <ingredientSubstance>
+                              <code code="P88XT4IS4D" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>Paclitaxel</name>
+                              <activeMoiety>
+                                 <activeMoiety>
+                                    <code code="P88XT4IS4D" codeSystem="2.16.840.1.113883.4.9"/>
+                                    <name>Paclitaxel</name>
+                                 </activeMoiety>
+                              </activeMoiety>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <quantity>
+                              <numerator value="900" unit="mg"/>
+                              <denominator value="20" unit="mL"/>
+                           </quantity>
+                           <ingredientSubstance>
+                              <code code="ZIF514RVZR" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>Albumin (Human)</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <asContent>
+                           <quantity>
+                              <numerator value="20" unit="mL"/>
+                              <denominator value="1"/>
+                           </quantity>
+                           <containerPackagedProduct>
+                              <code/>
+                              <formCode code="C43216" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="VIAL, SINGLE-USE"/>
+                              <asContent>
+                                 <quantity>
+                                    <numerator value="1" unit="1">
+                                       <translation code="C48551" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="VIAL"/>
+                                    </numerator>
+                                    <denominator value="1"/>
+                                 </quantity>
+                                 <containerPackagedProduct>
+                                    <code code="68817-134-50" codeSystem="2.16.840.1.113883.6.69"/>
+                                    <formCode code="C43182" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="CARTON"/>
+                                 </containerPackagedProduct>
+                              </asContent>
+                           </containerPackagedProduct>
+                        </asContent>
+                     </manufacturedProduct>
+                     <subjectOf>
+                        <approval>
+                           <id extension="NDA021660" root="2.16.840.1.113883.3.150"/>
+                           <code code="C73594" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="NDA"/>
+                           <author>
+                              <territorialAuthority>
+                                 <territory>
+                                    <code code="USA" codeSystem="2.16.840.1.113883.5.28"/>
+                                 </territory>
+                              </territorialAuthority>
+                           </author>
+                        </approval>
+                     </subjectOf>
+                     <subjectOf>
+                        <marketingAct>
+                           <code code="C53292" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                           <statusCode code="active"/>
+                           <effectiveTime>
+                              <low value="20050210"/>
+                           </effectiveTime>
+                        </marketingAct>
+                     </subjectOf>
+                     <consumedIn>
+                        <substanceAdministration>
+                           <routeCode code="C38276" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="INTRAVENOUS"/>
+                        </substanceAdministration>
+                     </consumedIn>
+                  </manufacturedProduct>
+               </subject>
+            </section>
+         </component>
+         <component>
+            <section ID="ae4b-0002a5d5c51bjt-uc">
+               <id root="b99d6ce0-19e6-11e1-8ce5-0002a5d5c51b"/>
+               <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+               <text>
+                  <paragraph>
+                     <content styleCode="bold">ABRAXANE<sup>®</sup> for Injectable Suspension (paclitaxel protein-bound particles for injectable suspension) (albumin-bound)</content>
+                  </paragraph>
+               </text>
+               <effectiveTime value="20111209"/>
+            </section>
+         </component>
+         <component>
+            <section ID="BW-f6a53d0c-31a3-11e1-b86c-0800200c9a66">
+               <id root="b9a06ce0-533b-11e1-9026-0002a5d5c51b"/>
+               <code code="34066-1" codeSystem="2.16.840.1.113883.6.1" displayName="BOXED WARNING SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">WARNING:  NEUTROPENIA</title>
+               <text>
+                  <list>
+                     <item>
+                        <content styleCode="bold">ABRAXANE therapy should not be administered to patients with metastatic breast cancer who have baseline neutrophil counts of less than 1,500 cells/mm<sup>3</sup>. In order to monitor the occurrence of bone marrow suppression, primarily neutropenia, which may be severe and result in infection, it is recommended that frequent peripheral blood cell counts be performed on all patients receiving ABRAXANE </content>
+                        <content styleCode="italics">[see Contraindications (<linkHtml href="#b380-0002a5d5c51bjt-4">4</linkHtml>), Warnings and Precautions (<linkHtml href="#JT51-f6a53d20-31a3-11e1-b86c-0800200c9a66">5.1</linkHtml>) and Adverse Reactions (<linkHtml href="#JT61-f6a53d2b-31a3-11e1-b86c-0800200c9a66">6.1</linkHtml>)].</content>
+                     </item>
+                     <item>
+                        <content styleCode="bold">Note: An albumin form of paclitaxel may substantially affect a drug’s functional properties relative to those of drug in solution. DO NOT SUBSTITUTE FOR OR WITH OTHER PACLITAXEL FORMULATIONS. </content>
+                     </item>
+                  </list>
+               </text>
+               <effectiveTime value="20120131"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <paragraph>
+                           <content styleCode="bold">WARNING:  NEUTROPENIA</content>
+                        </paragraph>
+                        <paragraph>
+                           <content styleCode="bold italics">See full prescribing information for complete <linkHtml href="#BW-f6a53d0c-31a3-11e1-b86c-0800200c9a66">boxed warning</linkHtml>.</content>
+                        </paragraph>
+                        <list>
+                           <item>
+                              <content styleCode="bold"> ABRAXANE therapy should not be administered to patients with baseline neutrophil counts of less than 1,500 cells/mm<sup>3</sup> (<linkHtml href="#b380-0002a5d5c51bjt-4">4</linkHtml>).</content>
+                           </item>
+                           <item>
+                              <content styleCode="bold"> It is recommended that frequent peripheral blood cell counts be performed to monitor the occurrence of bone marrow suppression. (<linkHtml href="#b380-0002a5d5c51bjt-4">4</linkHtml>, <linkHtml href="#JT51-f6a53d20-31a3-11e1-b86c-0800200c9a66">5.1</linkHtml>, <linkHtml href="#JT61-f6a53d2b-31a3-11e1-b86c-0800200c9a66">6.1</linkHtml>)</content>
+                           </item>
+                        </list>
+                        <paragraph>
+                           <content styleCode="bold">DO NOT SUBSTITUTE FOR OR WITH OTHER PACLITAXEL FORMULATIONS</content>
+                        </paragraph>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="JTRMC-f6a5b23f-31a3-11e1-b86c-0800200c9a66">
+               <id root="2cba359a-19ed-11e1-bddb-0800200c9a66"/>
+               <code code="43683-2" codeSystem="2.16.840.1.113883.6.1" displayName="RECENT MAJOR CHANGES SECTION"/>
+               <effectiveTime value="20111231"/>
+               <excerpt>
+                  <highlight>
+                     <text/>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="JT1-f6a5b240-31a3-11e1-b86c-0800200c9a66">
+               <id root="ce70d8a0-19e6-11e1-9e74-0002a5d5c51b"/>
+               <code code="34067-9" codeSystem="2.16.840.1.113883.6.1" displayName="INDICATIONS &amp; USAGE SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">1 INDICATIONS AND USAGE</title>
+               <text>
+                  <paragraph>ABRAXANE for Injectable Suspension (paclitaxel protein-bound particles for injectable suspension) is indicated for the treatment of breast cancer after failure of combination chemotherapy for metastatic disease or relapse within 6 months of adjuvant chemotherapy.  Prior therapy should have included an anthracycline unless clinically contraindicated.</paragraph>
+               </text>
+               <effectiveTime value="20111231"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <paragraph>ABRAXANE is a microtubule inhibitor indicated for the treatment of breast cancer after failure of combination chemotherapy for metastatic disease or relapse within 6 months of adjuvant chemotherapy.  Prior therapy should have included an anthracycline unless clinically contraindicated. </paragraph>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="JT2-a3f42820-3ae3-11e1-889a-0002a5d5c51b">
+               <id root="73bc6b99-2513-11e1-bfc2-0800200c9a66"/>
+               <code code="34068-7" codeSystem="2.16.840.1.113883.6.1" displayName="DOSAGE &amp; ADMINISTRATION SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">2 DOSAGE AND ADMINISTRATION</title>
+               <effectiveTime value="20111231"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <list>
+                           <item>Recommended dosage: 260 mg/m<sup>2</sup> IV over 30 min every 3 weeks (<linkHtml href="#JT21-f6a53d0f-31a3-11e1-b86c-0800200c9a66">2.1</linkHtml>) </item>
+                           <item>No adjustment is necessary for patients with mild hepatic impairment. Patients should not receive ABRAXANE if AST &gt; 10 x ULN or bilirubin &gt; 5.0 x ULN. Reduce starting dose in patients with moderate to severe hepatic impairment.  (<linkHtml href="#JT22-f6a53d12-31a3-11e1-b86c-0800200c9a66">2.2</linkHtml>)</item>
+                           <item>In case of severe neutropenia or severe sensory neuropathy reduce dose to 220 mg/m<sup>2</sup> for subsequent courses. In case of recurrence, further reduce dose to 180 mg/m<sup>2</sup>. For grade 3 sensory neuropathy hold treatment until resolution to grade 1 or 2, followed by a dose reduction for all subsequent courses. (<linkHtml href="#JT23-f6a53d11-31a3-11e1-b86c-0800200c9a66">2.3</linkHtml>) </item>
+                           <item>Use caution when handling cytotoxic drugs.  Closely monitor the infusion site for extravasation and infiltration. No premedication is required prior to administration. (<linkHtml href="#JT24-f6a53d14-31a3-11e1-b86c-0800200c9a66">2.4</linkHtml>)</item>
+                        </list>
+                     </text>
+                  </highlight>
+               </excerpt>
+               <component>
+                  <section ID="JT21-f6a53d0f-31a3-11e1-b86c-0800200c9a66">
+                     <id root="73bc6b9a-2513-11e1-bfc2-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">2.1 General</title>
+                     <text>
+                        <paragraph>After failure of combination chemotherapy for metastatic breast cancer or relapse within 6 months of adjuvant chemotherapy, the recommended regimen for ABRAXANE is 260 mg/m<sup>2</sup> administered intravenously over 30 minutes every 3 weeks.</paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="JT22-f6a53d12-31a3-11e1-b86c-0800200c9a66">
+                     <id root="73bc6b9b-2513-11e1-bfc2-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">2.2 Dosage in Patients with Hepatic Impairment</title>
+                     <text>
+                        <paragraph>
+									No dose adjustment is necessary for patients with mild hepatic impairment.  Patients with moderate and severe hepatic impairment treated with ABRAXANE may be at increased risk of toxicities known to paclitaxel.  Patients should not receive ABRAXANE if AST &gt; 10 x ULN or bilirubin &gt; 5.0 x ULN.  Recommendations for dosage adjustment for the first course of therapy are shown in Table 1.  The dose of ABRAXANE can be increased up to 200 mg/m<sup>2</sup> in patients with severe hepatic impairment in subsequent cycles based on individual tolerance.  Patients should be monitored closely <content styleCode="italics">[see Clinical Pharmacology (<linkHtml href="#JT123-f6a53d2e-31a3-11e1-b86c-0800200c9a66">12.3</linkHtml>) and Warnings and Precautions (<linkHtml href="#JT53-f6a53d24-31a3-11e1-b86c-0800200c9a66">5.3</linkHtml>) and Use in Specific Populations (<linkHtml href="#JT86-f6a56419-31a3-11e1-b86c-0800200c9a66">8.6</linkHtml>)].</content>
+                        </paragraph>
+                        <table width="800">
+                           <caption>Table 1: Recommendations for Starting Dose in Patients with Hepatic Impairment</caption>
+                           <tfoot>
+                              <tr>
+                                 <td colspan="6">
+                                    <sup>a</sup> Dosage recommendations are for the first course of therapy. The need for further dose adjustments in subsequent courses should be based on individual tolerance.</td>
+                              </tr>
+                              <tr>
+                                 <td colspan="6">
+                                    <sup>b</sup> A dose increase to 200 mg/m<sup>2</sup> in subsequent courses should be considered based on individual tolerance.</td>
+                              </tr>
+                           </tfoot>
+                           <tbody>
+                              <tr>
+                                 <td/>
+                                 <td align="center">
+                                    <content styleCode="Bold">SGOT (AST) Levels</content>
+                                 </td>
+                                 <td/>
+                                 <td align="center">
+                                    <content styleCode="Bold">Bilirubin Levels</content>
+                                 </td>
+                                 <td align="center">
+                                    <content styleCode="Bold">ABRAXANE<sup>a</sup>
+                                    </content>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td align="center">Mild</td>
+                                 <td align="center">&lt; 10 x ULN</td>
+                                 <td align="center" rowspan="3">AND</td>
+                                 <td align="center">&gt; ULN to ≤ 1.25 x ULN</td>
+                                 <td align="center">260 mg/m<sup>2</sup>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td align="center">Moderate</td>
+                                 <td align="center">&lt; 10 x ULN</td>
+                                 <td align="center">1.26 to 2.0 x ULN</td>
+                                 <td align="center">200 mg/m<sup>2</sup>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td align="center">Severe</td>
+                                 <td align="center">&lt; 10 x ULN</td>
+                                 <td align="center">2.01 to 5.0 x ULN</td>
+                                 <td align="center">130 mg/m<sup>2 b</sup>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td align="center"/>
+                                 <td align="center">&gt; 10 x ULN</td>
+                                 <td align="center">OR</td>
+                                 <td align="center">&gt; 5.0 x ULN</td>
+                                 <td align="center">not eligible</td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="JT23-f6a53d11-31a3-11e1-b86c-0800200c9a66">
+                     <id root="73bc6b9c-2513-11e1-bfc2-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">2.3 Dose Reduction: in Case of Severe Neutropenia or Severe Sensory Neuropathy</title>
+                     <text>
+                        <paragraph>Patients who experience severe neutropenia (neutrophil &lt;500 cells/mm<sup>3</sup> for a week or longer) or severe sensory neuropathy during ABRAXANE therapy should have dosage reduced to 220 mg/m<sup>2</sup> for subsequent courses of ABRAXANE.  For recurrence of severe neutropenia or severe sensory neuropathy, additional dose reduction should be made to 180 mg/m<sup>2</sup>.  For grade 3 sensory neuropathy hold treatment until resolution to grade 1 or 2, followed by a dose reduction for all subsequent courses of ABRAXANE <content styleCode="Italics">[see Contraindications (<linkHtml href="#b380-0002a5d5c51bjt-4">4</linkHtml>), Warnings and Precautions (<linkHtml href="#JT51-f6a53d20-31a3-11e1-b86c-0800200c9a66">5.1</linkHtml> and <linkHtml href="#JT52-f6a53d22-31a3-11e1-b86c-0800200c9a66">5.2</linkHtml>) and Adverse Reactions (<linkHtml href="#JT61-f6a53d2b-31a3-11e1-b86c-0800200c9a66">6.1</linkHtml>)].</content>
+                        </paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="JT24-f6a53d14-31a3-11e1-b86c-0800200c9a66">
+                     <id root="73bc6b9d-2513-11e1-bfc2-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">2.4 Preparation and Administration Precautions</title>
+                     <text>
+                        <paragraph>ABRAXANE is a cytotoxic drug and, as with other potentially toxic paclitaxel compounds, caution should be exercised in handling ABRAXANE.  The use of gloves is recommended.  If ABRAXANE (lyophilized cake or reconstituted suspension) contacts the skin, wash the skin immediately and thoroughly with soap and water.  Following topical exposure to paclitaxel, events may include tingling, burning and redness.  If ABRAXANE contacts mucous membranes, the membranes should be flushed thoroughly with water.</paragraph>
+                        <paragraph>Given the possibility of extravasation, it is advisable to closely monitor the infusion site for possible infiltration during drug administration.  Limiting the infusion of ABRAXANE to 30 minutes, as directed, reduces the likelihood of infusion-related reactions <content styleCode="italics">[see Adverse Reactions (<linkHtml href="#JT62-f6a53d2d-31a3-11e1-b86c-0800200c9a66">6.2</linkHtml>)].</content>
+                        </paragraph>
+                        <paragraph>No premedication to prevent hypersensitivity reactions is required prior to administration of ABRAXANE.</paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="JT25-f6a53d18-31a3-11e1-b86c-0800200c9a66">
+                     <id root="f6a53d19-31a3-11e1-b86c-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">2.5 Preparation for Intravenous Administration</title>
+                     <text>
+                        <paragraph>ABRAXANE is supplied as a sterile lyophilized powder for reconstitution before use. <content styleCode="bold">AVOID ERRORS, READ ENTIRE PREPARATION INSTRUCTIONS PRIOR TO RECONSTITUTION</content>.</paragraph>
+                        <list listType="ordered">
+                           <item>Aseptically, reconstitute each vial by injecting 20 mL of 0.9% Sodium Chloride Injection, USP.</item>
+                           <item>Slowly inject the 20 mL of 0.9% Sodium Chloride Injection, USP, over a minimum of 1 minute, using the sterile syringe to direct the solution flow onto the INSIDE WALL OF THE VIAL.<br/>
+                              <renderMultiMedia referencedObject="MM001"/>
+                           </item>
+                           <item>DO NOT INJECT the 0.9% Sodium Chloride Injection, USP, directly onto the lyophilized cake as this will result in foaming. </item>
+                           <item>Once the injection is complete, allow the vial to sit for a minimum of 5 minutes to ensure proper wetting of the lyophilized cake/powder.</item>
+                           <item>Gently swirl and/or invert the vial slowly for at least 2 minutes until complete dissolution of any cake/powder occurs. Avoid generation of foam.</item>
+                           <item>If foaming or clumping occurs, stand solution for at least 15 minutes until foam subsides.</item>
+                        </list>
+                        <paragraph>Each mL of the reconstituted formulation will contain 5 mg/mL paclitaxel.</paragraph>
+                        <paragraph>Calculate the exact total dosing volume of 5 mg/mL suspension required for the patient: Dosing volume (mL) = Total dose (mg)/5 (mg/mL)</paragraph>
+                        <paragraph>The reconstituted suspension should be milky and homogenous without visible particulates. If particulates or settling are visible, the vial should be <content styleCode="bold">gently</content> inverted again to ensure complete resuspension prior to use. Discard the reconstituted suspension if precipitates are observed. Discard any unused portion.</paragraph>
+                        <paragraph>Inject the appropriate amount of reconstituted ABRAXANE into an empty, sterile IV bag [plasticized polyvinyl chloride (PVC) containers, PVC or non-PVC type IV bag]. The use of specialized DEHP-free solution containers or administration sets is not necessary to prepare or administer ABRAXANE infusions. The use of an in line filter is not recommended.</paragraph>
+                        <paragraph>Parenteral drug products should be inspected visually for particulate matter and discoloration prior to administration whenever solution and container permit.</paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                     <component>
+                        <observationMedia ID="MM001">
+                           <text>Slowly inject the 20 mL of 0.9% Sodium Chloride Injection, USP, over a minimum of 1 minute, using the sterile syringe to direct the solution flow onto the INSIDE WALL OF THE VIAL.</text>
+                           <value mediaType="image/jpeg" xsi:type="ED">
+                              <reference value="abraxane-01.jpg"/>
+                           </value>
+                        </observationMedia>
+                     </component>
+                  </section>
+               </component>
+               <component>
+                  <section ID="JT26-f6a53d1a-31a3-11e1-b86c-0800200c9a66">
+                     <id root="f6a53d1b-31a3-11e1-b86c-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">2.6 Stability</title>
+                     <text>
+                        <paragraph>Unopened vials of ABRAXANE are stable until the date indicated on the package when stored between 20°C to 25°C (68°F to 77°F) in the original package. Neither freezing nor refrigeration adversely affects the stability of the product.</paragraph>
+                        <paragraph>
+                           <content styleCode="underline">Stability of Reconstituted Suspension in the Vial</content>
+                           <br/>Reconstituted ABRAXANE in the vial should be used immediately, but may be refrigerated at 2°C to 8°C (36°F to 46°F) for a maximum of 8 hours if necessary. If not used immediately, each vial of reconstituted suspension should be replaced in the original carton to protect it from bright light. Discard any unused portion.</paragraph>
+                        <paragraph>
+                           <content styleCode="underline">Stability of Reconstituted Suspension in the Infusion Bag</content>
+                           <br/>The suspension for infusion when prepared as recommended in an infusion bag should be used immediately but may be stored at ambient temperature (approximately 25°C) and lighting conditions for up to 4 hours. Discard any unused portion.</paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="b84b2de0-19e7-11e1jt-3">
+               <id root="1135b0a0-533c-11e1-a2d9-0002a5d5c51b"/>
+               <code code="43678-2" codeSystem="2.16.840.1.113883.6.1" displayName="DOSAGE FORMS &amp; STRENGTHS SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">3 DOSAGE FORMS AND STRENGTHS</title>
+               <text>
+                  <paragraph>Single use vials containing 100 mg of paclitaxel.</paragraph>
+               </text>
+               <effectiveTime value="20120131"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <paragraph>Single use vial containing 100 mg of paclitaxel (<linkHtml href="#b84b2de0-19e7-11e1jt-3">3</linkHtml>) </paragraph>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="b380-0002a5d5c51bjt-4">
+               <id root="14215ee0-533c-11e1-bf39-0002a5d5c51b"/>
+               <code code="34070-3" codeSystem="2.16.840.1.113883.6.1" displayName="CONTRAINDICATIONS SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">4 CONTRAINDICATIONS</title>
+               <text>
+                  <paragraph>ABRAXANE should not be used in patients who have baseline neutrophil counts of &lt; 1,500 cells/mm<sup>3</sup>. Patients who experience a severe hypersensitivity reaction to ABRAXANE should not be rechallenged with the drug.</paragraph>
+               </text>
+               <effectiveTime value="20120131"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <list>
+                           <item>Neutrophil counts of &lt; 1,500 cells/mm<sup>3</sup>. (<linkHtml href="#b380-0002a5d5c51bjt-4">4</linkHtml>)</item>
+                           <item>Severe hypersensitivity reaction to ABRAXANE (<linkHtml href="#b380-0002a5d5c51bjt-4">4</linkHtml>)</item>
+                        </list>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="JT5-f6a53d1e-31a3-11e1-b86c-0800200c9a66">
+               <id root="73bc6b9e-2513-11e1-bfc2-0800200c9a66"/>
+               <code code="43685-7" codeSystem="2.16.840.1.113883.6.1" displayName="WARNINGS AND PRECAUTIONS SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">5 WARNINGS AND PRECAUTIONS</title>
+               <effectiveTime value="20111231"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <list listType="unordered">
+                           <item>ABRAXANE causes myelosuppression. Monitor CBC and withhold and/or reduce the dose as needed. (<linkHtml href="#JT51-f6a53d20-31a3-11e1-b86c-0800200c9a66">5.1</linkHtml>)</item>
+                           <item>Sensory neuropathy occurs frequently and may require dose reduction or treatment interruption. (<linkHtml href="#JT52-f6a53d22-31a3-11e1-b86c-0800200c9a66">5.2</linkHtml>) </item>
+                           <item>Exposure and toxicity of paclitaxel can be increased in patients with hepatic impairment; therefore administer with caution. (<linkHtml href="#JT53-f6a53d24-31a3-11e1-b86c-0800200c9a66">5.3</linkHtml>)</item>
+                           <item>ABRAXANE contains albumin derived from human blood which has a theoretical risk of viral transmission. (<linkHtml href="#JT54-f6a53d26-31a3-11e1-b86c-0800200c9a66">5.4</linkHtml>)</item>
+                           <item>Fetal harm may occur when administered to a pregnant woman. Women of childbearing potential should avoid becoming pregnant while receiving ABRAXANE. (<linkHtml href="#bf97-0002a5d5c51bjt-5-5">5.5</linkHtml>)</item>
+                           <item>Men should not father a child while on ABRAXANE. (<linkHtml href="#af29-0002a5d5c51bjt-5-6">5.6</linkHtml>)</item>
+                        </list>
+                     </text>
+                  </highlight>
+               </excerpt>
+               <component>
+                  <section ID="JT51-f6a53d20-31a3-11e1-b86c-0800200c9a66">
+                     <id root="73bc6b9f-2513-11e1-bfc2-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">5.1 Hematologic Effects</title>
+                     <text>
+                        <paragraph>Bone marrow suppression (primarily neutropenia) is dose dependent and a dose limiting toxicity.  ABRAXANE should not be administered to patients with baseline neutrophil counts of less than 1,500 cells/mm<sup>3</sup>.  In order to monitor the occurrence of myelotoxicity, perform frequent peripheral blood cell counts. Retreat with subsequent cycles of ABRAXANE after neutrophils recover to a level &gt;1,500 cells/mm<sup>3</sup> and platelets recover to a level &gt;100,000 cells/mm<sup>3</sup>.  In the case of severe neutropenia (&lt;500 cells/mm<sup>3</sup> for seven days or more) during a course of ABRAXANE therapy, dose reduce for subsequent courses of therapy. <content styleCode="italics">[see Dosage and Administration (<linkHtml href="#JT23-f6a53d11-31a3-11e1-b86c-0800200c9a66">2.3</linkHtml>)].</content>
+                        </paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="JT52-f6a53d22-31a3-11e1-b86c-0800200c9a66">
+                     <id root="f6a53d23-31a3-11e1-b86c-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">5.2 Nervous System</title>
+                     <text>
+                        <paragraph>Sensory neuropathy occurs frequently with ABRAXANE.  The occurrence of grade 1 or 2 sensory neuropathy does not generally require dose modification.  If grade 3 sensory neuropathy develops, treatment should be withheld until resolution to grade 1 or 2 followed by a dose reduction for all subsequent courses of ABRAXANE <content styleCode="italics">[see Dosage and Administration (<linkHtml href="#JT23-f6a53d11-31a3-11e1-b86c-0800200c9a66">2.3</linkHtml>)]</content>.</paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="JT53-f6a53d24-31a3-11e1-b86c-0800200c9a66">
+                     <id root="73bc6ba0-2513-11e1-bfc2-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">5.3 Hepatic Impairment</title>
+                     <text>
+                        <paragraph>Because the exposure and toxicity of paclitaxel can be increased with hepatic impairment, administration of ABRAXANE in patients with hepatic impairment should be performed with caution.  The starting dose should be reduced for patients with moderate and severe hepatic impairment <content styleCode="italics">[see Dosage and Administration (<linkHtml href="#JT22-f6a53d12-31a3-11e1-b86c-0800200c9a66">2.2</linkHtml>), Use in Specific Populations (<linkHtml href="#JT86-f6a56419-31a3-11e1-b86c-0800200c9a66">8.6</linkHtml>) and Clinical Pharmacology (<linkHtml href="#JT123-f6a53d2e-31a3-11e1-b86c-0800200c9a66">12.3</linkHtml>)]</content>.</paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="JT54-f6a53d26-31a3-11e1-b86c-0800200c9a66">
+                     <id root="f6a53d27-31a3-11e1-b86c-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">5.4 Albumin (Human)</title>
+                     <text>
+                        <paragraph>ABRAXANE contains albumin (human), a derivative of human blood.  Based on effective donor screening and product manufacturing processes, it carries a remote risk for transmission of viral diseases.  A theoretical risk for transmission of Creutzfeldt-Jakob Disease (CJD) also is considered extremely remote.  No cases of transmission of viral diseases or CJD have ever been identified for albumin.</paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="bf97-0002a5d5c51bjt-5-5">
+                     <id root="28074e20-19e8-11e1-99d1-0002a5d5c51b"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">5.5 Use in Pregnancy </title>
+                     <text>
+                        <paragraph>ABRAXANE can cause fetal harm when administered to a pregnant woman. Administration of paclitaxel protein-bound particles to rats during pregnancy at doses lower than the maximum recommended human dose, based on body surface area, caused embryo-fetal toxicities, including intrauterine mortality, increased resorptions, reduced numbers of live fetuses, and malformations.</paragraph>
+                        <paragraph>There are no adequate and well-controlled studies in pregnant women receiving ABRAXANE. If this drug is used during pregnancy, or if the patient becomes pregnant while receiving this drug, the patient should be apprised of the potential hazard to the fetus. Women of childbearing potential should be advised to avoid becoming pregnant while receiving ABRAXANE <content styleCode="italics">[see Use in Specific Populations (<linkHtml href="#KS0814c55f3fb-c4cf-11df-851a-0800200c9a66">8.1</linkHtml>)]</content>.</paragraph>
+                     </text>
+                     <effectiveTime value="20111209"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="af29-0002a5d5c51bjt-5-6">
+                     <id root="38625120-19e8-11e1-9ede-0002a5d5c51b"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">5.6 Use in Men</title>
+                     <text>
+                        <paragraph>Men should be advised not to father a child while receiving ABRAXANE <content styleCode="italics">[see Nonclinical Toxicology (<linkHtml href="#KS1314c55f3fb-c4cf-11df-851a-0800200c9a66">13.1</linkHtml>)]</content>.</paragraph>
+                     </text>
+                     <effectiveTime value="20111209"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="JT6-f6a53d29-31a3-11e1-b86c-0800200c9a66">
+               <id root="f6a53d2a-31a3-11e1-b86c-0800200c9a66"/>
+               <code code="34084-4" codeSystem="2.16.840.1.113883.6.1" displayName="ADVERSE REACTIONS SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">6 ADVERSE REACTIONS</title>
+               <text>
+                  <paragraph>Because clinical trials are conducted under widely varying conditions, adverse reaction rates observed in the clinical trials of a drug cannot be directly compared to rates in the clinical trials of another drug and may not reflect the rates observed in practice.</paragraph>
+                  <paragraph>The most common adverse reactions (≥ 20%) are alopecia, neutropenia, sensory neuropathy, abnormal ECG, fatigue/asthenia, myalgia/arthralgia, AST elevation, alkaline phosphatase elevation, anemia, nausea, infections, diarrhea.</paragraph>
+               </text>
+               <effectiveTime value="20111231"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <paragraph>The most common adverse reactions (≥ 20%) are alopecia, neutropenia, sensory neuropathy, abnormal ECG, fatigue/asthenia, myalgia/arthralgia, AST elevation, alkaline phosphatase elevation, anemia, nausea, infections, and diarrhea. (<linkHtml href="#JT61-f6a53d2b-31a3-11e1-b86c-0800200c9a66">6.1</linkHtml>)</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">To report SUSPECTED ADVERSE REACTIONS, contact Celgene Corporation at 1-888-423-5436 or FDA at 1-800-FDA-1088 or www.fda.gov/medwatch.</content>
+                        </paragraph>
+                     </text>
+                  </highlight>
+               </excerpt>
+               <component>
+                  <section ID="JT61-f6a53d2b-31a3-11e1-b86c-0800200c9a66">
+                     <id root="f6a53d2c-31a3-11e1-b86c-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">6.1 Clinical Trials Experience</title>
+                     <text>
+                        <paragraph>The following table shows the frequency of important adverse events in the randomized comparative trial for the patients who received either single-agent ABRAXANE or paclitaxel injection for the treatment of metastatic breast cancer.</paragraph>
+                        <table width="800">
+                           <caption>Table 2: Frequency<sup>a</sup> of Important Treatment Emergent Adverse Events in the Randomized Study on an Every-3-Weeks Schedule</caption>
+                           <tfoot>
+                              <tr>
+                                 <td colspan="3">
+                                    <sup>a</sup> Based on worst grade by NCI Common Terminology Criteria for Adverse Events (CTCAE) version 2.</td>
+                              </tr>
+                              <tr>
+                                 <td colspan="3">
+                                    <sup>b</sup> Paclitaxel injection pts received premedication.</td>
+                              </tr>
+                              <tr>
+                                 <td colspan="3">
+                                    <sup>c</sup> Includes treatment-related events related to hypersensitivity (e.g., flushing, dyspnea, chest pain, hypotension) that began on a day of dosing.</td>
+                              </tr>
+                              <tr>
+                                 <td colspan="3">
+                                    <sup>d</sup> Severe events are defined as at least grade 3 toxicity.</td>
+                              </tr>
+                           </tfoot>
+                           <tbody>
+                              <tr>
+                                 <th/>
+                                 <th colspan="2" align="center">Percent of Patients</th>
+                              </tr>
+                              <tr>
+                                 <th/>
+                                 <th align="center">ABRAXANE®<br/>260 mg/m<sup>2</sup> over 30 min<br/>(n=229)</th>
+                                 <th align="center">Paclitaxel Injection<br/>175 mg/m<sup>2</sup> over 3 h<sup>b</sup>
+                                    <br/>(n=225) </th>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <content styleCode="bold">Bone Marrow</content>
+                                 </td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td> Neutropenia</td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td>   &lt; 2.0 x 10<sup>9</sup>/L </td>
+                                 <td align="center">80</td>
+                                 <td align="center">82</td>
+                              </tr>
+                              <tr>
+                                 <td>   &lt; 0.5 x 10<sup>9</sup>/L</td>
+                                 <td align="center">9</td>
+                                 <td align="center">22</td>
+                              </tr>
+                              <tr>
+                                 <td> Thrombocytopenia</td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td>   &lt; 100 x 10<sup>9</sup>/L</td>
+                                 <td align="center">2</td>
+                                 <td align="center">3</td>
+                              </tr>
+                              <tr>
+                                 <td>   &lt; 50 x 10<sup>9</sup>/L </td>
+                                 <td align="center">&lt;1</td>
+                                 <td align="center">&lt;1</td>
+                              </tr>
+                              <tr>
+                                 <td> Anemia </td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td>   &lt; 11 g/dL </td>
+                                 <td align="center">33</td>
+                                 <td align="center">25</td>
+                              </tr>
+                              <tr>
+                                 <td>   &lt; 8 g/dL </td>
+                                 <td align="center">1</td>
+                                 <td align="center">&lt;1</td>
+                              </tr>
+                              <tr>
+                                 <td> Infections </td>
+                                 <td align="center">24</td>
+                                 <td align="center">20</td>
+                              </tr>
+                              <tr>
+                                 <td> Febrile Neutropenia</td>
+                                 <td align="center">2</td>
+                                 <td align="center">1</td>
+                              </tr>
+                              <tr>
+                                 <td> Bleeding</td>
+                                 <td align="center">2</td>
+                                 <td align="center">2</td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <content styleCode="bold">Hypersensitivity Reaction<sup>c</sup>
+                                    </content>
+                                 </td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td> All </td>
+                                 <td align="center">4</td>
+                                 <td align="center">12</td>
+                              </tr>
+                              <tr>
+                                 <td> Severe<sup>d</sup>
+                                 </td>
+                                 <td align="center">0</td>
+                                 <td align="center">2</td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <content styleCode="bold">Cardiovascular </content>
+                                 </td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td> Vital Sign Changes During Administration</td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td>   Bradycardia </td>
+                                 <td align="center">&lt;1</td>
+                                 <td align="center">&lt;1</td>
+                              </tr>
+                              <tr>
+                                 <td>   Hypotension</td>
+                                 <td align="center">5</td>
+                                 <td align="center">5</td>
+                              </tr>
+                              <tr>
+                                 <td> Severe Cardiovascular Events<sup>d</sup>
+                                 </td>
+                                 <td align="center">3</td>
+                                 <td align="center">4</td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <content styleCode="bold">Abnormal ECG</content>
+                                 </td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td> All patients</td>
+                                 <td align="center">60</td>
+                                 <td align="center">52</td>
+                              </tr>
+                              <tr>
+                                 <td> Patients with Normal Baseline</td>
+                                 <td align="center">35</td>
+                                 <td align="center">30</td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <content styleCode="bold">Respiratory</content>
+                                 </td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td> Cough</td>
+                                 <td align="center">7</td>
+                                 <td align="center">6</td>
+                              </tr>
+                              <tr>
+                                 <td> Dyspnea </td>
+                                 <td align="center">12</td>
+                                 <td align="center">9</td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <content styleCode="bold">Sensory Neuropathy</content>
+                                 </td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td> Any Symptoms </td>
+                                 <td align="center">71</td>
+                                 <td align="center">56</td>
+                              </tr>
+                              <tr>
+                                 <td> Severe Symptoms<sup>d</sup>
+                                 </td>
+                                 <td align="center">10</td>
+                                 <td align="center">2</td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <content styleCode="bold">Myalgia / Arthralgia</content>
+                                 </td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td> Any Symptoms </td>
+                                 <td align="center">44</td>
+                                 <td align="center">49</td>
+                              </tr>
+                              <tr>
+                                 <td> Severe Symptoms<sup>d</sup>
+                                 </td>
+                                 <td align="center">8</td>
+                                 <td align="center">4</td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <content styleCode="bold">Asthenia</content>
+                                 </td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td> Any Symptoms</td>
+                                 <td align="center">47</td>
+                                 <td align="center">39</td>
+                              </tr>
+                              <tr>
+                                 <td> Severe Symptoms<sup>d</sup>
+                                 </td>
+                                 <td align="center">8</td>
+                                 <td align="center">3</td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <content styleCode="bold">Fluid Retention/Edema</content>
+                                 </td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td> Any Symptoms</td>
+                                 <td align="center">10</td>
+                                 <td align="center">8</td>
+                              </tr>
+                              <tr>
+                                 <td> Severe Symptoms<sup>d</sup>
+                                 </td>
+                                 <td align="center">0</td>
+                                 <td align="center">&lt;1</td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <content styleCode="bold">Gastrointestinal</content>
+                                 </td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td> Nausea </td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td>   Any symptoms</td>
+                                 <td align="center">30</td>
+                                 <td align="center">22</td>
+                              </tr>
+                              <tr>
+                                 <td>   Severe Symptoms<sup>d</sup>
+                                 </td>
+                                 <td align="center">3</td>
+                                 <td align="center">&lt;1</td>
+                              </tr>
+                              <tr>
+                                 <td> Vomiting</td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td>   Any symptoms</td>
+                                 <td align="center">18</td>
+                                 <td align="center">10</td>
+                              </tr>
+                              <tr>
+                                 <td>   Severe Symptoms<sup>d</sup>
+                                 </td>
+                                 <td align="center">4</td>
+                                 <td align="center">1</td>
+                              </tr>
+                              <tr>
+                                 <td> Diarrhea</td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td>   Any symptoms</td>
+                                 <td align="center">27</td>
+                                 <td align="center">15</td>
+                              </tr>
+                              <tr>
+                                 <td>   Severe Symptoms<sup>d</sup>
+                                 </td>
+                                 <td align="center">&lt;1</td>
+                                 <td align="center">1</td>
+                              </tr>
+                              <tr>
+                                 <td>  Mucositis</td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td>   Any symptoms</td>
+                                 <td align="center">7</td>
+                                 <td align="center">6</td>
+                              </tr>
+                              <tr>
+                                 <td>   Severe Symptoms<sup>d</sup>
+                                 </td>
+                                 <td align="center">&lt;1</td>
+                                 <td align="center">0</td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <content styleCode="bold">Alopecia</content>
+                                 </td>
+                                 <td align="center">90</td>
+                                 <td align="center">94</td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <content styleCode="bold">Hepatic</content> (Patients with Normal Baseline)</td>
+                                 <td align="center"/>
+                                 <td align="center"/>
+                              </tr>
+                              <tr>
+                                 <td> Bilirubin Elevations </td>
+                                 <td align="center">7</td>
+                                 <td align="center">7</td>
+                              </tr>
+                              <tr>
+                                 <td> Alkaline Phosphatase Elevations </td>
+                                 <td align="center">36</td>
+                                 <td align="center">31</td>
+                              </tr>
+                              <tr>
+                                 <td> AST (SGOT) Elevations </td>
+                                 <td align="center">39</td>
+                                 <td align="center">32</td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <content styleCode="bold">Injection Site Reaction</content>
+                                 </td>
+                                 <td align="center">&lt;1</td>
+                                 <td align="center">1</td>
+                              </tr>
+                           </tbody>
+                        </table>
+                        <paragraph>
+                           <content styleCode="bold underline">Adverse Event Experiences by Body System</content>
+                        </paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Hematologic Disorders</content>
+                           <br/>Neutropenia was dose dependent and reversible. Among patients with metastatic breast cancer in the randomized trial, neutrophil counts declined below 500 cells/mm<sup>3</sup> (Grade 4) in 9% of the patients treated with a dose of 260 mg/m<sup>2</sup> compared to 22% in patients receiving solvent-based paclitaxel at a dose of 175 mg/m<sup>2</sup>. Pancytopenia has been observed
+									in clinical trials.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Infections</content>
+                           <br/>Infectious episodes were reported in 24% of the patients treated with ABRAXANE. Oral candidiasis, respiratory tract infections and pneumonia were the most frequently reported infectious complications. </paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Hypersensitivity Reactions (HSRs)</content>
+                           <br/>Grade 1 or 2 HSRs occurred on the day of ABRAXANE administration and consisted of dyspnea (1%) and flushing, hypotension, chest pain, and arrhythmia (all &lt;1%).  The use of ABRAXANE in patients previously exhibiting hypersensitivity to paclitaxel injection or human albumin has not been studied.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Cardiovascular</content>
+                           <br/>Hypotension, during the 30-minute infusion, occurred in 5% of patients. Bradycardia, during the 30-minute infusion, occurred in &lt;1% of patients. These vital sign changes most often caused no symptoms and required neither specific therapy nor treatment discontinuation.</paragraph>
+                        <paragraph>Severe cardiovascular events possibly related to single-agent ABRAXANE occurred in approximately 3% of patients.. These events included cardiac ischemia/infarction, chest pain, cardiac arrest, supraventricular tachycardia, edema, thrombosis, pulmonary thromboembolism, pulmonary emboli, and hypertension. Cases of cerebrovascular attacks (strokes) and transient ischemic attacks have been reported.</paragraph>
+                        <paragraph>Electrocardiogram (ECG) abnormalities were common among patients at baseline. ECG abnormalities on study did not usually result in symptoms, were not dose-limiting, and required no intervention. ECG abnormalities were noted in 60% of patients. Among patients with a normal ECG prior to study entry, 35% of all patients developed an abnormal tracing while on study. The most frequently reported ECG modifications were non-specific
+									repolarization abnormalities, sinus bradycardia, and sinus tachycardia.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Respiratory</content>
+                           <br/>Dyspnea (12%), cough (7%), and pneumothorax (&lt;1%) were reported after treatment with ABRAXANE.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Neurologic</content>
+                           <br/>The frequency and severity of sensory neuropathy increased with cumulative dose. Sensory neuropathy was the cause of ABRAXANE discontinuation in 7/229 (3%) patients. Twenty-four patients (10%) treated with ABRAXANE developed Grade 3 peripheral neuropathy; of these patients, 14 had documented improvement after a median of 22 days; 10 patients resumed treatment at a reduced dose of
+									ABRAXANE and 2 discontinued due to peripheral neuropathy. Of the 10 patients without documented improvement, 4 discontinued the study due to peripheral neuropathy.</paragraph>
+                        <paragraph>No Grade 4 sensory neuropathies were reported. Only one incident of motor neuropathy (Grade 2) was observed in either arm of the controlled trial.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Vision Disorders</content>
+                           <br/>Ocular/visual disturbances occurred in 13% of all patients (n=366) treated with ABRAXANE and 1% were severe. The severe cases (keratitis and blurred vision) were reported in patients who received higher doses than those recommended (300 or 375 mg/m<sup>2</sup>). These effects generally have been reversible. </paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Arthralgia/Myalgia</content>
+                           <br/>The symptoms were usually transient, occurred two or three days after ABRAXANE administration, and resolved within a few days.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Hepatic</content>
+                           <br/>Grade 3 or 4 elevations in GGT were reported for 14% of patients treated with ABRAXANE and 10% of patients treated with paclitaxel injection in the randomized trial.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Renal</content>
+                           <br/>Overall 11% of patients experienced creatinine elevation, 1% severe. No discontinuations, dose reductions, or dose delays were caused by renal toxicities.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Other Clinical Events</content>
+                           <br/>Nail changes (changes in pigmentation or discoloration of nail bed) have been reported. Edema occurred in 10% of patients; no patients had severe edema. Dehydration and pyrexia were also reported.</paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="JT62-f6a53d2d-31a3-11e1-b86c-0800200c9a66">
+                     <id root="4c55f3fc-c4cf-11df-851a-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">6.2 Post-Marketing Experience with ABRAXANE and other Paclitaxel Formulations</title>
+                     <text>
+                        <paragraph>Unless otherwise noted, the following discussion refers to the adverse reactions that have been identified during post-approval use of ABRAXANE. Because these reactions are reported voluntarily from a population of uncertain size, it is not always possible to reliably estimate their frequency or establish a causal relationship to drug exposure. In some instances, severe events observed with paclitaxel injection may be expected to occur with ABRAXANE.</paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Hypersensitivity Reactions</content>
+                           <br/> Severe hypersensitivity reactions have been reported with ABRAXANE. The use of ABRAXANE in patients previously exhibiting hypersensitivity to paclitaxel injection or human albumin has not been studied.</paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Cardiovascular</content>
+                           <br/> There have been reports of congestive heart failure and left ventricular dysfunction with ABRAXANE. Most of the individuals were previously exposed to cardiotoxic drugs, such as anthracyclines, or had underlying cardiac history.</paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Respiratory</content>
+                           <br/> There have been reports of interstitial pneumonia and pulmonary embolism in patients receiving ABRAXANE and reports of radiation pneumonitis in patients receiving concurrent radiotherapy. Reports of lung fibrosis have been received as part of the continuing surveillance of paclitaxel injection safety and may also be observed with ABRAXANE.</paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Neurologic</content>
+                           <br/> Cranial nerve palsies and vocal cord paresis have been reported, as has autonomic neuropathy resulting in paralytic ileus.</paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Vision Disorders</content>
+                           <br/> Reports in the literature of abnormal visual evoked potentials in patients treated with paclitaxel injection suggest persistent optic nerve damage. These may also be observed with ABRAXANE.</paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Hepatic</content>
+                           <br/> Reports of hepatic necrosis and hepatic encephalopathy leading to death have been received as part of the continuing surveillance of paclitaxel injection safety and may occur following ABRAXANE treatment.</paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Gastrointestinal (GI)</content>
+                           <br/> There have been reports of intestinal obstruction, intestinal perforation, pancreatitis, and ischemic colitis following ABRAXANE treatment. There have been reports of neutropenic enterocolitis (typhlitis), despite the coadministration of G-CSF, occurring in patients treated with paclitaxel injection alone and in combination with other chemotherapeutic agents.</paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Injection Site Reaction</content>
+                           <br/> There have been reports of extravasation of ABRAXANE. Given the possibility of extravasation, it is advisable to monitor closely the ABRAXANE infusion site for possible infiltration during drug administration.</paragraph>
+                        <paragraph>Severe events such as phlebitis, cellulitis, induration, necrosis, and fibrosis have been reported as part of the continuing surveillance of paclitaxel injection safety. In some cases the onset of the injection site reaction in paclitaxel injection patients either occurred during a prolonged infusion or was delayed by a week to ten days. Recurrence of skin reactions at a site of previous extravasation following administration of 
+									paclitaxel injection at a different site, i.e., “recall”, has been reported.</paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Other Clinical Events</content>
+                           <br/> Skin reactions including generalized or maculo-papular rash, erythema, and pruritis have been observed with ABRAXANE. There have been case reports of photosensitivity reactions, radiation recall phenomenon, and in some patients previously exposed to capecitabine, reports of palmar-plantar erythrodysesthesia. Stevens-Johnson syndrome and toxic epidermal necrolysis have been reported.</paragraph>
+                        <paragraph>There have been reports of conjunctivitis, cellulitis, and increased lacrimation with paclitaxel injection.</paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="JT63-f6a56411-31a3-11e1-b86c-0800200c9a66">
+                     <id root="f6a56412-31a3-11e1-b86c-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">6.3 Accidental Exposure</title>
+                     <text>
+                        <paragraph>No reports of accidental exposure to ABRAXANE have been received. However, upon inhalation of paclitaxel, dyspnea, chest pain, burning eyes, sore throat, and nausea have been reported. Following topical exposure, events have included tingling, burning, and redness.</paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="JT7-f6a56413-31a3-11e1-b86c-0800200c9a66">
+               <id root="f6a56414-31a3-11e1-b86c-0800200c9a66"/>
+               <code code="34073-7" codeSystem="2.16.840.1.113883.6.1" displayName="DRUG INTERACTIONS SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">7 DRUG INTERACTIONS</title>
+               <text>
+                  <paragraph>No drug interaction studies have been conducted with ABRAXANE.</paragraph>
+                  <paragraph>The metabolism of paclitaxel is catalyzed by CYP2C8 and CYP3A4. In the absence of formal clinical drug interaction studies, caution should be exercised when administering ABRAXANE concomitantly with medicines known to inhibit (e.g. ketoconazole and other imidazole antifungals, erythromycin, fluoxetine, gemfibrozil, cimetidine, ritonavir, saquinavir, indinavir, and nelfinavir) or induce (e.g. rifampicin, carbamazepine, phenytoin, efavirenz, and nevirapine)
+							either CYP2C8 or CYP3A4.</paragraph>
+               </text>
+               <effectiveTime value="20111231"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <list>
+                           <item>Use caution when concomitantly administering ABRAXANE with inhibitors or inducers of either CYP2C8 or CYP3A4. (<linkHtml href="#JT7-f6a56413-31a3-11e1-b86c-0800200c9a66">7</linkHtml>)</item>
+                        </list>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="JT8-f6a56418-31a3-11e1-b86c-0800200c9a66">
+               <id root="f6a56417-31a3-11e1-b86c-0800200c9a66"/>
+               <code code="43684-0" codeSystem="2.16.840.1.113883.6.1" displayName="USE IN SPECIFIC POPULATIONS SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">8 USE IN SPECIFIC POPULATIONS</title>
+               <effectiveTime value="20111231"/>
+               <component>
+                  <section ID="KS0814c55f3fb-c4cf-11df-851a-0800200c9a66">
+                     <id root="4c55f400-c4cf-11df-851a-0800200c9a66"/>
+                     <code code="42228-7" codeSystem="2.16.840.1.113883.6.1" displayName="PREGNANCY SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">8.1 Pregnancy</title>
+                     <text>
+                        <paragraph>Pregnancy Category D <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#bf97-0002a5d5c51bjt-5-5">5.5</linkHtml>)].</content>
+                        </paragraph>
+                        <paragraph>There are no adequate and well-controlled studies in pregnant women using ABRAXANE. Based on its mechanism of action and findings in animals, ABRAXANE can cause fetal harm when administered to a pregnant woman. If this drug is used during pregnancy, or if the patient becomes pregnant while receiving this drug, the patient should be apprised of the potential hazard to the fetus. Women of childbearing potential should be advised to avoid becoming pregnant
+									while receiving ABRAXANE.</paragraph>
+                        <paragraph>Administration of paclitaxel protein-bound particles to rats during pregnancy, on gestation days 7 to 17 at doses of 6 mg/m<sup>2</sup> (approximately 2% of the daily maximum recommended human dose on a mg/m<sup>2</sup> basis) caused embryofetal toxicities, as indicated by intrauterine mortality, increased resorptions (up to 5-fold), reduced numbers of litters and live fetuses, reduction in fetal body weight and increase in fetal anomalies.
+									Fetal anomalies included soft tissue and skeletal malformations, such as eye bulge, folded retina, microphthalmia, and dilation of brain ventricles. A lower incidence of soft tissue and skeletal malformations were also exhibited at 3 mg/m<sup>2</sup> (approximately 1% of the daily maximum recommended human dose on a mg/m<sup>2</sup> basis).</paragraph>
+                     </text>
+                     <effectiveTime value="20111209"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="KS0834c55f3fb-c4cf-11df-851a-0800200c9a66">
+                     <id root="4c55f401-c4cf-11df-851a-0800200c9a66"/>
+                     <code code="34080-2" codeSystem="2.16.840.1.113883.6.1" displayName="NURSING MOTHERS SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">8.3 Nursing Mothers</title>
+                     <text>
+                        <paragraph>It is not known whether paclitaxel is excreted in human milk. Paclitaxel and/or its metabolites were excreted into the milk of lactating rats. Because many drugs are excreted in human milk and because of the potential for serious adverse reactions in nursing infants, a decision should be made to discontinue nursing or to discontinue the drug, taking into account the importance of the drug to the mother.</paragraph>
+                     </text>
+                     <effectiveTime value="20111209"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="KS0844c55f3fb-c4cf-11df-851a-0800200c9a66">
+                     <id root="4c55f402-c4cf-11df-851a-0800200c9a66"/>
+                     <code code="34081-0" codeSystem="2.16.840.1.113883.6.1" displayName="PEDIATRIC USE SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">8.4 Pediatric Use</title>
+                     <text>
+                        <paragraph>The safety and effectiveness of ABRAXANE in pediatric patients have not been evaluated.</paragraph>
+                     </text>
+                     <effectiveTime value="20111209"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="JT85-f6a56415-31a3-11e1-b86c-0800200c9a66">
+                     <id root="f6a56416-31a3-11e1-b86c-0800200c9a66"/>
+                     <code code="34082-8" codeSystem="2.16.840.1.113883.6.1" displayName="GERIATRIC USE SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">8.5 Geriatric Use</title>
+                     <text>
+                        <paragraph>Of the 229 patients in the randomized study who received ABRAXANE, 13% were at least 65 years of age and &lt; 2% were 75 years or older.  No toxicities occurred notably more frequently among patients who received ABRAXANE.</paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="JT86-f6a56419-31a3-11e1-b86c-0800200c9a66">
+                     <id root="f6a5641a-31a3-11e1-b86c-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">8.6 Patients with Hepatic Impairment</title>
+                     <text>
+                        <paragraph>Because the exposure and toxicity of paclitaxel can be increased in patients with hepatic impairment, the administration of ABRAXANE should be performed with caution in patients with hepatic impairment <content styleCode="italics">[see Dosage and Administration (<linkHtml href="#JT22-f6a53d12-31a3-11e1-b86c-0800200c9a66">2.2</linkHtml>), Warnings and Precautions (<linkHtml href="#JT53-f6a53d24-31a3-11e1-b86c-0800200c9a66">5.3</linkHtml>) and Clinical Pharmacology (<linkHtml href="#JT123-f6a53d2e-31a3-11e1-b86c-0800200c9a66">12.3</linkHtml>)].</content>
+                        </paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="JT87-f6a5641b-31a3-11e1-b86c-0800200c9a66">
+                     <id root="f6a5641c-31a3-11e1-b86c-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">8.7 Patients with Renal Impairment</title>
+                     <text>
+                        <paragraph>The use of ABRAXANE has not been studied in patients with renal impairment.  Patients were excluded for baseline serum bilirubin &gt;1.5 mg/dL or baseline serum creatinine &gt;2 mg/dL.</paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="KS1004c55f3fb-c4cf-11df-851a-0800200c9a66">
+               <id root="4c55f406-c4cf-11df-851a-0800200c9a66"/>
+               <code code="34088-5" codeSystem="2.16.840.1.113883.6.1" displayName="OVERDOSAGE SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">10 OVERDOSAGE</title>
+               <text>
+                  <paragraph>There is no known antidote for ABRAXANE overdosage. The primary anticipated complications of overdosage would consist of bone marrow suppression, sensory neurotoxicity, and mucositis.</paragraph>
+               </text>
+               <effectiveTime value="20111209"/>
+            </section>
+         </component>
+         <component>
+            <section ID="KS1104c55f3fb-c4cf-11df-851a-0800200c9a66">
+               <id root="5e259740-3ae1-11e1-9980-0002a5d5c51b"/>
+               <code code="34089-3" codeSystem="2.16.840.1.113883.6.1" displayName="DESCRIPTION SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">11 DESCRIPTION</title>
+               <text>
+                  <paragraph>ABRAXANE, a microtubule inhibitor, is an albumin-bound form of paclitaxel with a mean particle size of approximately 130 nanometers. Paclitaxel exists in the particles in a non-crystalline, amorphous state. ABRAXANE is supplied as a white to yellow, sterile, lyophilized powder for reconstitution with 20 mL of 0.9% Sodium Chloride Injection, USP prior to intravenous infusion. Each single-use vial contains 100 mg of paclitaxel (bound to human albumin) and
+							approximately 900 mg of human albumin (containing sodium caprylate and sodium acetyltryptophanate). Each milliliter (mL) of reconstituted suspension contains 5 mg paclitaxel. ABRAXANE is free of solvents.</paragraph>
+                  <paragraph>The active agent in ABRAXANE is paclitaxel. The chemical name for paclitaxel is 5β,20-Epoxy-1,2α,4,7β,10β,13α-hexahydroxytax-11-en-9-one 4,10-diacetate 2-benzoate 13-ester with (2<content styleCode="italics">R</content>,3<content styleCode="italics">S</content>)-<content styleCode="italics">N</content>-benzoyl-3-phenylisoserine.</paragraph>
+                  <paragraph>Paclitaxel has the following structural formula:</paragraph>
+                  <renderMultiMedia referencedObject="FIG2"/>
+                  <paragraph>Paclitaxel is a white to off-white crystalline powder with the empirical formula C<sub>47</sub>H<sub>51</sub>NO<sub>14</sub> and a molecular weight of 853.91. It is highly lipophilic, insoluble in water, and melts at approximately 216°C to 217°C.</paragraph>
+               </text>
+               <effectiveTime value="20111231"/>
+               <component>
+                  <observationMedia ID="FIG2">
+                     <text>Structural Formula for Paclitaxel</text>
+                     <value mediaType="image/jpeg" xsi:type="ED">
+                        <reference value="abraxane-02.jpg"/>
+                     </value>
+                  </observationMedia>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="JT12-f6a5641e-31a3-11e1-b86c-0800200c9a66">
+               <id root="f6a5641d-31a3-11e1-b86c-0800200c9a66"/>
+               <code code="34090-1" codeSystem="2.16.840.1.113883.6.1" displayName="CLINICAL PHARMACOLOGY SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">12 CLINICAL PHARMACOLOGY</title>
+               <effectiveTime value="20111231"/>
+               <component>
+                  <section ID="KS1214c55f3fb-c4cf-11df-851a-0800200c9a66">
+                     <id root="4c55f409-c4cf-11df-851a-0800200c9a66"/>
+                     <code code="43679-0" codeSystem="2.16.840.1.113883.6.1" displayName="MECHANISM OF ACTION SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">12.1 Mechanism of Action</title>
+                     <text>
+                        <paragraph>ABRAXANE is a microtubule inhibitor that promotes the assembly of microtubules from tubulin dimers and stabilizes microtubules by preventing depolymerization. This stability results in the inhibition of the normal dynamic reorganization of the microtubule network that is essential for vital interphase and mitotic cellular functions. Paclitaxel induces abnormal arrays or “bundles” of microtubules throughout the cell cycle and multiple asters of
+									microtubules during mitosis.</paragraph>
+                     </text>
+                     <effectiveTime value="20111209"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="JT123-f6a53d2e-31a3-11e1-b86c-0800200c9a66">
+                     <id root="f6a56410-31a3-11e1-b86c-0800200c9a66"/>
+                     <code code="43682-4" codeSystem="2.16.840.1.113883.6.1" displayName="PHARMACOKINETICS SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">12.3 Pharmacokinetics</title>
+                     <text>
+                        <paragraph>
+                           <content styleCode="italics">Absorption</content>
+                           <br/>         The pharmacokinetics of total paclitaxel following 30 and 180-minute infusions of ABRAXANE at dose levels of 80 to 375 mg/m<sup>2</sup> were determined in clinical studies. Dose levels of mg/m<sup>2</sup> refer to mg of paclitaxel in ABRAXANE. Following intravenous administration of ABRAXANE, paclitaxel plasma concentrations declined in a biphasic manner, the initial rapid decline representing
+									distribution to the peripheral compartment and the slower second phase representing drug elimination. The terminal half-life was about 27 hours.</paragraph>
+                        <paragraph>The drug exposure (AUCs) was dose proportional over 80 to 375 mg/m<sup>2</sup> and the pharmacokinetics of paclitaxel for ABRAXANE were independent of the duration of administration. At the recommended ABRAXANE clinical dose, 260 mg/m<sup>2</sup>, the mean maximum concentration of paclitaxel, which occurred at the end of the infusion, was 18,741 ng/mL. The mean total clearance was 15 L/hr/m<sup>2</sup>. The mean volume of distribution was 632 L/m<sup>2</sup>; the large volume of distribution
+									indicates extensive extravascular distribution and/or tissue binding of paclitaxel.</paragraph>
+                        <paragraph>The pharmacokinetic data of 260 mg/m<sup>2</sup> ABRAXANE administered over 30 minutes was compared to the pharmacokinetics of 175 mg/m<sup>2</sup> paclitaxel injection over 3 hours. The clearance of ABRAXANE was larger (43%) than for the clearance of paclitaxel injection and the volume of distribution of ABRAXANE was also higher (53%). Differences in C<sub>max</sub> and C<sub>max</sub> corrected for dose reflected differences in
+									total dose and rate of infusion. There were no differences in terminal half-lives.</paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Distribution<br/>         In vitro</content> studies of binding to human serum proteins, using paclitaxel concentrations ranging from 0.1 to 50 µg/mL, indicate that between 89% to 98% of drug is bound; the presence of cimetidine, ranitidine, dexamethasone, or diphenhydramine did not affect protein binding of paclitaxel.</paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Metabolism<br/>         In vitro</content> studies with human liver microsomes and tissue slices showed that paclitaxel was metabolized primarily to 6α-hydroxypaclitaxel by CYP2C8; and to two minor metabolites, 3’-<content styleCode="italics">p</content>-hydroxypaclitaxel and 6α, 3’-<content styleCode="italics">p</content>-dihydroxypaclitaxel, by CYP3A4. <content styleCode="italics">In vitro</content>, the metabolism of paclitaxel to
+									6α-hydroxypaclitaxel was inhibited by a number of agents (ketoconazole, verapamil, diazepam, quinidine, dexamethasone, cyclosporin, teniposide, etoposide, and vincristine), but the concentrations used exceeded those found <content styleCode="italics">in vivo</content> following normal therapeutic doses. Testosterone, 17α-ethinyl estradiol, retinoic acid, and quercetin, a specific inhibitor of CYP2C8, also inhibited the formation of
+									6α-hydroxypaclitaxel <content styleCode="italics">in vitro</content>. The pharmacokinetics of paclitaxel may also be altered <content styleCode="italics">in vivo</content> as a result of interactions with compounds that are substrates, inducers, or inhibitors of CYP2C8 and/or CYP3A4 <content styleCode="italics">[see Drug Interactions (<linkHtml href="#JT7-f6a56413-31a3-11e1-b86c-0800200c9a66">7</linkHtml>)].</content>
+                        </paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Excretion</content>
+                           <br/>         After a 30-minute infusion of 260 mg/m<sup>2</sup> doses of ABRAXANE, the mean values for cumulative urinary recovery of unchanged drug (4%) indicated extensive non-renal clearance. Less than 1% of the total administered dose was excreted in urine as the metabolites 6α-hydroxypaclitaxel and 3’-p-hydroxypaclitaxel.<br/> Fecal excretion was approximately 20% of the
+									total dose administered.</paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Effect of Hepatic Impairment</content>
+                           <br/>         The pharmacokinetic profile of ABRAXANE administered as a 30-minute infusion was evaluated in 15 out of 30 solid tumor patients with mild to severe hepatic impairment defined by serum bilirubin levels and AST levels. Patients with AST &gt; 10 x ULN and bilirubin &gt; 5.0 x ULN were not enrolled. ABRAXANE doses were assigned based on the degree of hepatic impairment as
+									described:</paragraph>
+                        <list>
+                           <item>Mild (bilirubin &gt; ULN to ≤ 1.25 x ULN and AST &gt; ULN and &lt; 10 x ULN): 260 mg/m<sup>2</sup>
+                           </item>
+                           <item>Moderate (bilirubin 1.26 to 2.0 x ULN and AST &gt; ULN and &lt; 10 x ULN): 200 mg/m<sup>2</sup>
+                           </item>
+                           <item>Severe (bilirubin 2.01 to 5.0 x ULN and AST &gt; ULN and &lt; 10 x ULN): 130 mg/m<sup>2</sup>
+                           </item>
+                        </list>
+                        <paragraph>The 260 mg/m<sup>2</sup> dose for mild impairment and the 200 mg/m<sup>2</sup> dose for moderate hepatic impairment adjusted the paclitaxel exposure to the range seen in patients with normal hepatic function (mean AUC0-∞ = 14789 ± 6703). The 130 mg/m<sup>2</sup> dose in patients with severe hepatic impairment resulted in lower paclitaxel exposures than those seen in normal subjects. In addition, patients with
+									severe hepatic impairment had higher mean cycle 1 absolute neutrophil count (ANC) nadir values than those with mild and moderate hepatic impairment. </paragraph>
+                        <table width="700">
+                           <caption>Table 3: Exposure (AUC<sub>0-∞</sub>) of ABRAXANE Administered IV over 30 Minutes in Patients with Hepatic Impairment </caption>
+                           <tfoot>
+                              <tr>
+                                 <td colspan="4">
+                                    <sup>a</sup> bilirubin 2.01 to 5.0 x ULN and AST &gt; ULN and &lt; 10 x ULN </td>
+                              </tr>
+                           </tfoot>
+                           <tbody>
+                              <tr>
+                                 <td rowspan="2" valign="bottom">
+                                    <content styleCode="bold">Dose</content>
+                                 </td>
+                                 <td align="center">
+                                    <content styleCode="bold">Mild<br/> (n=5)</content>
+                                 </td>
+                                 <td align="center">
+                                    <content styleCode="bold">Moderate<br/> (n=5)</content>
+                                 </td>
+                                 <td align="center">
+                                    <content styleCode="bold">Severe<sup>a</sup>
+                                       <br/> (n=5)</content>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td align="center">
+                                    <content styleCode="bold">260 mg/m<sup>2</sup>
+                                    </content>
+                                 </td>
+                                 <td align="center">
+                                    <content styleCode="bold">200 mg/m<sup>2</sup>
+                                    </content>
+                                 </td>
+                                 <td align="center">
+                                    <content styleCode="bold">130 mg/m<sup>2</sup>
+                                    </content>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td colspan="4">
+                                    <content styleCode="bold">AUC<sub>inf</sub> (hr*ng/mL)</content>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td>Mean ± SD</td>
+                                 <td align="center">17434 ± 11454</td>
+                                 <td align="center">14159 ± 13346</td>
+                                 <td align="center">9187 ± 6475</td>
+                              </tr>
+                              <tr>
+                                 <td>Median (range)</td>
+                                 <td align="center">13755 (7618, 35262)</td>
+                                 <td align="center">7866 (5919, 37613)</td>
+                                 <td align="center">6134 (5627, 20684)</td>
+                              </tr>
+                           </tbody>
+                        </table>
+                        <paragraph>A starting dose of 130 mg/m<sup>2</sup> is recommended in patients with severe hepatic impairment. Escalation of the dose up to 200 mg/m<sup>2</sup> should be considered for subsequent cycles in patients with severe hepatic impairment based on individual tolerance. The 200 mg/m<sup>2</sup> dose has not been evaluated in patients with severe hepatic impairment, but it is predicted to adjust the paclitaxel AUC to the range observed in patients with normal hepatic function.  There are no data for patients with AST &gt; 10 x ULN and bilirubin &gt; 5.0 x ULN <content styleCode="italics">[see Dosage and Administration (<linkHtml href="#JT22-f6a53d12-31a3-11e1-b86c-0800200c9a66">2.2</linkHtml>), and Use in  Specific Populations (<linkHtml href="#JT86-f6a56419-31a3-11e1-b86c-0800200c9a66">8.6</linkHtml>)].</content>
+                        </paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Effect of Renal Impairment</content>
+                           <br/>         The effect of renal impairment on the disposition of ABRAXANE has not been investigated <content styleCode="italics">[see Use in Specific Populations (<linkHtml href="#JT87-f6a5641b-31a3-11e1-b86c-0800200c9a66">8.7</linkHtml>)].</content>
+                        </paragraph>
+                        <paragraph>
+                           <content styleCode="italics">Drug Interactions</content>
+                           <br/>         Possible interactions of paclitaxel with concomitantly administered medications have not been formally investigated.</paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="KS1304c55f3fb-c4cf-11df-851a-0800200c9a66">
+               <id root="4c55f40b-c4cf-11df-851a-0800200c9a66"/>
+               <code code="43680-8" codeSystem="2.16.840.1.113883.6.1" displayName="NONCLINICAL TOXICOLOGY SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">13 NONCLINICAL TOXICOLOGY</title>
+               <effectiveTime value="20111209"/>
+               <component>
+                  <section ID="KS1314c55f3fb-c4cf-11df-851a-0800200c9a66">
+                     <id root="4c55f40c-c4cf-11df-851a-0800200c9a66"/>
+                     <code code="34083-6" codeSystem="2.16.840.1.113883.6.1" displayName="CARCINOGENESIS &amp; MUTAGENESIS &amp; IMPAIRMENT OF FERTILITY SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">13.1 Carcinogenesis, Mutagenesis, Impairment of Fertility</title>
+                     <text>
+                        <paragraph>The carcinogenic potential of ABRAXANE has not been studied.</paragraph>
+                        <paragraph>Paclitaxel was clastogenic <content styleCode="italics">in vitro</content> (chromosome aberrations in human lymphocytes) and <content styleCode="italics">in vivo</content> (micronucleus test in mice). ABRAXANE was not mutagenic in the Ames test or the CHO/HGPRT gene mutation assay.</paragraph>
+                        <paragraph>Administration of paclitaxel protein-bound particles to male rats at 42 mg/m<sup>2</sup> on a weekly basis (approximately 16% of the daily maximum recommended human exposure on a body surface area basis) for 11 weeks prior to mating with untreated female rats resulted in significantly reduced fertility accompanied by decreased pregnancy rates and increased loss of embryos in mated females. A low incidence of skeletal and soft tissue fetal
+									anomalies was also observed at doses of 3 and 12 mg/m<sup>2</sup>/week in this study (approximately 1 to 5% of the daily maximum recommended human exposure on a mg/m<sup>2</sup> basis). Testicular atrophy/degeneration was observed in single-dose toxicology studies in rodents administered paclitaxel protein-bound particles at doses lower than the recommended human dose; doses were 54 mg/m<sup>2</sup> in rodents and 175 mg/m<sup>2</sup> in
+								dogs.</paragraph>
+                     </text>
+                     <effectiveTime value="20111209"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="JT14-f6a5641f-31a3-11e1-b86c-0800200c9a66">
+               <id root="f6a56420-31a3-11e1-b86c-0800200c9a66"/>
+               <code code="34092-7" codeSystem="2.16.840.1.113883.6.1" displayName="CLINICAL STUDIES SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">14 CLINICAL STUDIES</title>
+               <effectiveTime value="20111231"/>
+               <component>
+                  <section ID="JT141-f6a56421-31a3-11e1-b86c-0800200c9a66">
+                     <id root="f6a56422-31a3-11e1-b86c-0800200c9a66"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">14.1 Metastatic Breast Carcinoma</title>
+                     <text>
+                        <paragraph>Data from 106 patients accrued in two single arm open label studies and from 460 patients enrolled in a randomized comparative study were available to support the use of ABRAXANE in metastatic breast cancer.</paragraph>
+                        <paragraph>
+                           <content styleCode="underline">Single Arm Open Label Studies</content>
+                           <br/>In one study, ABRAXANE was administered as a 30-minute infusion at a dose of 175 mg/m<sup>2</sup> to 43 patients with metastatic breast cancer. The second trial utilized a dose of 300 mg/m<sup>2</sup> as a 30 minute infusion in 63 patients with metastatic breast cancer. Cycles were administered at 3 week intervals. Objective responses were observed in both studies. </paragraph>
+                        <paragraph>
+                           <content styleCode="underline">Randomized Comparative Study</content>
+                           <br/>This multicenter trial was conducted in 460 patients with metastatic breast cancer. Patients were randomized to receive ABRAXANE at a dose of 260 mg/m<sup>2</sup> given as a 30-minute infusion, or paclitaxel injection at 175 mg/m<sup>2</sup> given as a 3-hour infusion. Sixty-four percent of patients had impaired performance status (ECOG 1 or 2) at study entry; 79% had visceral metastases; and 76% had &gt; 3 sites of metastases.
+									Fourteen percent of the patients had not received prior chemotherapy; 27% had received chemotherapy in the adjuvant setting, 40% in the metastatic setting and 19% in both metastatic and adjuvant settings. Fifty-nine percent received study drug as second or greater than second-line therapy. Seventy-seven percent of the patients had been previously exposed to anthracyclines. </paragraph>
+                        <paragraph>In this trial, patients in the ABRAXANE treatment arm had a statistically significantly higher reconciled target lesion response rate (the trial primary endpoint) of 21.5% (95% CI: 16.2% to 26.7%), compared to 11.1% (95% CI: 6.9% to 15.1%) for patients in the paclitaxel injection treatment arm. See Table 4. There was no statistically significant difference in overall survival between
+									the two study arms.</paragraph>
+                        <table width="900">
+                           <caption>Table 4: Efficacy Results from Randomized Breast Cancer Trial</caption>
+                           <tfoot>
+                              <tr>
+                                 <td colspan="4">
+                                    <sup>a</sup> Reconciled Target Lesion Response Rate (TLRR) was the prospectively defined protocol specific endpoint, based on independent radiologic assessment of tumor responses reconciled with investigator responses (which also included clinical information) for the first 6 cycles of therapy. The reconciled TLRR was lower than the investigator Reported Response Rates, which are based on all cycles of therapy.</td>
+                              </tr>
+                              <tr>
+                                 <td colspan="4">
+                                    <sup>b</sup> From Cochran-Mantel-Haenszel test stratified by 1<sup>st</sup> line vs. &gt; 1<sup>st</sup> line therapy.</td>
+                              </tr>
+                              <tr>
+                                 <td colspan="4">
+                                    <sup>c</sup> Prior therapy included an anthracycline unless clinically contraindicated.</td>
+                              </tr>
+                           </tfoot>
+                           <tbody>
+                              <tr>
+                                 <td colspan="2"> </td>
+                                 <td align="center">
+                                    <content styleCode="bold">ABRAXANE <br/>260 mg/m<sup>2</sup>
+                                    </content>
+                                 </td>
+                                 <td align="center">
+                                    <content styleCode="bold">Paclitaxel Injection 175 mg/m<sup>2</sup>
+                                    </content>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td colspan="4" align="center">
+                                    <content styleCode="bold">Reconciled Target Lesion Response Rate (primary endpoint) <sup>a</sup>
+                                    </content>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td rowspan="2">All randomized patients</td>
+                                 <td>Response Rate <br/>[95% CI] </td>
+                                 <td align="center">50/233 (21.5%) <br/>[16.19% – 26.73%] </td>
+                                 <td align="center">25/227 (11.1%) <br/>[6.94% – 15.09%] </td>
+                              </tr>
+                              <tr>
+                                 <td>p-value <sup>b</sup>
+                                 </td>
+                                 <td colspan="2" align="center">0.003</td>
+                              </tr>
+                              <tr>
+                                 <td>Patients who had failed combination chemotherapy or relapsed within 6 months of adjuvant chemotherapy<sup>c</sup>
+                                 </td>
+                                 <td>Response Rate <br/>[95% CI] </td>
+                                 <td align="center">20/129 (15.5%) <br/>[9.26% – 21.75%] </td>
+                                 <td align="center">12/143 (8.4%) <br/>[3.85% – 12.94%] </td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="JT15-f6a56423-31a3-11e1-b86c-0800200c9a66">
+               <id root="f6a56424-31a3-11e1-b86c-0800200c9a66"/>
+               <code code="34093-5" codeSystem="2.16.840.1.113883.6.1" displayName="REFERENCES SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">15 REFERENCES</title>
+               <text>
+                  <paragraph>1. NIOSH Alert: Preventing occupational exposures to antineoplastic and other hazardous drugs in healthcare settings. 2004. U.S. Department of Health and Human Services, Public Health Service, Centers for Disease Control and Prevention, National Institute for Occupational Safety and Health, DHHS (NIOSH) Publication No. 2004-165.</paragraph>
+                  <paragraph>2. OSHA Technical Manual, TED 1-0.15A, Section VI: Chapter 2. Controlling Occupational Exposure to Hazardous Drugs. OSHA, 1999. <content styleCode="underline">http://www.osha.gov/dts/osta/otm/otm_vi/otm_vi_2.html</content>
+                  </paragraph>
+                  <paragraph>3. American Society of Health-System Pharmacists. (2006) ASHP Guidelines on Handling Hazardous Drugs. <content styleCode="italics">Am J Health-Syst Pharm</content>. 2006;63:1172-1193.</paragraph>
+                  <paragraph>4. Polovich, M., White, J. M., &amp; Kelleher, L.O. (eds.) 2005. Chemotherapy and biotherapy guidelines and recommendations for practice (2nd. ed.) Pittsburgh, PA: Oncology Nursing Society.</paragraph>
+               </text>
+               <effectiveTime value="20111231"/>
+            </section>
+         </component>
+         <component>
+            <section ID="e1-bddb-0800200c9a66-jy16">
+               <id root="2cba3594-19ed-11e1-bddb-0800200c9a66"/>
+               <code code="34069-5" codeSystem="2.16.840.1.113883.6.1" displayName="HOW SUPPLIED SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">16 HOW SUPPLIED/STORAGE AND HANDLING</title>
+               <effectiveTime value="20111209"/>
+               <component>
+                  <section ID="e1-bddb-0800200c9a66-jy161">
+                     <id root="2cba3595-19ed-11e1-bddb-0800200c9a66"/>
+                     <code code="34069-5" codeSystem="2.16.840.1.113883.6.1" displayName="HOW SUPPLIED SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">16.1 How Supplied</title>
+                     <text>
+                        <paragraph>Product No.: 103450 <br/>NDC No.: 68817-134-50        100 mg of paclitaxel in a single use vial, individually packaged in a carton. </paragraph>
+                     </text>
+                     <effectiveTime value="20111209"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="e1-bddb-0800200c9a66-jy162">
+                     <id root="2cba3596-19ed-11e1-bddb-0800200c9a66"/>
+                     <code code="44425-7" codeSystem="2.16.840.1.113883.6.1" displayName="STORAGE AND HANDLING SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">16.2 Storage</title>
+                     <text>
+                        <paragraph>Store the vials in original cartons at 20° C to 25° C (68° F to 77°F). Retain in the original package to protect from bright light.</paragraph>
+                     </text>
+                     <effectiveTime value="20111209"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="e1-bddb-0800200c9a66-jy163">
+                     <id root="73bc6ba3-2513-11e1-bfc2-0800200c9a66"/>
+                     <code code="44425-7" codeSystem="2.16.840.1.113883.6.1" displayName="STORAGE AND HANDLING SECTION"/>
+                     <title mediaType="text/x-hl7-title+xml">16.3 Handling and Disposal</title>
+                     <text>
+                        <paragraph>Procedures for proper handling and disposal of anticancer drugs should be considered. Several guidelines on this subject have been published <content styleCode="italics">[see References (<linkHtml href="#JT15-f6a56423-31a3-11e1-b86c-0800200c9a66">15</linkHtml>)]</content>. There is no general agreement that all of the procedures recommended in the guidelines are necessary or appropriate.</paragraph>
+                     </text>
+                     <effectiveTime value="20111231"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="JT17-f6a56425-31a3-11e1-b86c-0800200c9a66">
+               <id root="a69ffa21-50cf-11e1-b86c-0800200c9a66"/>
+               <code code="34076-0" codeSystem="2.16.840.1.113883.6.1" displayName="INFORMATION FOR PATIENTS SECTION"/>
+               <title mediaType="text/x-hl7-title+xml">17 PATIENT COUNSELING INFORMATION</title>
+               <text>
+                  <paragraph>
+                     <content styleCode="bold italics">See FDA-Approved Patient Labeling.</content>
+                  </paragraph>
+                  <list>
+                     <item>Abraxane injection may cause fetal harm. Advise patients to avoid becoming pregnant while receiving this drug. Women of childbearing potential should use effective contraceptives <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#bf97-0002a5d5c51bjt-5-5">5.5</linkHtml>) and Use in Specific Populations (<linkHtml href="#KS0814c55f3fb-c4cf-11df-851a-0800200c9a66">8.1</linkHtml>)]</content>.</item>
+                     <item>Men should be advised not to father a child while receiving Abraxane <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#af29-0002a5d5c51bjt-5-6">5.6</linkHtml>)]</content>.</item>
+                     <item>Patients must be informed of the risk of low blood cell counts and instructed to contact their physician immediately for fever or evidence of infection.</item>
+                     <item>Patients should be instructed to contact their physician for persistent vomiting, diarrhea, signs of dehydration, cough or breathing difficulties, or signs of an allergic reaction.</item>
+                     <item>Patients must be informed that sensory neuropathy occurs frequently with Abraxane and patients should advise their physicians of numbness, tingling, pain or weakness involving the extremities <content styleCode="italics">[see Warnings and Precautions (<linkHtml href="#JT52-f6a53d22-31a3-11e1-b86c-0800200c9a66">5.2</linkHtml>)]</content>.</item>
+                     <item>Explain to patients that alopecia, fatigue/asthenia, and myalgia/arthralgia occur frequently with ABRAXANE.</item>
+                  </list>
+                  <paragraph>Manufactured for:        Celgene Corporation </paragraph>
+                  <paragraph>                                       Summit, NJ 07901</paragraph>
+                  <paragraph>ABRAXANE<sup>®</sup> is a registered trademark of Abraxis BioScience, LLC.</paragraph>
+                  <paragraph>©2005-2012 Abraxis BioScience, LLC.</paragraph>
+                  <paragraph>All Rights Reserved.</paragraph>
+                  <paragraph>Abraxis BioScience, LLC is a wholly owned subsidiary of Celgene Corporation </paragraph>
+                  <paragraph>U.S. Patent Numbers: 5,439,686; 5,498,421; 6,096,331; 6,506,405; 6,537,579; 6,749,868; 6,753,006; 7,820,788; 7,923,536; and RE41,884</paragraph>
+                  <paragraph>ABRPI.002/PPI.002  01/12</paragraph>
+               </text>
+               <effectiveTime value="20120131"/>
+            </section>
+         </component>
+         <component>
+            <section ID="JTPPI-f6a56427-31a3-11e1-b86c-0800200c9a66">
+               <id root="a69ffa22-50cf-11e1-b86c-0800200c9a66"/>
+               <code code="42230-3" codeSystem="2.16.840.1.113883.6.1" displayName="SPL PATIENT PACKAGE INSERT SECTION"/>
+               <text>
+                  <paragraph>
+                     <content styleCode="bold">Patient Information</content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">ABRAXANE<sup>®</sup> for Injectable Suspension (ah-BRAKS-ane) <br/>(paclitaxel protein-bound particles for injectable suspension) (albumin-bound)</content>
+                  </paragraph>
+                  <paragraph>Read this Patient information before you start receiving ABRAXANE and before each infusion. This information does not take the place of talking with your doctor about your medical condition or your treatment.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">What is ABRAXANE?</content>
+                  </paragraph>
+                  <paragraph>ABRAXANE is a prescription cancer medicine used to treat advanced breast cancer.</paragraph>
+                  <paragraph>It is not known if ABRAXANE is safe or effective in children.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Who should not receive ABRAXANE?</content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Do not receive ABRAXANE if:</content>
+                  </paragraph>
+                  <list>
+                     <item>your white blood cell count is below 1,500 cells/ mm<sup>3</sup>.</item>
+                     <item>you have had a severe hypersensitivity reaction to ABRAXANE</item>
+                  </list>
+                  <paragraph>
+                     <content styleCode="bold">What should I tell my doctor before receiving ABRAXANE?</content>
+                     <br/>Before you receive ABRAXANE, tell your doctor if you: </paragraph>
+                  <list>
+                     <item>have liver or kidney problems</item>
+                     <item>are a man planning to father a child. You should not father a child during your treatment with ABRAXANE. ABRAXANE can harm the unborn baby of your partner. Talk to your doctor if this is a concern to you.</item>
+                     <item>are pregnant or plan to become pregnant. ABRAXANE can harm your unborn baby. Women who may become pregnant should use effective birth control (contraception). Talk to your doctor about the best way to prevent pregnancy while receiving ABRAXANE.</item>
+                     <item>are breast-feeding or plan to breast-feed. It is not known if ABRAXANE passes into your breast milk. You and your doctor should decide if you will receive ABRAXANE or breastfeed.</item>
+                  </list>
+                  <paragraph>
+                     <content styleCode="bold">Tell your doctor about all the medicines you take,</content> including prescription and non-prescription medicines, vitamins, and herbal supplements.</paragraph>
+                  <paragraph>Know the medicines you take. Keep a list to show your doctor and pharmacist each time you get a new medicine.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">How will I receive ABRAXANE?</content>
+                  </paragraph>
+                  <list>
+                     <item>Your doctor will prescribe ABRAXANE in an amount that is right for you.</item>
+                     <item>Premedication to prevent allergic reactions is not needed to receive ABRAXANE.</item>
+                     <item>ABRAXANE will be given to you by intravenous (IV) infusion into your vein.</item>
+                     <item>Your doctor should do regular blood tests while you receive ABRAXANE.</item>
+                  </list>
+                  <paragraph>
+                     <content styleCode="bold">What are the possible side effects of ABRAXANE?</content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">ABRAXANE may cause serious side effects, including:</content>
+                  </paragraph>
+                  <list>
+                     <item>
+                        <caption/>decreased blood cell counts. ABRAXANE can cause a severe decrease in neutrophils (a type of white blood cells important in fighting against bacterial infections) and platelets (important for clotting and to control bleeding). Your doctor will check your blood cell count during your treatment with ABRAXANE and after you have stopped your treatment.</item>
+                     <item>
+                        <caption>•  </caption>numbness, tingling, or burning in your hands or feet (neuropathy).</item>
+                  </list>
+                  <paragraph>The most common side effects of ABRAXANE include:</paragraph>
+                  <table width="1200">
+                     <tbody>
+                        <tr>
+                           <td>∙    hair loss</td>
+                           <td>∙    low red blood cell count (anemia). Tell your doctor if you feel weak, tired or short of breath.</td>
+                        </tr>
+                        <tr>
+                           <td>∙    numbness or tingling in the hands or feet</td>
+                           <td>∙    nausea</td>
+                        </tr>
+                        <tr>
+                           <td>∙    abnormal heart beat</td>
+                           <td>∙    infections.  If you have a fever (temperature of greater than 100.4° F) or other signs of infection, tell your doctor right away.</td>
+                        </tr>
+                        <tr>
+                           <td>∙    tiredness</td>
+                           <td/>
+                        </tr>
+                        <tr>
+                           <td>∙    joint and muscle pain</td>
+                           <td/>
+                        </tr>
+                        <tr>
+                           <td>∙    changes in your liver function tests</td>
+                           <td>∙    diarrhea</td>
+                        </tr>
+                     </tbody>
+                  </table>
+                  <paragraph>Call your doctor for medical advice about side effects. You may report side effects to FDA at 1-800-FDA-1088.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">General information about the safe and effective use of ABRAXANE.</content>
+                  </paragraph>
+                  <paragraph>Medicines are sometimes prescribed for purposes other than those listed in a Patient Information leaflet.</paragraph>
+                  <paragraph>This patient information leaflet summarizes the important information about ABRAXANE. If you would like more information, talk to your doctor. You can ask your doctor or pharmacist for information about ABRAXANE that is written for healthcare professionals.</paragraph>
+                  <paragraph>For more information, call 1-888-423-5436.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">What are the ingredients in ABRAXANE?</content>
+                  </paragraph>
+                  <paragraph>Active ingredient: paclitaxel (bound to human albumin).</paragraph>
+                  <paragraph>Other ingredient: human albumin (containing sodium caprylate and sodium acetyltryptophanate)</paragraph>
+                  <paragraph>This Patient Information has been approved by the U.S. Food and Drug Administration.</paragraph>
+                  <paragraph>Revised: January 2012</paragraph>
+                  <paragraph/>
+                  <paragraph/>
+                  <paragraph>Manufactured for:        Celgene Corporation </paragraph>
+                  <paragraph>                                       Summit, NJ 07901</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">ABRAXANE<sup>®</sup> is a registered trademark of Abraxis BioScience, LLC <br/>©2005-2012 Abraxis BioScience, LLC <br/>All Rights Reserved<br/>Abraxis BioScience, LLC is a wholly owned subsidiary of Celgene Corporation</content>
+                  </paragraph>
+                  <paragraph>U.S. Patent Numbers: 5,439,686; 5,498,421; 6,096,331; 6,506,405; 6,537,579; 6,749,868; 6,753,006; 7,820,788; 7,923,536; and RE41,884</paragraph>
+                  <paragraph>ABRPPI.002  01/12</paragraph>
+               </text>
+               <effectiveTime value="20120131"/>
+            </section>
+         </component>
+         <component>
+            <section ID="ac8e-0002a5d5c51bjt-plp-1">
+               <id root="a69ffa24-50cf-11e1-b86c-0800200c9a66"/>
+               <code code="51945-4" codeSystem="2.16.840.1.113883.6.1" displayName="PACKAGE LABEL.PRINCIPAL DISPLAY PANEL"/>
+               <text>
+                  <paragraph>
+                     <content styleCode="bold">PRINCIPAL DISPLAY PANEL - 100 mg Vial</content>
+                  </paragraph>
+                  <paragraph> NDC 68817-134-50<br/>103450 </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Abraxane<sup>®</sup>
+                        <br/>for Injectable Suspension</content>
+                  </paragraph>
+                  <paragraph>(paclitaxel protein-bound particles for injectable suspension)<br/>(albumin-bound)</paragraph>
+                  <paragraph> 100 mg <br/>Single Use Vial</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">For IV Use Only<br/>Rx only</content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Functional properties differ from other<br/>paclitaxel products. DO NOT SUBSTITUTE.</content>
+                  </paragraph>
+                  <renderMultiMedia referencedObject="MM3"/>
+               </text>
+               <effectiveTime value="20120131"/>
+               <component>
+                  <observationMedia ID="MM3">
+                     <text>PRINCIPAL DISPLAY PANEL - 100 mg Vial</text>
+                     <value xsi:type="ED" mediaType="image/jpeg">
+                        <reference value="abraxane-03.jpg"/>
+                     </value>
+                  </observationMedia>
+               </component>
+            </section>
+         </component>
+      </structuredBody>
+   </component>
+</document>

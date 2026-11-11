@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl" type="text/xsl"?>
+<document xmlns="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd">
+   <id root="b5cb82ef-00f9-4172-ab3c-5f78441d826a"/>
+   <code code="58476-3" codeSystem="2.16.840.1.113883.6.1" displayName="DIETARY SUPPLEMENT"/>
+   <title>Prodigen Capsules<br/>Dietary Supplement</title>
+   <effectiveTime value="20180731"/>
+   <setId root="cfe35d19-52f9-41b7-9997-34bf95c1a898"/>
+   <versionNumber value="2"/>
+   <author>
+      <time/>
+      <assignedEntity>
+         <representedOrganization>
+            <id root="1.3.6.1.4.1.519.1" extension="079556942"/>
+            <name>Sterling Knight Pharmaceuticals LLC</name>
+         </representedOrganization>
+      </assignedEntity>
+   </author>
+   <component>
+      <structuredBody>
+         <component>
+            <section>
+               <id root="d81fa334-d96f-457c-b5f6-b9a432bf868b"/>
+               <code code="48780-1" codeSystem="2.16.840.1.113883.6.1" displayName="SPL product data elements section"/>
+               <title/>
+               <text/>
+               <effectiveTime value="20180427"/>
+               <subject>
+                  <manufacturedProduct>
+                     <manufacturedProduct>
+                        <code code="69336-402" codeSystem="2.16.840.1.113883.6.69"/>
+                        <name>Prodigen</name>
+                        <formCode code="C25158" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="CAPSULE"/>
+                        <asEntityWithGeneric>
+                           <genericMedicine>
+                              <name>LACTOBACILLUS ACIDOPHILUS</name>
+                           </genericMedicine>
+                        </asEntityWithGeneric>
+                        <ingredient classCode="ACTIB">
+                           <quantity>
+                              <numerator value="16000000000" unit="[CFU]"/>
+                              <denominator value="1" unit="1"/>
+                           </quantity>
+                           <ingredientSubstance>
+                              <code code="1PRR1V42V5" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>LACTOBACILLUS ACIDOPHILUS</name>
+                              <activeMoiety>
+                                 <activeMoiety>
+                                    <code code="1PRR1V42V5" codeSystem="2.16.840.1.113883.4.9"/>
+                                    <name>LACTOBACILLUS ACIDOPHILUS</name>
+                                 </activeMoiety>
+                              </activeMoiety>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="ACTIB">
+                           <quantity>
+                              <numerator value="15000000000" unit="[CFU]"/>
+                              <denominator value="1" unit="1"/>
+                           </quantity>
+                           <ingredientSubstance>
+                              <code code="5307V7XW8I" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>BIFIDOBACTERIUM ANIMALIS LACTIS</name>
+                              <activeMoiety>
+                                 <activeMoiety>
+                                    <code code="5307V7XW8I" codeSystem="2.16.840.1.113883.4.9"/>
+                                    <name>BIFIDOBACTERIUM ANIMALIS LACTIS</name>
+                                 </activeMoiety>
+                              </activeMoiety>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="OP1R32D61U" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>MICROCRYSTALLINE CELLULOSE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="70097M6I30" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>MAGNESIUM STEARATE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="Y6O7T4G8P9" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>HYDRATED SILICA</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <asContent>
+                           <quantity>
+                              <numerator value="30" unit="1"/>
+                              <denominator value="1" unit="1"/>
+                           </quantity>
+                           <containerPackagedProduct>
+                              <code code="69336-402-30" codeSystem="2.16.840.1.113883.6.69"/>
+                              <formCode code="C43169" displayName="BOTTLE" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                           </containerPackagedProduct>
+                        </asContent>
+                     </manufacturedProduct>
+                     <subjectOf>
+                        <marketingAct>
+                           <code code="C53292" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                           <statusCode code="active"/>
+                           <effectiveTime>
+                              <low value="20180427"/>
+                           </effectiveTime>
+                        </marketingAct>
+                     </subjectOf>
+                     <subjectOf>
+                        <approval>
+                           <code code="C86952" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="dietary supplement"/>
+                           <author>
+                              <territorialAuthority>
+                                 <territory>
+                                    <code code="USA" codeSystem="2.16.840.1.113883.5.28"/>
+                                 </territory>
+                              </territorialAuthority>
+                           </author>
+                        </approval>
+                     </subjectOf>
+                     <subjectOf>
+                        <characteristic>
+                           <code code="SPLCOLOR" codeSystem="2.16.840.1.113883.1.11.19255"/>
+                           <value code="C48325" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="white" xsi:type="CE"/>
+                        </characteristic>
+                     </subjectOf>
+                     <subjectOf>
+                        <characteristic>
+                           <code code="SPLSHAPE" codeSystem="2.16.840.1.113883.1.11.19255"/>
+                           <value code="C48336" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="capsule" xsi:type="CE"/>
+                        </characteristic>
+                     </subjectOf>
+                     <subjectOf>
+                        <characteristic>
+                           <code code="SPLSIZE" codeSystem="2.16.840.1.113883.1.11.19255"/>
+                           <value unit="mm" value="16" xsi:type="PQ"/>
+                        </characteristic>
+                     </subjectOf>
+                     <subjectOf>
+                        <characteristic>
+                           <code code="SPLSCORE" codeSystem="2.16.840.1.113883.1.11.19255"/>
+                           <value xsi:type="INT" value="1"/>
+                        </characteristic>
+                     </subjectOf>
+                     <consumedIn>
+                        <substanceAdministration>
+                           <routeCode code="C38288" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="ORAL"/>
+                        </substanceAdministration>
+                     </consumedIn>
+                  </manufacturedProduct>
+               </subject>
+            </section>
+         </component>
+         <component>
+            <section ID="Lc8c05c9c-7613-4072-a54e-1dafcc819f34">
+               <id root="580aaf37-0aa6-4141-b55a-d16bce318955"/>
+               <code code="69719-3" codeSystem="2.16.840.1.113883.6.1" displayName="HEALTH CLAIM SECTION"/>
+               <title>HEALTH CLAIM:</title>
+               <text>
+                  <paragraph>Prodigen Capsules Dietary Supplemement</paragraph>
+                  <paragraph>Dispensed by Prescription†</paragraph>
+                  <paragraph>
+                     <renderMultiMedia referencedObject="L7896a8cb-69a4-4c83-b1ca-6de2b13d2663"/>
+                  </paragraph>
+                  <paragraph/>
+               </text>
+               <effectiveTime value="20180427"/>
+               <component>
+                  <observationMedia ID="L7896a8cb-69a4-4c83-b1ca-6de2b13d2663">
+                     <text>suppfacts</text>
+                     <value mediaType="image/jpeg" xsi:type="ED">
+                        <reference value="suppfacts.jpg"/>
+                     </value>
+                  </observationMedia>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="L67803b29-ca86-40f5-aa98-52380c6b30ae">
+               <id root="dafe8cf5-1dd5-4c4e-bb07-641dbb39a808"/>
+               <code code="69718-5" codeSystem="2.16.840.1.113883.6.1" displayName="STATEMENT OF IDENTITY SECTION"/>
+               <title>DESCRIPTION</title>
+               <text>
+                  <paragraph>Prodigen is an orally administered prescription probiotic formulation for the clinical dietary management of suboptimal nutritional status in patients where advanced supplementation is required and nutritional supplementation in physiologically stressful conditions for maintenance of good health is needed.</paragraph>
+                  <paragraph>Prodigen should be administered under the supervision of a licensed medical practitioner.</paragraph>
+               </text>
+               <effectiveTime value="20180427"/>
+            </section>
+         </component>
+         <component>
+            <section ID="Ldac584c5-6498-46cd-b4c2-fd2ad934736d">
+               <id root="6df89976-9f15-4085-bf54-c55abe06f580"/>
+               <code code="34071-1" codeSystem="2.16.840.1.113883.6.1" displayName="WARNINGS SECTION"/>
+               <title>WARNINGS AND PRECAUTIONS</title>
+               <text>
+                  <paragraph>This product is contraindicated in patients with a known hypersensitivity to any of the ingredients.</paragraph>
+                  <paragraph>Prodigen should only be used under the direction and supervision of a licensed medical practitioner. Use with caution in patients that may have a medical condition, are pregnant, lactating, trying to conceive, under the age of 18, or taking medications.</paragraph>
+               </text>
+               <effectiveTime value="20180427"/>
+            </section>
+         </component>
+         <component>
+            <section ID="La253528e-a5a4-4e1c-b20a-a6bb4fb1c4a9">
+               <id root="968d3b0f-00dc-4043-84b3-86dcdf171f96"/>
+               <code code="50741-8" codeSystem="2.16.840.1.113883.6.1" displayName="SAFE HANDLING WARNING SECTION"/>
+               <title>DOSAGE AND ADMINISTRATION</title>
+               <text>
+                  <paragraph>Usual adult dose is 1 capsule daily with or without food.</paragraph>
+                  <paragraph>INDICATIONS AND USAGE</paragraph>
+                  <paragraph>Prodigen is an orally administered prescription probiotic formulation for the clinical dietary management of suboptimal nutritional status in patients where advanced supplementation is required and nutritional supplementation in physiologically stressful conditions for maintenance of good health is needed.</paragraph>
+               </text>
+               <effectiveTime value="20180427"/>
+            </section>
+         </component>
+         <component>
+            <section ID="Lbc292b4d-e71a-470c-9e87-9ebbc4e72b0e">
+               <id root="cf1b7c87-b1f1-4267-84f9-ca11f6377137"/>
+               <code code="42232-9" codeSystem="2.16.840.1.113883.6.1" displayName="PRECAUTIONS SECTION"/>
+               <title>HOW SUPPLIED:</title>
+               <text>
+                  <paragraph>Prodigen is supplied as clear capsules dispensed in HDPE plastic bottles of 30ct.</paragraph>
+                  <paragraph>69336-402-30</paragraph>
+                  <paragraph>Reserved for Professional Recommendation<br/>All prescriptions using this product shall be pursuant to state statutes as applicable. This is not an Orange Book product. This product may be administered only under a physician’s supervision. There are no implied or explicit claims on therapeutic equivalence.<br/>Manufactured for:<br/>Sterling-Knight Pharmaceuticals, LLC<br/>Ripley, MS 38663</paragraph>
+                  <paragraph>Item 40230<br/>Rev. 0418-1</paragraph>
+               </text>
+               <effectiveTime value="20180427"/>
+            </section>
+         </component>
+         <component>
+            <section ID="L67d23ee4-2fce-4e65-b19e-7cb3cdfa02fc">
+               <id root="f0dace7e-049a-438f-b020-85ae19a03a77"/>
+               <code code="50741-8" codeSystem="2.16.840.1.113883.6.1" displayName="SAFE HANDLING WARNING SECTION"/>
+               <title>STORAGE:</title>
+               <text>
+                  <paragraph>Store at controlled room temperature 15°-30°C (59°F-86°F). Keep in cool dry place. Call your doctor about side effects. You may report side effects to FDA at 1-800-FDA-1088.</paragraph>
+                  <paragraph>KEEP THIS OUT OF THE REACH OF CHILDREN.</paragraph>
+               </text>
+               <effectiveTime value="20180427"/>
+            </section>
+         </component>
+         <component>
+            <section ID="L7ff07fdd-f4df-4bd5-a537-155e00d0a9a6">
+               <id root="89f1651b-96de-4178-9bb4-161c443c50c8"/>
+               <code code="51945-4" codeSystem="2.16.840.1.113883.6.1" displayName="PACKAGE LABEL.PRINCIPAL DISPLAY PANEL"/>
+               <title>PACKAGE LABEL:</title>
+               <text>
+                  <paragraph>
+                     <renderMultiMedia referencedObject="La7bc6eb3-15ca-458f-8b70-4842d48303a1"/>
+                  </paragraph>
+               </text>
+               <effectiveTime value="20180427"/>
+               <component>
+                  <observationMedia ID="La7bc6eb3-15ca-458f-8b70-4842d48303a1">
+                     <text>prodlabel</text>
+                     <value mediaType="image/jpeg" xsi:type="ED">
+                        <reference value="prodigenlab.jpg"/>
+                     </value>
+                  </observationMedia>
+               </component>
+            </section>
+         </component>
+      </structuredBody>
+   </component>
+</document>

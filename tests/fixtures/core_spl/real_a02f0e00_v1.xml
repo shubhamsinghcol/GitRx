@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="https://www.accessdata.fda.gov/spl/stylesheet/spl.xsl" type="text/xsl"?>
+<document xmlns="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 https://www.accessdata.fda.gov/spl/schema/spl.xsd">
+   <id root="68e81b74-0917-44c4-b865-a2e3bd2aaad9"/>
+   <code code="53409-9" codeSystem="2.16.840.1.113883.6.1" displayName="BULK INGREDIENT"/>
+   <title>AMINOPENTAMIDE SULFATE</title>
+   <effectiveTime value="20190314"/>
+   <setId root="a02f0e00-94ff-4ccf-a57d-a8d9012af03f"/>
+   <versionNumber value="1"/>
+   <author>
+      <time/>
+      <assignedEntity>
+         <representedOrganization>
+            <id extension="080173485" root="1.3.6.1.4.1.519.1"/>
+            <name>PROFESSIONAL GROUP OF PHARMACISTS NEW YORK LLC</name>
+            <assignedEntity>
+               <assignedOrganization/>
+            </assignedEntity>
+         </representedOrganization>
+      </assignedEntity>
+   </author>
+   <component>
+      <structuredBody>
+         <component>
+            <section>
+               <id root="0af86b43-85df-4c62-b94e-cd27202919d4"/>
+               <code code="48780-1" codeSystem="2.16.840.1.113883.6.1" displayName="SPL listing data elements section"/>
+               <effectiveTime value="20190314"/>
+               <subject>
+                  <manufacturedProduct>
+                     <manufacturedProduct>
+                        <code code="72969-002" codeSystem="2.16.840.1.113883.6.69"/>
+                        <name>AMINOPENTAMIDE SULFATE</name>
+                        <formCode code="C42972" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="POWDER"/>
+                        <asEntityWithGeneric>
+                           <genericMedicine>
+                              <name>AMINOPENTAMIDE SULFATE</name>
+                           </genericMedicine>
+                        </asEntityWithGeneric>
+                        <ingredient classCode="ACTIM">
+                           <quantity>
+                              <numerator value="1" unit="g"/>
+                              <denominator value="1" unit="g"/>
+                           </quantity>
+                           <ingredientSubstance>
+                              <code code="20P9NI883O" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>AMINOPENTAMIDE SULFATE</name>
+                              <activeMoiety>
+                                 <activeMoiety>
+                                    <code code="IP1B47L61M" codeSystem="2.16.840.1.113883.4.9"/>
+                                    <name>AMINOPENTAMIDE</name>
+                                 </activeMoiety>
+                              </activeMoiety>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <asContent>
+                           <quantity>
+                              <numerator value="1" unit="g"/>
+                              <denominator value="1"/>
+                           </quantity>
+                           <containerPackagedProduct>
+                              <code code="72969-002-10" codeSystem="2.16.840.1.113883.6.69"/>
+                              <formCode code="C43233" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="PACKAGE"/>
+                           </containerPackagedProduct>
+                           <subjectOf>
+                              <marketingAct>
+                                 <code code="C53292" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                                 <statusCode code="active"/>
+                                 <effectiveTime>
+                                    <low value="20190313"/>
+                                 </effectiveTime>
+                              </marketingAct>
+                           </subjectOf>
+                        </asContent>
+                     </manufacturedProduct>
+                     <subjectOf>
+                        <marketingAct>
+                           <code code="C53292" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                           <statusCode code="active"/>
+                           <effectiveTime>
+                              <low value="20190313"/>
+                           </effectiveTime>
+                        </marketingAct>
+                     </subjectOf>
+                     <subjectOf>
+                        <approval>
+                           <code code="C98252" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="bulk ingredient for animal drug compounding"/>
+                           <author>
+                              <territorialAuthority>
+                                 <territory>
+                                    <code code="USA" codeSystem="2.16.840.1.113883.5.28"/>
+                                 </territory>
+                              </territorialAuthority>
+                           </author>
+                        </approval>
+                     </subjectOf>
+                     <consumedIn>
+                        <substanceAdministration>
+                           <routeCode code="C48623" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="NOT APPLICABLE"/>
+                        </substanceAdministration>
+                     </consumedIn>
+                  </manufacturedProduct>
+               </subject>
+            </section>
+         </component>
+         <component>
+            <section>
+               <id root="666709b8-1c4e-4db5-a928-c7bb51c7b2fc"/>
+               <code code="51945-4" codeSystem="2.16.840.1.113883.6.1" displayName="PACKAGE LABEL.PRINCIPAL DISPLAY PANEL"/>
+               <text>
+                  <paragraph>aminopentamidelabel.jpg<renderMultiMedia referencedObject="aminopentamidelabel.jpg"/>
+                  </paragraph>
+               </text>
+               <effectiveTime value="20190314"/>
+               <component>
+                  <observationMedia classCode="OBS" moodCode="EVN" ID="aminopentamidelabel.jpg">
+                     <text>PACKAGE LABEL IMAGE</text>
+                     <value xsi:type="ED" mediaType="image/jpeg">
+                        <reference value="aminopentamidelabel.jpg"/>
+                     </value>
+                  </observationMedia>
+               </component>
+            </section>
+         </component>
+      </structuredBody>
+   </component>
+</document>

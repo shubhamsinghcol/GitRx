@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="http://www.accessdata.fda.gov/spl/stylesheet/spl.xsl" type="text/xsl"?>
+<document xmlns="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 http://www.accessdata.fda.gov/spl/schema/spl.xsd">
+   <id root="b8d077bc-1f69-4077-85ae-15991df4bac9"/>
+   <code code="72090-4" codeSystem="2.16.840.1.113883.6.1" displayName="IDENTIFICATION OF CBER-REGULATED GENERIC DRUG FACILITY"/>
+   <title/>
+   <effectiveTime value="20150501"/>
+   <setId root="0f9bf387-74ab-4d72-83c6-9d00c43cee98"/>
+   <versionNumber value="3"/>
+   <author>
+      <time/>
+      <assignedEntity>
+         <representedOrganization>
+            <assignedEntity>
+               <assignedOrganization>
+                  <id extension="849896816" root="1.3.6.1.4.1.519.1"/>
+                  <name>Omega Medical Research</name>
+                  <contactParty>
+                     <addr>
+                        <streetAddressLine>400 Bald Hill Rd.</streetAddressLine>
+                        <city>Warwick</city>
+                        <state>RI</state>
+                        <postalCode>02886</postalCode>
+                        <country>USA</country>
+                     </addr>
+                     <telecom value="tel:+1-401-739-9350"/>
+                     <telecom value="mailto:lynne@omegamedicalresearch.com"/>
+                     <contactPerson>
+                        <name>Lynne Haughey</name>
+                     </contactPerson>
+                  </contactParty>
+                  <assignedEntity>
+                     <assignedOrganization>
+                        <id extension="849896816" root="1.3.6.1.4.1.519.1"/>
+                        <id extension="3003734726" root="2.16.840.1.113883.4.82"/>
+                        <name>Omega Medical Research</name>
+                        <addr>
+                           <streetAddressLine>400 Bald Hill Rd.</streetAddressLine>
+                           <city>Warwick</city>
+                           <state>RI</state>
+                           <postalCode>02886</postalCode>
+                           <country>USA</country>
+                        </addr>
+                        <contactParty>
+                           <addr>
+                              <streetAddressLine>400 Bald Hill Rd.</streetAddressLine>
+                              <city>Warwick</city>
+                              <state>RI</state>
+                              <postalCode>02886</postalCode>
+                              <country>USA</country>
+                           </addr>
+                           <telecom value="tel:+1-401-739-9350"/>
+                           <telecom value="mailto:lynne@omegamedicalresearch.com"/>
+                           <contactPerson>
+                              <name>Lynne Haughey</name>
+                           </contactPerson>
+                        </contactParty>
+                     </assignedOrganization>
+                     <performance>
+                        <actDefinition>
+                           <code code="C101511" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="CLINICAL BIOEQUIVALENCE OR BIOAVAILABILITY STUDY"/>
+                        </actDefinition>
+                     </performance>
+                  </assignedEntity>
+               </assignedOrganization>
+            </assignedEntity>
+         </representedOrganization>
+      </assignedEntity>
+   </author>
+   <component>
+      <nonXMLBody>
+         <text/>
+      </nonXMLBody>
+   </component>
+</document>

@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="http://www.accessdata.fda.gov/spl/stylesheet/spl.xsl" type="text/xsl"?>
+<document xmlns="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 http://www.accessdata.fda.gov/spl/schema/spl.xsd">
+   <id root="ebd7ad41-33f5-4c8b-be53-c9fdf8f898be"/>
+   <code code="34390-5" codeSystem="2.16.840.1.113883.6.1" displayName="HUMAN OTC DRUG LABEL"/>
+   <title>Clear Men 2 in 1 Dry Scalp Hydration Anti Dandruff Shampoo and Conditioner PDP and drug facts box</title>
+   <effectiveTime value="20150922"/>
+   <setId root="ac97ee13-cdb2-4c52-8f77-738d775fde75"/>
+   <versionNumber value="3"/>
+   <author>
+      <time/>
+      <assignedEntity>
+         <representedOrganization>
+            <id extension="001375088" root="1.3.6.1.4.1.519.1"/>
+            <name>Conopco Inc. d/b/a Unilever</name>
+            <assignedEntity>
+               <assignedOrganization>
+                  <assignedEntity>
+                     <assignedOrganization>
+                        <id extension="043510056" root="1.3.6.1.4.1.519.1"/>
+                        <name>Unilever Supply Chain Co. d/b/a Unilever</name>
+                     </assignedOrganization>
+                     <performance>
+                        <actDefinition>
+                           <code code="C43360" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="manufacture"/>
+                           <product>
+                              <manufacturedProduct classCode="MANU">
+                                 <manufacturedMaterialKind>
+                                    <code code="64942-1310" codeSystem="2.16.840.1.113883.6.69"/>
+                                 </manufacturedMaterialKind>
+                              </manufacturedProduct>
+                           </product>
+                        </actDefinition>
+                     </performance>
+                  </assignedEntity>
+               </assignedOrganization>
+            </assignedEntity>
+         </representedOrganization>
+      </assignedEntity>
+   </author>
+   <component>
+      <structuredBody>
+         <component>
+            <section>
+               <id root="f1d8c7ca-53e4-45fa-b9bc-418a59465a84"/>
+               <code code="48780-1" codeSystem="2.16.840.1.113883.6.1" displayName="SPL listing data elements section"/>
+               <effectiveTime value="20150923"/>
+               <subject>
+                  <manufacturedProduct>
+                     <manufacturedProduct>
+                        <code code="64942-1310" codeSystem="2.16.840.1.113883.6.69"/>
+                        <name>Clear<suffix>Men 2 in 1 Dry Scalp Hydration AntiDandruff</suffix>
+                        </name>
+                        <formCode code="C42981" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="SHAMPOO"/>
+                        <asEntityWithGeneric>
+                           <genericMedicine>
+                              <name>Pyrithione Zinc</name>
+                           </genericMedicine>
+                        </asEntityWithGeneric>
+                        <ingredient classCode="ACTIB">
+                           <quantity>
+                              <numerator value="1.0" unit="g"/>
+                              <denominator value="100" unit="mL"/>
+                           </quantity>
+                           <ingredientSubstance>
+                              <code code="R953O2RHZ5" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>Pyrithione Zinc</name>
+                              <activeMoiety>
+                                 <activeMoiety>
+                                    <code code="R953O2RHZ5" codeSystem="2.16.840.1.113883.4.9"/>
+                                    <name>Pyrithione Zinc</name>
+                                 </activeMoiety>
+                              </activeMoiety>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="059QF0KO0R" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>WATER</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="BPV390UAP0" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>SODIUM LAURETH SULFATE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="5OCF3O11KX" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>COCAMIDOPROPYL BETAINE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="451W47IQ8X" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>SODIUM CHLORIDE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="BYR0546TOW" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>DMDM HYDANTOIN</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="8HM7ZD48HN" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>TRIETHANOLAMINE DODECYLBENZENESULFONATE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="3W1JG795YI" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>SUNFLOWER OIL</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="2968PHW8QP" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>CITRIC ACID MONOHYDRATE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="I29VQH0G0B" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>PPG-9</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="DEL7T5QRPN" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>METHYLCHLOROISOTHIAZOLINONE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="229D0E1QFA" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>METHYLISOTHIAZOLINONE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="C3M81465G5" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>SPEARMINT OIL</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="B16G315W7A" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>GUAR HYDROXYPROPYLTRIMONIUM CHLORIDE (1.7 SUBSTITUENTS PER SACCHARIDE)</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="89DS0H96TB" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>ZINC SULFATE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="343C7U75XW" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>DIMETHICONOL (41 MPA.S)</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="92RU3N3Y1O" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>DIMETHICONE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="TUF2IVW3M2" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>POLOXAMER 407</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="N72LMW566G" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>LAURETH-23</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="6HQ855798J" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>LAURETH-4</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="A7E6112E4N" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>.ALPHA.-TOCOPHEROL ACETATE, D-</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="66YXD4DKO9" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>ALMOND OIL</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="439X29GCJZ" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>POLYETHYLENE GLYCOL 400000</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="WV9CM0O67Z" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>PANTHENOL</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="JNJ23Q2COM" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>LYSINE HYDROCHLORIDE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="JY81OXM1OM" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>HYDROGENATED COCONUT OIL</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="241ATL177A" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>SOYBEAN OIL</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="TTV12P4NEE" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>XANTHAN GUM</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="CUQ3A77YXI" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>ASIAN GINSENG</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="VIF565UC2G" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>TEA TREE OIL</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="3XUS85K0RA" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>BUTYLENE GLYCOL</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="603P14DHEB" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>IODOPROPYNYL BUTYLCARBAMATE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <asContent>
+                           <quantity>
+                              <numerator value="381" unit="mL"/>
+                              <denominator value="1"/>
+                           </quantity>
+                           <containerPackagedProduct>
+                              <code code="64942-1310-1" codeSystem="2.16.840.1.113883.6.69"/>
+                              <formCode code="C43186" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="CONTAINER"/>
+                           </containerPackagedProduct>
+                           <subjectOf>
+                              <characteristic classCode="OBS">
+                                 <code code="SPLCMBPRDTP" codeSystem="2.16.840.1.113883.1.11.19255"/>
+                                 <value code="C112160" displayName="Type 0: Not a Combination Product" codeSystem="2.16.840.1.113883.3.26.1.1" xsi:type="CE"/>
+                              </characteristic>
+                           </subjectOf>
+                        </asContent>
+                        <asContent>
+                           <quantity>
+                              <numerator value="647" unit="mL"/>
+                              <denominator value="1" unit="1"/>
+                           </quantity>
+                           <containerPackagedProduct>
+                              <code code="64942-1310-2" codeSystem="2.16.840.1.113883.6.69"/>
+                              <formCode code="C43186" displayName="CONTAINER" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                           </containerPackagedProduct>
+                           <subjectOf>
+                              <characteristic classCode="OBS">
+                                 <code code="SPLCMBPRDTP" codeSystem="2.16.840.1.113883.1.11.19255"/>
+                                 <value code="C112160" displayName="Type 0: Not a Combination Product" codeSystem="2.16.840.1.113883.3.26.1.1" xsi:type="CE"/>
+                              </characteristic>
+                           </subjectOf>
+                        </asContent>
+                     </manufacturedProduct>
+                     <subjectOf>
+                        <marketingAct>
+                           <code code="C53292" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                           <statusCode code="active"/>
+                           <effectiveTime>
+                              <low value="20151215"/>
+                           </effectiveTime>
+                        </marketingAct>
+                     </subjectOf>
+                     <subjectOf>
+                        <approval>
+                           <id extension="part358H" root="2.16.840.1.113883.3.149"/>
+                           <code code="C73603" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="OTC monograph final"/>
+                           <author>
+                              <territorialAuthority>
+                                 <territory>
+                                    <code code="USA" codeSystem="2.16.840.1.113883.5.28"/>
+                                 </territory>
+                              </territorialAuthority>
+                           </author>
+                        </approval>
+                     </subjectOf>
+                     <consumedIn>
+                        <substanceAdministration>
+                           <routeCode code="C38304" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="TOPICAL"/>
+                        </substanceAdministration>
+                     </consumedIn>
+                  </manufacturedProduct>
+               </subject>
+            </section>
+         </component>
+         <component>
+            <section>
+               <id root="4ec921e7-b312-43a5-bc15-0c404687c84f"/>
+               <code code="55106-9" codeSystem="2.16.840.1.113883.6.1" displayName="OTC - ACTIVE INGREDIENT SECTION"/>
+               <text>
+                  <paragraph>
+                     <content styleCode="italics">
+                        <content styleCode="bold">Active Ingredient</content>
+                     </content>
+                     <content styleCode="underline"/>
+                  </paragraph>
+                  <paragraph>Pyrithione Zinc (1.0%)</paragraph>
+               </text>
+               <effectiveTime value="20140422"/>
+            </section>
+         </component>
+         <component>
+            <section>
+               <id root="c776f005-48a4-41d7-b042-e1208ade9c84"/>
+               <code code="55105-1" codeSystem="2.16.840.1.113883.6.1" displayName="OTC - PURPOSE SECTION"/>
+               <text>
+                  <paragraph>
+                     <content styleCode="italics">
+                        <content styleCode="bold">Purpose</content>
+                     </content>
+                     <br/>Anti-Dandruff</paragraph>
+               </text>
+               <effectiveTime value="20140422"/>
+            </section>
+         </component>
+         <component>
+            <section>
+               <id root="2c398081-2658-4ce5-a8ae-1597603041ac"/>
+               <code code="34067-9" codeSystem="2.16.840.1.113883.6.1" displayName="INDICATIONS &amp; USAGE SECTION"/>
+               <text>
+                  <paragraph>
+                     <content styleCode="bold">
+                        <content styleCode="italics">Use</content>
+                     </content>   Helps prevent and control recurrence of itching and flaking associated with dandruff</paragraph>
+               </text>
+               <effectiveTime value="20140422"/>
+            </section>
+         </component>
+         <component>
+            <section>
+               <id root="86af8bba-63a5-46e1-95f7-6baa2575d600"/>
+               <code code="34071-1" codeSystem="2.16.840.1.113883.6.1" displayName="WARNINGS SECTION"/>
+               <text>
+                  <paragraph>
+                     <content styleCode="italics">
+                        <content styleCode="bold">WARNINGS</content>
+                     </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">For external use only</content>
+                  </paragraph>
+                  <paragraph/>
+               </text>
+               <effectiveTime value="20150922"/>
+               <component>
+                  <section>
+                     <id root="7badb8fd-fe5c-4287-9e03-f69572a74966"/>
+                     <code code="50567-7" codeSystem="2.16.840.1.113883.6.1" displayName="OTC - WHEN USING SECTION"/>
+                     <text>
+                        <paragraph>
+                           <content styleCode="bold">When using this product:</content>
+                        </paragraph>
+                        <paragraph>• Avoid contact with eyes.  If contact occurs, rinse eyes thoroughly with water.</paragraph>
+                     </text>
+                     <effectiveTime value="20150922"/>
+                  </section>
+               </component>
+               <component>
+                  <section>
+                     <id root="a13641cd-e07c-4514-9897-bcf39c35a43d"/>
+                     <code code="50566-9" codeSystem="2.16.840.1.113883.6.1" displayName="OTC - STOP USE SECTION"/>
+                     <text>
+                        <paragraph>
+                           <content styleCode="bold">Stop use and ask a doctor if:</content>
+                        </paragraph>
+                        <paragraph>• Condition worsens or does not improve after regular use of this product as directed.</paragraph>
+                     </text>
+                     <effectiveTime value="20150922"/>
+                  </section>
+               </component>
+               <component>
+                  <section>
+                     <id root="702c19e9-b9a8-4761-904d-6bcf916b0035"/>
+                     <code code="50565-1" codeSystem="2.16.840.1.113883.6.1" displayName="OTC - KEEP OUT OF REACH OF CHILDREN SECTION"/>
+                     <text>
+                        <paragraph>
+                           <content styleCode="bold">Keep this and all drugs out of reach of children.</content>  If swallowed, get medical help or contact a Poison Control Center right away.</paragraph>
+                     </text>
+                     <effectiveTime value="20150922"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section>
+               <id root="1c3eb63e-2645-47fc-9ebd-f6bd91ba728f"/>
+               <code code="34068-7" codeSystem="2.16.840.1.113883.6.1" displayName="DOSAGE &amp; ADMINISTRATION SECTION"/>
+               <text>
+                  <paragraph>
+                     <content styleCode="italics">
+                        <content styleCode="bold">Directions</content>
+                     </content>
+                  </paragraph>
+                  <paragraph>Wet hair, massage into scalp, rinse.  Repeat if desired.  For best results use at least twice a week or as directed by a doctor.</paragraph>
+               </text>
+               <effectiveTime value="20150922"/>
+            </section>
+         </component>
+         <component>
+            <section>
+               <id root="ad7d3b15-32a5-43d7-a062-f9a994b33610"/>
+               <code code="51727-6" codeSystem="2.16.840.1.113883.6.1" displayName="INACTIVE INGREDIENT SECTION"/>
+               <text>
+                  <paragraph>
+                     <content styleCode="italics">
+                        <content styleCode="bold">Inactive Ingredients</content>
+                     </content>
+                     <br/>
+                  </paragraph>
+                  <paragraph>Water (Aqua), Sodium Laureth Sulfate, Cocamidopropyl Betaine, Sodium Chloride, Fragrance (Parfum), Dimethiconol, Carbomer, Dimethicone, DMDM Hydantoin, Guar Hydroxypropyltrimonium Chloride, Citric Acid, Zinc Sulfate, TEA-Dodecylbenzenesulfonate, Poloxamer 407, Laureth-23, Butylene Glycol, Laureth-4, Lysine HCl, Tocopheryl Acetate, Panthenol, PPG-9, Iodopropynyl Butylcarbamate, PEG-4, Xanthan Gum, Helianthus Annuus (Sunflower) Seed Oil, Prunus Amygdalus Dulcis (Sweet Almond) Oil, Glycine Soja (Soybean) Oil, Cocos Nucifera (Coconut) Oil, Methylchloroisothiazolinone, Methylisothiazolinone, Melaleuca Alternifolia (Tea Tree) Leaf Extract, Panax Ginseng Root Extract, Mentha Viridis (Spearmint) Leaf Oil.</paragraph>
+               </text>
+               <effectiveTime value="20150922"/>
+            </section>
+         </component>
+         <component>
+            <section>
+               <id root="c78c12f1-f9e3-44e9-a002-f55409c7403a"/>
+               <code code="53413-1" codeSystem="2.16.840.1.113883.6.1" displayName="OTC - QUESTIONS SECTION"/>
+               <text>
+                  <paragraph>
+                     <content styleCode="italics">
+                        <content styleCode="bold">Questions, comments?</content>
+                     </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">1-800-372-6389</content>
+                  </paragraph>
+               </text>
+               <effectiveTime value="20150922"/>
+            </section>
+         </component>
+         <component>
+            <section ID="L4daa089b-5cee-471d-8907-b7dbf057b8fb">
+               <id root="7530a728-3bf6-49d5-9c59-8ae5cae38571"/>
+               <code code="51945-4" codeSystem="2.16.840.1.113883.6.1" displayName="PACKAGE LABEL.PRINCIPAL DISPLAY PANEL"/>
+               <title>12.9 fl oz PDP</title>
+               <text>
+                  <paragraph>
+                     <renderMultiMedia referencedObject="L71c3f56c-27c4-4014-9bf3-e0a9802a1227"/>
+                  </paragraph>
+               </text>
+               <effectiveTime value="20150922"/>
+               <component>
+                  <observationMedia ID="L71c3f56c-27c4-4014-9bf3-e0a9802a1227">
+                     <text>ClearMenDryScalpHydration2in1PDPrev3</text>
+                     <value mediaType="image/jpeg" xsi:type="ED">
+                        <reference value="ClearMenDryScalpHydration2in1PDPrev3.jpg"/>
+                     </value>
+                  </observationMedia>
+               </component>
+            </section>
+         </component>
+      </structuredBody>
+   </component>
+</document>
