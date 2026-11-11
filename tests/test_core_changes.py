@@ -341,7 +341,7 @@ def test_record_fields_and_determinism():
     assert r1["setid"] == SID and (r1["from_version"], r1["to_version"]) == (1, 2)
     assert (r1["from_effective_time"], r1["to_effective_time"]) == ("20230101", "20240101")
     assert r1["from_artifact_sha256"] == "ZA" and r1["to_source_sha256"] == b["source_sha256"]
-    assert r1["parser_version"] == "spl-sections-0.2.0"
+    assert r1["parser_version"] == P.PARSER_VERSION
     assert r1["from_parser_output_sha256"] == a["content_sha256"]
     ch = r1["changes"][0]
     for k in ("srlc_group", "group_basis", "section_number", "section_title", "section_key", "alignment_method",

@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="http://www.accessdata.fda.gov/spl/stylesheet/spl.xsl" type="text/xsl"?>
+<document xmlns="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 http://www.accessdata.fda.gov/spl/schema/spl.xsd">
+   <id root="6dae68f9-2a5b-4a41-b54d-5de6f9f726a3"/>
+   <code code="50577-6" displayName="OTC ANIMAL DRUG LABEL" codeSystem="2.16.840.1.113883.6.1"/>
+   <title>EAZI-BREED™<br/> CIDR<sup>®</sup>
+      <br/> (progesterone)</title>
+   <effectiveTime value="20160714"/>
+   <setId root="129ef5e0-a429-4db1-8d0a-2d8441d46eba"/>
+   <versionNumber value="3"/>
+   <author>
+      <time/>
+      <assignedEntity>
+         <representedOrganization>
+            <id extension="828851555" root="1.3.6.1.4.1.519.1"/>
+            <name>Zoetis Inc.</name>
+            <assignedEntity>
+               <assignedOrganization>
+                  <assignedEntity>
+                     <assignedOrganization>
+                        <id extension="595014127" root="1.3.6.1.4.1.519.1"/>
+                        <name>DEC International (NZ) Limited</name>
+                     </assignedOrganization>
+                     <performance>
+                        <actDefinition>
+                           <code code="C43360" displayName="MANUFACTURE" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                        </actDefinition>
+                     </performance>
+                  </assignedEntity>
+                  <assignedEntity>
+                     <assignedOrganization>
+                        <id extension="527042153" root="1.3.6.1.4.1.519.1"/>
+                        <name>Zhejiang Shenzhou Pharmaceutical Co., Ltd.</name>
+                     </assignedOrganization>
+                     <performance>
+                        <actDefinition>
+                           <code code="C82401" displayName="API MANUFACTURE" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                        </actDefinition>
+                     </performance>
+                  </assignedEntity>
+               </assignedOrganization>
+            </assignedEntity>
+         </representedOrganization>
+      </assignedEntity>
+   </author>
+   <component>
+      <structuredBody>
+         <component>
+            <section>
+               <id root="8019c0a0-5e74-473a-8d21-dda0d5eb7c6f"/>
+               <code code="48780-1" displayName="SPL LISTING DATA ELEMENTS SECTION" codeSystem="2.16.840.1.113883.6.1"/>
+               <effectiveTime value="20160812"/>
+               <subject>
+                  <manufacturedProduct>
+                     <manufacturedProduct>
+                        <code code="54771-1533" codeSystem="2.16.840.1.113883.6.69"/>
+                        <name>EAZI-BREED CIDR Sheep<suffix>Insert</suffix>
+                        </name>
+                        <formCode code="C42922" displayName="INSERT, EXTENDED RELEASE" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                        <asEntityWithGeneric>
+                           <genericMedicine>
+                              <name>progesterone</name>
+                           </genericMedicine>
+                        </asEntityWithGeneric>
+                        <ingredient classCode="ACTIB">
+                           <quantity>
+                              <numerator unit="g" value="0.3"/>
+                              <denominator unit="1" value="1"/>
+                           </quantity>
+                           <ingredientSubstance>
+                              <code code="4G7DS2Q64Y" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>PROGESTERONE</name>
+                              <activeMoiety>
+                                 <activeMoiety>
+                                    <code code="4G7DS2Q64Y" codeSystem="2.16.840.1.113883.4.9"/>
+                                    <name>PROGESTERONE</name>
+                                 </activeMoiety>
+                              </activeMoiety>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <asContent>
+                           <quantity>
+                              <numerator unit="1" value="20"/>
+                              <denominator value="1"/>
+                           </quantity>
+                           <containerPackagedProduct>
+                              <code code="54771-1533-1" codeSystem="2.16.840.1.113883.6.69"/>
+                              <formCode code="C43167" displayName="BAG" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                           </containerPackagedProduct>
+                        </asContent>
+                     </manufacturedProduct>
+                     <subjectOf>
+                        <approval>
+                           <id extension="NADA141302" root="2.16.840.1.113883.3.150"/>
+                           <code code="C73593" displayName="NADA" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                           <author>
+                              <territorialAuthority>
+                                 <territory>
+                                    <code code="USA" codeSystem="2.16.840.1.113883.5.28"/>
+                                 </territory>
+                              </territorialAuthority>
+                           </author>
+                        </approval>
+                     </subjectOf>
+                     <subjectOf>
+                        <marketingAct>
+                           <code code="C53292" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                           <statusCode code="active"/>
+                           <effectiveTime>
+                              <low value="20091001"/>
+                           </effectiveTime>
+                        </marketingAct>
+                     </subjectOf>
+                     <consumedIn>
+                        <substanceAdministration>
+                           <routeCode code="C38313" displayName="VAGINAL" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                        </substanceAdministration>
+                     </consumedIn>
+                  </manufacturedProduct>
+               </subject>
+            </section>
+         </component>
+         <component>
+            <section ID="LINK_7cd1bfd9-ab6e-4300-b589-ce8f3f5313d3">
+               <id root="6833e365-3bf5-4d34-b1df-3d1685bb9ba1"/>
+               <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+               <title>Drug information</title>
+               <text>
+                  <paragraph>
+                     <content styleCode="bold">EAZI-BREED</content>™</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">CIDR</content>®</paragraph>
+                  <paragraph>(progesterone) Sheep Insert</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">NET CONTENTS: </content>20 EAZI-BREED CIDR Sheep Inserts per bag</paragraph>
+                  <paragraph>Each EAZI-BREED CIDR Sheep Insert contains 0.3 gram of</paragraph>
+                  <paragraph>progesterone in molded silicone over a flexible nylon spine.</paragraph>
+                  <paragraph>Attached to each EAZI-BREED CIDR Sheep Insert is a nylon tail.</paragraph>
+                  <paragraph>NADA 141-302, Approved by FDA</paragraph>
+               </text>
+               <effectiveTime value="20160705"/>
+            </section>
+         </component>
+         <component>
+            <section ID="LINK_951ed4cc-bd82-453c-92ac-dee1ced96a4c">
+               <id root="be2cd0a8-72c9-467a-87e4-6e19b9c7944f"/>
+               <code code="34089-3" codeSystem="2.16.840.1.113883.6.1" displayName="DESCRIPTION SECTION"/>
+               <title>Active Ingredient</title>
+               <text>
+                  <paragraph>
+                     <content styleCode="bold"> </content>Progesterone, 0.3 gram per EAZI-BREED CIDR Sheep Insert</paragraph>
+               </text>
+               <effectiveTime value="20160714"/>
+            </section>
+         </component>
+         <component>
+            <section ID="LINK_a2c8401d-57d4-44ae-b27d-9c0cefe798fd">
+               <id root="0a4fd317-ca75-4c2e-bf0b-e4c190483d10"/>
+               <code code="50745-9" codeSystem="2.16.840.1.113883.6.1" displayName="VETERINARY INDICATIONS SECTION"/>
+               <title>Use</title>
+               <text>
+                  <paragraph>Induction of estrus in ewes (sheep) during seasonal anestrus. Seasonal anestrus is when ewes do not have regular estrous cycles outside the natural breeding season. EAZI-BREED CIDR Sheep Inserts have not been tested in estrous cycling ewes.</paragraph>
+                  <paragraph>Read booklet label before using drug for complete product information.</paragraph>
+               </text>
+               <effectiveTime value="20160714"/>
+            </section>
+         </component>
+         <component>
+            <section ID="LINK_379fb5c9-8527-4e32-bd14-627045ad3215">
+               <id root="2f942166-ee5f-419d-97c5-8efd1af7f751"/>
+               <code code="34071-1" codeSystem="2.16.840.1.113883.6.1" displayName="WARNINGS SECTION"/>
+               <title>WARNINGS</title>
+               <text>
+                  <paragraph>
+                     <content styleCode="bold">Human Warning: </content>Avoid contact with skin by wearing protective gloves when handling the inserts.</paragraph>
+                  <paragraph>Not for Use in Humans.</paragraph>
+                  <paragraph>Keep this and all medications out of the reach of children.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Environmental Warning: </content>Used (removed) EAZI-BREED CIDR Sheep Inserts still contain some progesterone. Used EAZI-BREED CIDR Sheep Inserts must be stored in a sealable container until disposed. Sealed bag/container with used EAZI-BREED CIDR Sheep Inserts must be properly disposed in accordance with applicable local, state and Federal regulations.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Residue Warning: </content>A pre-slaughter withdrawal period is not required when this product is used according to label directions.</paragraph>
+               </text>
+               <effectiveTime value="20160714"/>
+            </section>
+         </component>
+         <component>
+            <section ID="LINK_0de0ea1b-c2cd-4f56-a65c-6decee7e33ed">
+               <id root="0eec0cf9-1de7-4e3a-b82b-44ee76092e86"/>
+               <code code="44425-7" codeSystem="2.16.840.1.113883.6.1" displayName="STORAGE AND HANDLING SECTION"/>
+               <title>Other Information</title>
+               <text>
+                  <paragraph>Store at controlled room temperature</paragraph>
+                  <paragraph>20° to 25° C (68° to 77° F) with excursions</paragraph>
+                  <paragraph>between 15° to 30° C (59° to 86° F). To report</paragraph>
+                  <paragraph>suspected adverse reactions or questions call Zoetis at 1-888-963-8471.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Inactive Ingredients: </content>silicone rubber, nylon.</paragraph>
+                  <paragraph>Made in New Zealand Dist. by: Zoetis Inc.</paragraph>
+                  <paragraph>Kalamazoo, MI 49007</paragraph>
+               </text>
+               <effectiveTime value="20160705"/>
+            </section>
+         </component>
+         <component>
+            <section ID="LINK_1f894176-41b2-4571-a5ad-cb72502bd4e6">
+               <id root="6c9c60e3-9ed2-4443-ace3-908ecc6e64e5"/>
+               <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+               <title>Inactive Ingredients</title>
+               <text>
+                  <paragraph>silicone rubber, nylon.</paragraph>
+               </text>
+               <effectiveTime value="20160705"/>
+            </section>
+         </component>
+         <component>
+            <section ID="LINK_2f15a0c1-5488-4f70-8c36-ea94484e6b21">
+               <id root="12a4993a-c0a9-4737-96e8-18ef445d6a2d"/>
+               <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+               <title/>
+               <text>
+                  <paragraph>Made in New Zealand</paragraph>
+                  <paragraph>Distributed by:</paragraph>
+                  <paragraph>Zoetis Inc.</paragraph>
+                  <paragraph>Kalamazoo, MI 49007</paragraph>
+                  <paragraph>EAZI-BREED is a trademark and CIDR is a registered trademark of</paragraph>
+                  <paragraph>DEC International, NZ, Ltd.</paragraph>
+               </text>
+               <effectiveTime value="20160714"/>
+            </section>
+         </component>
+         <component>
+            <section ID="LINK_2596bbb2-82e0-45e3-833b-b1dc0c88ef5c">
+               <id root="59e26a47-7579-483c-a1ca-44031fc5675c"/>
+               <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+               <title>Warnings</title>
+               <text>
+                  <paragraph>
+                     <content styleCode="bold">DO NOT USE</content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">• </content>in ewes with abnormal, immature or infected genital tracts</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">• </content>in ewes that have never lambed</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">• </content>an insert more than once. To prevent the potential transmission of venereal and blood borne diseases the EAZI-BREED CIDR Sheep</paragraph>
+                  <paragraph>Insert should be disposed after a single use.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">WHEN USING THIS PRODUCT</content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">• </content>In ewes that respond to treatment the onset of estrus generally occurs within 1 to 3 days after removal of the EAZI-BREED CIDR</paragraph>
+                  <paragraph>Sheep Insert.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">• </content>Make sure to have a sufficient number of rams to adequately breed all ewes with an induced estrus. Breeds of rams may vary in libido</paragraph>
+                  <paragraph>in the non-breeding season. Therefore a ewe to ram ratio up to 18:1 is recommended for multi-sire situations. For single sire lots, 12:1</paragraph>
+                  <paragraph>for ram lambs and up to 18:1 for yearling rams are recommended.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">YOU MAY NOTICE:</content>
+                  </paragraph>
+                  <paragraph>Clear, cloudy, yellow or bloody mucus on the outside of EAZI-BREED CIDR Sheep Insert when removed from ewes. The mucus may have an offensive odor. This is a result of mild irritation to the vaginal lining by the presence of the EAZI-BREED CIDR Sheep Insert, and generally clears between the time of removal and breeding. Such irritation does not affect fertility.</paragraph>
+               </text>
+               <effectiveTime value="20160714"/>
+            </section>
+         </component>
+         <component>
+            <section ID="LINK_33a4a74c-89e2-4bf3-afc4-18066333dc0d">
+               <id root="8b1ab6e4-412a-4c9f-94c3-73f4a7c37679"/>
+               <code code="34068-7" codeSystem="2.16.840.1.113883.6.1" displayName="DOSAGE &amp; ADMINISTRATION SECTION"/>
+               <title>DIRECTIONS</title>
+               <text>
+                  <paragraph>For induction of estrus in ewes (sheep) during seasonal anestrus:</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">• </content>Administer one EAZI-BREED CIDR Sheep Insert per ewe for 5 days.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">• </content>After insert removal, use standard flock breeding procedures to breed ewes at induced estrus.</paragraph>
+               </text>
+               <effectiveTime value="20160714"/>
+               <component>
+                  <section ID="LINK_fcb666d1-fc1a-41e9-a819-81233a7993b2">
+                     <id root="59d00c01-1e36-40f8-b927-88d75759a592"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>Insertion</title>
+                     <text>
+                        <list listType="unordered" styleCode="Disk">
+                           <item>
+                              <paragraph>Insertion:</paragraph>
+                              <paragraph>1. Avoid contact with skin by wearing protective gloves when handling inserts.</paragraph>
+                              <paragraph>2. Only use the specially designed EAZI-BREED CIDR Sheep Insert Applicator for administration.</paragraph>
+                              <paragraph>3. Restrain ewes appropriately prior to administration.</paragraph>
+                              <paragraph>4. Wash the applicator in a non-irritating antiseptic solution, and then apply a veterinary obstetrical lubricant to the end</paragraph>
+                              <paragraph>of the applicator.</paragraph>
+                              <paragraph>5. Push the tail end of the EAZI-BREED CIDR Sheep Insert into the applicator taking care to assure the tail is extending upward through the slot of the applicator and is pointed away rom the handle.</paragraph>
+                              <paragraph>6. Fold the wings of the EAZI-BREED CIDR Sheep Insert to make it longer and continue to advance the insert into the applicator</paragraph>
+                              <paragraph>until it is fully seated with only the tips of the wings protruding from the end of the applicator (see Figure 1).</paragraph>
+                              <paragraph>7. Lubricate the protruding tips of the wings of the EAZI-BREED CIDR Sheep Insert with veterinary obstetrical lubricant.</paragraph>
+                              <paragraph>8. Clean the exterior of the vulva with disposable tissue.</paragraph>
+                              <paragraph>9. Open the lips of the vulva and gently place the loaded applicator through the vulva. The slot in the applicator</paragraph>
+                              <paragraph>should face down (see Figure 2).</paragraph>
+                              <paragraph>10. Once the loaded applicator is past the vulva slope the applicator slightly upwards (35 - 45° angle) by lowering the</paragraph>
+                              <paragraph>handle, and then forward, without forcing, until the applicator is fully inserted or resistance is felt (see Figure 3).</paragraph>
+                              <paragraph>11. Squeeze the finger grips within the handle of the applicator to deposit the EAZI-BREED CIDR Sheep Insert in the anterior</paragraph>
+                              <paragraph>vagina (see Figure 4) and then pull the applicator backwards to remove it from the vagina.</paragraph>
+                              <paragraph>12. With the EAZI-BREED CIDR Sheep Insert correctly placed, with the wings open in the anterior portion of the vagina, the</paragraph>
+                              <paragraph>tail of the insert should be visible, pointing downward from the vulva of the ewe.</paragraph>
+                           </item>
+                        </list>
+                        <table>
+                           <col width="50%"/>
+                           <col width="50%"/>
+                           <tbody>
+                              <tr>
+                                 <td align="center" valign="top"> <renderMultiMedia referencedObject="MM1">
+                                       <caption>Figure 1</caption>
+                                    </renderMultiMedia>
+                                 </td>
+                                 <td align="center" valign="top"> <renderMultiMedia referencedObject="MM2">
+                                       <caption>Figure 2</caption>
+                                    </renderMultiMedia>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td align="center" valign="top" colspan="2"> <renderMultiMedia referencedObject="MM3">
+                                       <caption>Figure 3</caption>
+                                    </renderMultiMedia>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td align="center" valign="top" colspan="2"> <renderMultiMedia referencedObject="MM4">
+                                       <caption>Figure 4</caption>
+                                    </renderMultiMedia>
+                                 </td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </text>
+                     <effectiveTime value="20160705"/>
+                     <component>
+                        <observationMedia ID="MM1">
+                           <text>Figure 1</text>
+                           <value xsi:type="ED" mediaType="image/jpeg">
+                              <reference value="eazi-breed-cidr-sheep-1.jpg"/>
+                           </value>
+                        </observationMedia>
+                     </component>
+                     <component>
+                        <observationMedia ID="MM2">
+                           <text>Figure 2</text>
+                           <value xsi:type="ED" mediaType="image/jpeg">
+                              <reference value="eazi-breed-cidr-sheep-2.jpg"/>
+                           </value>
+                        </observationMedia>
+                     </component>
+                     <component>
+                        <observationMedia ID="MM3">
+                           <text>Figure 3</text>
+                           <value xsi:type="ED" mediaType="image/jpeg">
+                              <reference value="eazi-breed-cidr-sheep-3.jpg"/>
+                           </value>
+                        </observationMedia>
+                     </component>
+                     <component>
+                        <observationMedia ID="MM4">
+                           <text>Figure 4</text>
+                           <value xsi:type="ED" mediaType="image/jpeg">
+                              <reference value="eazi-breed-cidr-sheep-4.jpg"/>
+                           </value>
+                        </observationMedia>
+                     </component>
+                  </section>
+               </component>
+               <component>
+                  <section ID="LINK_56f4e334-b0a9-463f-abee-d69685ef369a">
+                     <id root="74df274e-35df-4757-8429-e8b8cfbdffd7"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>Removal</title>
+                     <text>
+                        <list listType="unordered" styleCode="Disk">
+                           <item>
+                              <paragraph>Removal:</paragraph>
+                              <paragraph>1. Remove EAZI-BREED CIDR Sheep Inserts by pulling, gently but firmly, on the protruding nylon tail.</paragraph>
+                              <paragraph>2. EAZI-BREED CIDR Sheep Inserts may reverse direction within the vagina; therefore, if the nylon tail of the insert is not visible on the day of removal, check the vagina to determine if an insert is present.</paragraph>
+                              <paragraph>3. Used (removed) EAZI-BREED CIDR Sheep Inserts must be stored in a sealable container until disposed. Sealed bag/container with used EAZI-BREED CIDR Sheep Inserts must be properly disposed in accordance with applicable local, state and Federal regulations.</paragraph>
+                           </item>
+                        </list>
+                     </text>
+                     <effectiveTime value="20160705"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="LINK_e05a26a8-62d7-459d-bbb4-58c3bd76bb89">
+               <id root="f241025c-5a1a-45de-9619-2a265f4c2c2f"/>
+               <code code="51945-4" codeSystem="2.16.840.1.113883.6.1" displayName="PACKAGE LABEL.PRINCIPAL DISPLAY PANEL"/>
+               <title>PRINCIPAL DISPLAY PANEL</title>
+               <text>
+                  <paragraph>
+                     <content styleCode="bold">EAZI-BREED</content>™</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">CIDR</content>®</paragraph>
+                  <paragraph>(progesterone) Sheep Insert</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">NET CONTENTS: </content>20 EAZI-BREED CIDR Sheep Inserts per bag</paragraph>
+                  <paragraph>Each EAZI-BREED CIDR Sheep Insert contains 0.3 gram of</paragraph>
+                  <paragraph>progesterone in molded silicone over a flexible nylon spine.</paragraph>
+                  <paragraph>Attached to each EAZI-BREED CIDR Sheep Insert is a nylon tail.</paragraph>
+                  <paragraph>NADA 141-302, Approved by FDA</paragraph>
+                  <renderMultiMedia referencedObject="MM5">
+                     <caption>Label Eazi-Breed Sheep</caption>
+                  </renderMultiMedia>
+               </text>
+               <effectiveTime value="20160705"/>
+               <component>
+                  <observationMedia ID="MM5">
+                     <text>Label Eazi-Breed Sheep</text>
+                     <value xsi:type="ED" mediaType="image/jpeg">
+                        <reference value="eazi-breed-cidr-sheep-5.jpg"/>
+                     </value>
+                  </observationMedia>
+               </component>
+            </section>
+         </component>
+      </structuredBody>
+   </component>
+</document>

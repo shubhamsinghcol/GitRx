@@ -1,4 +1,4 @@
-"""SPL section parser spl-sections-0.2.0 (pure; derived from frozen spl-sections-0.1.0).
+"""SPL section parser spl-sections-0.2.1 (pure; derived from frozen spl-sections-0.1.0).
 
 parse(xml_bytes) -> canonical document dict. No DB, no file/network I/O, no clock.
 Identical input yields byte-identical canonical_json(). Build-failing invariants
@@ -16,7 +16,7 @@ from lxml import etree
 
 from .normalize import WHITE_SPACE, normalize
 
-PARSER_VERSION = "spl-sections-0.2.0"
+PARSER_VERSION = "spl-sections-0.2.1"
 NORMALIZATION = "literal-v1"
 HL7 = "urn:hl7-org:v3"
 NS = {"s": HL7}
@@ -32,6 +32,13 @@ CHANGES_FROM_0_1_0 = (
     "table caption text is also emitted as a table_caption block (not part of own_text)",
     "per-table/section source_xml replaced by sha256; normalized_text per block dropped (derivable)",
     "empty IDREF / referencedObject counts as unresolved_ref",
+)
+
+CHANGES_FROM_0_2_0 = (
+    "0.2.1: text inside a renderMultiMedia (e.g. its caption) is emitted after the [MEDIA:id] marker "
+    "in table cells, titles and other inline contexts; 0.2.0 classified it as narrative but dropped it, "
+    "raising a conservation InvariantViolation (304 of 487,201 versions). Empty wrappers are unchanged. "
+    "No invariant was changed.",
 )
 
 BLOCKS = {"paragraph", "list", "item", "table", "footnote", "caption"}
@@ -87,6 +94,17 @@ def inline_text(node, acc=None):
         marker = f" [MEDIA:{node.get('referencedObject', '')}] "
         if acc is not None:
             acc.markers.append(("MEDIA", node.get("referencedObject", ""), marker))
+        # 0.2.1: a renderMultiMedia may wrap a caption. Inside table cells/titles that text
+        # was classified as narrative but never emitted (conservation failure). Emit it after
+        # the marker, but only when it carries non-whitespace text (so empty wrappers are
+        # byte-identical to 0.2.0).
+        inner = Acc()
+        body = _inline_content(node, inner)
+        if nonws_len(body):
+            if acc is not None:
+                acc.atoms.extend(inner.atoms)
+                acc.markers.extend(inner.markers)
+            return marker + "\n" + body + "\n"
         return marker
     if tag == "footnoteRef":
         marker = f" [FOOTNOTE:{node.get('IDREF', '')}] "
@@ -98,6 +116,10 @@ def inline_text(node, acc=None):
         if acc is not None:
             acc.markers.append(("NESTED-TABLE", "", marker))
         return marker
+    return _inline_content(node, acc)
+
+
+def _inline_content(node, acc):
     result = node.text or ""
     if result and acc is not None:
         acc.atoms.append((node, "text"))

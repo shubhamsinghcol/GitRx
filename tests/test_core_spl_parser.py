@@ -349,6 +349,10 @@ def test_real_status_coverage():
         "identification_incomplete", "extraction_defect", "no_label_body"}
 
 
+# 0.1.0 (frozen) dropped renderMultiMedia captions inside table cells; 0.2.1 keeps them.
+LOST_BY_010 = {"real_129ef5e0_v3.xml"}
+
+
 def test_real_matches_frozen_010_narrative_text():
     """Narrative text equals frozen 0.1.0 own_text (modulo the recovered [MEDIA:] marker)."""
     import re
@@ -356,6 +360,8 @@ def test_real_matches_frozen_010_narrative_text():
     registry = {c["code"] for c in json.loads((ROOT / "research/section-code-registry.json").read_text())["codes"]}
     strip = lambda s: re.sub(r"\s+", "", re.sub(r"\[MEDIA:[^\]]*\]", "", s))  # noqa: E731
     for name in MANIFEST:
+        if name in LOST_BY_010:
+            continue
         xml = (FIX / name).read_bytes()
         d = P.parse(xml)
         if d["status"] == "no_label_body":
@@ -512,3 +518,31 @@ def test_invariant_unresolved_reference_needs_diagnostic(monkeypatch):
 def test_invariants_do_not_fire_on_clean_inputs():
     for f in sorted(FIX.glob("real_*.xml")):
         P.parse(f.read_bytes())
+
+
+# ---------------------------------------------------------------- 0.2.1 regressions (full-corpus sweep)
+
+def test_version_is_021():
+    assert P.PARSER_VERSION == "spl-sections-0.2.1"
+
+
+def test_media_caption_inside_table_cell_is_conserved():
+    """Class A: renderMultiMedia wrapping a caption inside a table cell (setid 76957c0d v2/v3).
+    0.2.0 classified the caption as narrative but never emitted it -> conservation failure."""
+    cell = ('<td><paragraph><renderMultiMedia referencedObject="m1"><caption>  Tablet 100 mg  </caption>'
+            "</renderMultiMedia></paragraph></td>")
+    text = f"<table><tbody><tr>{cell}<td>x</td></tr></tbody></table>"
+    media = '<component><observationMedia ID="m1"><text>alt</text></observationMedia></component>'
+    d = parsed(doc(structured(sec("34067-9", "T", text, extra=media))))
+    cells = d["sections"][0]["narrative"]["blocks"]
+    cell_text = next(b["text"] for b in cells if b["kind"] == "table_cell")
+    assert "[MEDIA:m1]" in cell_text and "Tablet 100 mg" in cell_text
+    assert d["buckets"]["narrative"] == len("Tablet100mg") + 1 and d["buckets"]["media_text"] == 3
+
+
+def test_empty_media_wrapper_in_cell_unchanged():
+    text = '<table><tbody><tr><td><renderMultiMedia referencedObject="m1"> </renderMultiMedia></td></tr></tbody></table>'
+    media = '<component><observationMedia ID="m1"><text>alt</text></observationMedia></component>'
+    c = next(b for b in parsed(doc(structured(sec("34067-9", "T", text, extra=media))))["sections"][0]["narrative"]["blocks"]
+             if b["kind"] == "table_cell")
+    assert c["text"] == " [MEDIA:m1] "
