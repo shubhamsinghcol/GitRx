@@ -19,6 +19,8 @@ import re
 import sqlite3
 import sys
 import tempfile
+import threading
+from concurrent.futures import ThreadPoolExecutor
 import time
 import urllib.error
 import urllib.parse
@@ -33,6 +35,7 @@ MIN_INTERVAL = 3.2
 HARD_CAP = 5000
 MAX_CONSECUTIVE_FAILURES = 10
 MAX_ATTEMPTS_PER_ITEM = 5
+BACKOFF_BASE = 15.0
 SPLIT_ROW_THRESHOLD = 1000
 SECTIONS = ["BW", "C", "WP", "AR", "DI", "USP", "MG"]
 DEFAULT_ROOT = "/Volumes/Untitled/GitRx/srlc"
@@ -90,7 +93,7 @@ CREATE TABLE IF NOT EXISTS meta(k TEXT PRIMARY KEY, v TEXT);
 
 def open_ledger(root: str) -> sqlite3.Connection:
     os.makedirs(root, exist_ok=True)
-    con = sqlite3.connect(os.path.join(root, "ledger.sqlite"))
+    con = sqlite3.connect(os.path.join(root, "ledger.sqlite"), check_same_thread=False)
     con.executescript(LEDGER_SCHEMA)
     return con
 
@@ -153,8 +156,14 @@ class StopCrawl(Exception):
 
 class Crawler:
     def __init__(self, root, fetch=real_fetch, sleep=time.sleep, clock=time.monotonic,
-                 log=None, hard_cap=HARD_CAP, min_interval=MIN_INTERVAL):
+                 log=None, hard_cap=HARD_CAP, min_interval=MIN_INTERVAL, lanes=1):
         self.root, self.fetch, self.sleep, self.clock = root, fetch, sleep, clock
+        self.lanes = max(1, int(lanes))
+        self._rate = threading.Lock()   # request-start spacing, cap reservation, global pause
+        self._db = threading.RLock()    # ledger access
+        self.next_slot = None           # earliest start time of the next request (multi-lane)
+        self.reserved = None            # requests started or recorded (multi-lane cap accounting)
+        self.stopped = None
         self.log = log or (lambda m: print(m, flush=True))
         self.hard_cap, self.min_interval = hard_cap, min_interval
         self.con = open_ledger(root)
@@ -165,17 +174,50 @@ class Crawler:
 
     # -- state
     def total_requests(self):
-        return self.con.execute("SELECT COUNT(*) FROM requests").fetchone()[0]
+        with self._db:
+            return self.con.execute("SELECT COUNT(*) FROM requests").fetchone()[0]
 
     def done_sha(self, key):
-        r = self.con.execute("SELECT body_sha256 FROM requests WHERE item_key=? AND ok=1 ORDER BY id DESC LIMIT 1", (key,)).fetchone()
+        with self._db:
+            r = self.con.execute("SELECT body_sha256 FROM requests WHERE item_key=? AND ok=1 ORDER BY id DESC LIMIT 1", (key,)).fetchone()
         return r[0] if r else None
 
     def stop(self, reason):
+        with self._rate:
+            if self.stopped is not None:
+                raise StopCrawl(self.stopped)
+            self.stopped = reason
         with open(os.path.join(self.root, "STOP.txt"), "a") as f:
             f.write(f"{utcnow()} {reason}\n")
         self.log(f"STOP: {reason}")
         raise StopCrawl(reason)
+
+    def _reserve(self, extra=0.0):
+        """Multi-lane: check the cap and claim the next start slot (start-to-start spacing)."""
+        with self._rate:
+            if self.stopped is not None:
+                raise StopCrawl(self.stopped)
+            if self.reserved is None:
+                self.reserved = self.total_requests()
+            if self.reserved >= self.hard_cap:
+                cap_hit = True
+            else:
+                cap_hit = False
+                now = self.clock()
+                start = max(now, self.next_slot or now)
+                self.next_slot = start + self.min_interval
+                self.reserved += 1
+        if cap_hit:
+            self.stop(f"hard request cap {self.hard_cap} reached")
+        wait = start - self.clock()
+        if wait > 0:
+            self.sleep(wait)
+        if extra > 0:
+            self.sleep(extra)
+
+    def _pause_all(self, seconds):
+        with self._rate:
+            self.next_slot = max(self.next_slot or self.clock(), self.clock() + seconds)
 
     def _throttle(self, extra=0.0):
         if self.last_req is not None:
@@ -191,10 +233,14 @@ class Crawler:
         if urllib.parse.urlparse(url).hostname != HOST:
             raise ValueError("host not allowed: " + url)
         extra = 0.0
+        multi = self.lanes > 1
         for attempt in range(MAX_ATTEMPTS_PER_ITEM):
-            if self.total_requests() >= self.hard_cap:
-                self.stop(f"hard request cap {self.hard_cap} reached")
-            self._throttle(extra)
+            if multi:
+                self._reserve(extra)
+            else:
+                if self.total_requests() >= self.hard_cap:
+                    self.stop(f"hard request cap {self.hard_cap} reached")
+                self._throttle(extra)
             data = urllib.parse.urlencode(params).encode() if params else None
             headers = {"User-Agent": USER_AGENT, "Accept-Encoding": "identity", "Accept": "*/*"}
             if data:
@@ -217,12 +263,13 @@ class Crawler:
                     ok = 1 if err is None else 0
                 else:
                     err = f"http {status}"
-            self.con.execute(
+            with self._db:
+              self.con.execute(
                 "INSERT INTO requests(item_key,kind,url,method,params,requested_at,status,headers,body_sha256,error,ok)"
                 " VALUES(?,?,?,?,?,?,?,?,?,?,?)",
                 (key, kind, url, method, json.dumps(params) if params else None, at, status,
                  json.dumps(hdrs) if hdrs is not None else None, sha, err, ok))
-            self.con.commit()
+              self.con.commit()
             if ok:
                 self.consecutive_failures = 0
                 self.log(f"ok {kind} {key} status={status} bytes={len(body)} total={self.total_requests()}")
@@ -234,7 +281,9 @@ class Crawler:
             if status is not None and 400 <= status < 500 and status not in (408, 429):
                 return None  # permanent for this item
             ra = parse_retry_after((hdrs or {}).get("retry-after"))
-            extra = max(ra or 0.0, min(600.0, 15.0 * 2 ** attempt))
+            extra = max(ra or 0.0, min(600.0, BACKOFF_BASE * 2 ** attempt))
+            if multi and status in (429, 503):
+                self._pause_all(extra)  # server asked to slow down: pause every lane
             self.log(f"backoff {extra:.0f}s")
         return None
 
@@ -300,10 +349,16 @@ def run_crawl(c: Crawler, start=(2016, 1), end=None, max_ids=None, only_windows=
         # so a hard-cap stop sacrifices the redundant CSVs rather than detail pages.
         if max_ids is not None:
             ids = ids[:max_ids]
-        for i in ids:
-            c.get(f"detail:{i}", "detail", "GET", detail_url(i))
-        for i in ids:
-            c.get(f"csv:{i}", "csv", "GET", csv_url(i))
+        for kind, url_of in (("detail", detail_url), ("csv", csv_url)):
+            todo = [i for i in ids if not c.done_sha(f"{kind}:{i}")]
+            if c.lanes == 1:
+                for i in todo:
+                    c.get(f"{kind}:{i}", kind, "GET", url_of(i))
+            else:
+                with ThreadPoolExecutor(max_workers=c.lanes) as ex:
+                    futs = [ex.submit(c.get, f"{kind}:{i}", kind, "GET", url_of(i)) for i in todo]
+                    for f in futs:
+                        f.result()  # re-raises StopCrawl; remaining lanes see c.stopped and exit
         c.log("crawl complete")
         return True
     except StopCrawl:
@@ -648,6 +703,9 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("cmd", choices=["crawl", "dry-run", "validate-enum", "build", "stats"])
     ap.add_argument("--root", default=DEFAULT_ROOT)
+    ap.add_argument("--min-interval", type=float, default=MIN_INTERVAL,
+                    help="seconds between request starts (multi-lane) / between requests (1 lane)")
+    ap.add_argument("--lanes", type=int, default=1, help="parallel request lanes")
     a = ap.parse_args(argv)
     os.makedirs(a.root, exist_ok=True)
     log = _logger(a.root)
@@ -659,7 +717,8 @@ def main(argv=None):
         return 0
     with open(os.path.join(a.root, "crawl.pid"), "w") as f:
         f.write(str(os.getpid()))
-    c = Crawler(a.root, log=log)
+    c = Crawler(a.root, log=log, min_interval=a.min_interval, lanes=a.lanes)
+    log(f"crawler start: lanes={c.lanes} min_interval={c.min_interval}s cap={c.hard_cap}")
     if a.cmd == "dry-run":
         # month 2024-01 plus two half-month windows (truncation check), then two details+CSVs
         w = [(dt.date(2024, 1, 1), dt.date(2024, 1, 31)), (dt.date(2024, 1, 1), dt.date(2024, 1, 15)),

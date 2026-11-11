@@ -229,3 +229,33 @@ class CrawlTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class MultiLaneTest(unittest.TestCase):
+    def test_cap_exact_and_backoff_with_lanes(self):
+        import tempfile, threading, time as _t
+        with tempfile.TemporaryDirectory() as d:
+            lock = threading.Lock(); calls = []
+            def fetch(method, url, data, headers):
+                with lock:
+                    calls.append(url); n = len(calls)
+                _t.sleep(0.01)
+                if n == 3:
+                    return 429, {"retry-after": "0"}, b"slow down"
+                return 200, {}, ("<html><body>detail %d " % n).encode() + b"x" * 300 + b"</body></html>"
+            c = srlc.Crawler(d, fetch=fetch, log=lambda m: None, hard_cap=25, min_interval=0.001, lanes=8)
+            orig = srlc.validate_body
+            srlc.validate_body = lambda kind, body: None
+            ob = srlc.BACKOFF_BASE; srlc.BACKOFF_BASE = 0.0
+            try:
+                from concurrent.futures import ThreadPoolExecutor
+                with self.assertRaises(srlc.StopCrawl):
+                    with ThreadPoolExecutor(8) as ex:
+                        fs = [ex.submit(c.get, f"detail:{i}", "detail", "GET", srlc.detail_url(i)) for i in range(40)]
+                        for f in fs:
+                            f.result()
+            finally:
+                srlc.validate_body = orig; srlc.BACKOFF_BASE = ob
+            self.assertEqual(c.total_requests(), 25)
+            self.assertEqual(len(calls), 25)
+            self.assertTrue(os.path.exists(os.path.join(d, "STOP.txt")))
