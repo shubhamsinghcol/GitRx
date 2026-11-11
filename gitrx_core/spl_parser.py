@@ -1,4 +1,4 @@
-"""SPL section parser spl-sections-0.2.1 (pure; derived from frozen spl-sections-0.1.0).
+"""SPL section parser spl-sections-0.2.2 (pure; derived from frozen spl-sections-0.1.0).
 
 parse(xml_bytes) -> canonical document dict. No DB, no file/network I/O, no clock.
 Identical input yields byte-identical canonical_json(). Build-failing invariants
@@ -16,7 +16,7 @@ from lxml import etree
 
 from .normalize import WHITE_SPACE, normalize
 
-PARSER_VERSION = "spl-sections-0.2.1"
+PARSER_VERSION = "spl-sections-0.2.2"
 NORMALIZATION = "literal-v1"
 HL7 = "urn:hl7-org:v3"
 NS = {"s": HL7}
@@ -39,6 +39,13 @@ CHANGES_FROM_0_2_0 = (
     "in table cells, titles and other inline contexts; 0.2.0 classified it as narrative but dropped it, "
     "raising a conservation InvariantViolation (304 of 487,201 versions). Empty wrappers are unchanged. "
     "No invariant was changed.",
+)
+
+CHANGES_FROM_0_2_1 = (
+    "0.2.2: rowspan=\"0\" (span to the end of the row group, HTML) and colspan=\"0\" (treated as 1, HTML5) "
+    "are valid and no longer invalid_table_span; ASCII whitespace around a span integer is ignored. "
+    "Negative, non-numeric, empty, fractional, percentage, rowspan > 65534 and colspan > 1000 stay defects. "
+    "Cells that carry a span attribute gain effective_rowspan/effective_colspan.",
 )
 
 BLOCKS = {"paragraph", "list", "item", "table", "footnote", "caption"}
@@ -142,6 +149,19 @@ def _inline_content(node, acc):
     return result
 
 
+_SPAN_RE = re.compile(r"[0-9]+")
+_SPAN_MAX = {"rowspan": 65534, "colspan": 1000}
+
+
+def parse_span(attr, value):
+    """Integer span, or None when the attribute value is a defect. ASCII whitespace around digits is ignored."""
+    v = value.strip(" \t\n\f\r")
+    if not _SPAN_RE.fullmatch(v):
+        return None
+    n = int(v)
+    return n if n <= _SPAN_MAX[attr] else None
+
+
 def escaped_cell(text):
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
@@ -193,11 +213,14 @@ class Narrative:
                 item["columns"].append({"tag": local(child), "attributes": dict(child.attrib)})
         flat = ["<CAPTION>" + escaped_cell(normalize(c["text"])) + "</CAPTION>" for c in item["caption"]]
         cell_pieces = []
+        zero_rowspans, row_groups = [], []
         for row in table.xpath(".//s:tr", namespaces=NS):
             if next(row.iterancestors("{urn:hl7-org:v3}table"), None) is not table:
                 continue
             row_number = len(item["rows"]) + 1
-            group = next((local(a) for a in row.iterancestors() if local(a) in {"thead", "tbody", "tfoot"}), None)
+            group_node = next((a for a in row.iterancestors() if local(a) in {"thead", "tbody", "tfoot"}), None)
+            group = local(group_node) if group_node is not None else None
+            row_groups.append(group_node)
             record = {"ordinal": row_number, "group": group, "attributes": dict(row.attrib), "cells": []}
             flat.append("<ROW>")
             for cell in row:
@@ -210,9 +233,18 @@ class Narrative:
                                "text": text, "source_xpath": self.tree.getpath(cell),
                                "footnotes": [], "nested_tables": []}
                 for attr in ("rowspan", "colspan"):
-                    value = cell.get(attr, "1")
-                    if not value.isdigit() or int(value) < 1:
+                    value = cell.get(attr)
+                    if value is None:
+                        continue
+                    n = parse_span(attr, value)
+                    if n is None:
                         item["diagnostics"].append({"code": "invalid_table_span", "attribute": attr, "value": value})
+                    elif attr == "colspan":
+                        cell_record["effective_colspan"] = max(n, 1)
+                    elif n:
+                        cell_record["effective_rowspan"] = n
+                    else:
+                        zero_rowspans.append((cell_record, row_number, group_node))
                 for note in cell.xpath(".//s:footnote", namespaces=NS):
                     cell_record["footnotes"].append({"attributes": dict(note.attrib), "text": inline_text(note)})
                 record["cells"].append(cell_record)
@@ -220,6 +252,8 @@ class Narrative:
                 flat.append("<CELL>" + escaped_cell(normalize(text)) + "</CELL>")
             flat.append("</ROW>")
             item["rows"].append(record)
+        for cell_record, start, group_node in zero_rowspans:  # rowspan=0: to the end of the row group
+            cell_record["effective_rowspan"] = sum(1 for g in row_groups[start - 1:] if g is group_node)
         item["flattened_text"] = "\n".join(flat)
         self.derived_block("table_flat", item["flattened_text"], table, table_ordinal=ordinal, top_table=outer)
         for node, text, acc in captions:

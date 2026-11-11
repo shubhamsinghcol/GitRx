@@ -112,7 +112,7 @@ def test_extraction_defects(text, code):
 
 
 def test_defect_outranks_identification():
-    body = structured(sec(None, "x", "<paragraph>t</paragraph>"), sec("34067-9", "T", '<table><tbody><tr><td colspan="0">a</td></tr></tbody></table>'))
+    body = structured(sec(None, "x", "<paragraph>t</paragraph>"), sec("34067-9", "T", '<table><tbody><tr><td colspan="-1">a</td></tr></tbody></table>'))
     assert parsed(doc(body))["status"] == "extraction_defect"
 
 
@@ -522,8 +522,8 @@ def test_invariants_do_not_fire_on_clean_inputs():
 
 # ---------------------------------------------------------------- 0.2.1 regressions (full-corpus sweep)
 
-def test_version_is_021():
-    assert P.PARSER_VERSION == "spl-sections-0.2.1"
+def test_version_is_022():
+    assert P.PARSER_VERSION == "spl-sections-0.2.2"
 
 
 def test_media_caption_inside_table_cell_is_conserved():
@@ -546,3 +546,66 @@ def test_empty_media_wrapper_in_cell_unchanged():
     c = next(b for b in parsed(doc(structured(sec("34067-9", "T", text, extra=media))))["sections"][0]["narrative"]["blocks"]
              if b["kind"] == "table_cell")
     assert c["text"] == " [MEDIA:m1] "
+
+
+# ---------------------------------------------------------------- 0.2.2 (table spans, separators)
+
+def _cells(table_xml):
+    d = parsed(doc(structured(sec("34067-9", "T", table_xml))))
+    t = d["sections"][0]["narrative"]["tables"][0]
+    return d, t, [c for r in t["rows"] for c in r["cells"]]
+
+
+def test_rowspan_zero_is_valid_and_spans_row_group():
+    tx = ("<table><thead><tr><th>H</th></tr></thead><tbody>"
+          '<tr><td rowspan="0">a</td><td>b</td></tr><tr><td>c</td></tr><tr><td>d</td></tr></tbody></table>')
+    d, t, cells = _cells(tx)
+    assert d["status"] == "complete" and t["diagnostics"] == []
+    a = next(c for c in cells if c["text"] == "a")
+    assert a["attributes"]["rowspan"] == "0" and a["effective_rowspan"] == 3  # tbody only, not thead
+
+
+def test_rowspan_zero_from_second_row_and_no_group():
+    d, t, cells = _cells('<table><tr><td>x</td></tr><tr><td rowspan="0">a</td></tr><tr><td>c</td></tr></table>')
+    assert d["status"] == "complete"
+    assert next(c for c in cells if c["text"] == "a")["effective_rowspan"] == 2
+
+
+def test_colspan_zero_is_valid_and_treated_as_one():
+    d, t, cells = _cells('<table><tbody><tr><td colspan="0">a</td><td colspan=" 3 ">b</td><td colspan="2">c</td></tr></tbody></table>')
+    assert d["status"] == "complete" and t["diagnostics"] == []
+    assert [c.get("effective_colspan") for c in cells] == [1, 3, 2]
+
+
+@pytest.mark.parametrize("attr,value", [("rowspan", "-1"), ("colspan", "-2"), ("colspan", "NaN"), ("colspan", "100%"),
+                                        ("rowspan", ""), ("colspan", "1.5"), ("rowspan", "65535"), ("colspan", "1001"),
+                                        ("colspan", "\u0663"), ("rowspan", "a")])
+def test_invalid_spans_remain_defects(attr, value):
+    d, t, cells = _cells(f'<table><tbody><tr><td {attr}="{value}">a</td></tr></tbody></table>')
+    assert d["status"] == "extraction_defect"
+    assert [x["code"] for x in t["diagnostics"]] == ["invalid_table_span"]
+
+
+def test_span_limits_accepted():
+    d, t, cells = _cells('<table><tbody><tr><td rowspan="65534" colspan="1000">a</td></tr></tbody></table>')
+    assert d["status"] == "complete" and cells[0]["effective_rowspan"] == 65534 and cells[0]["effective_colspan"] == 1000
+
+
+def test_cell_row_caption_block_boundaries_have_whitespace():
+    from gitrx_core import changes
+    tx = ("<table><caption>Cap</caption><thead><tr><th>Pediatric</th><th>Adult</th></tr></thead><tbody>"
+          "<tr><td>Intervention:</td><td>Use lower dose</td></tr></tbody></table>")
+    d = parsed(doc(structured(sec("34067-9", "T", tx + "<paragraph>One</paragraph><paragraph>Two</paragraph>"
+                                  "<list><item>I1</item><item>I2</item></list><paragraph>A<br/>B</paragraph>"))))
+    ch = changes.channels(d["sections"][0])
+    assert "|" not in ch["table"]
+    toks = ch["table"].split()
+    assert toks == ["Cap", "Pediatric", "Adult", "Intervention:", "Use", "lower", "dose"]
+    assert ch["table"].index("Intervention:") > ch["table"].index("Adult")
+    assert ch["text"].split() == ["T", "One", "Two", "I1", "I2", "A", "B"]
+
+
+def test_block_elements_inside_cell_do_not_fuse():
+    d, t, cells = _cells("<table><tbody><tr><td><paragraph>One</paragraph><paragraph>Two</paragraph>"
+                         "<list><item>I1</item><item>I2</item></list>x<br/>y</td></tr></tbody></table>")
+    assert cells[0]["text"].split() == ["One", "Two", "I1", "I2", "x", "y"]

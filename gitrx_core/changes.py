@@ -51,7 +51,7 @@ from .normalize import normalize
 from .section_groups import classify_doc
 from .spl_parser import _title_key, split_section_number
 
-CHANGES_VERSION = "srlc-changes-0.2.1"
+CHANGES_VERSION = "srlc-changes-0.2.2"  # 0.2.2: table cells joined by a tab, not " | " (no stray "|" token between cells)
 CHANNELS = ("text", "table", "excerpt")
 _TOKEN = re.compile(r"\S+")
 MOVE_MIN_TOKENS = 4
@@ -81,7 +81,7 @@ def _table_text(tables):
         for c in t.get("caption", []):
             lines.append(c["text"])
         for r in t["rows"]:
-            lines.append(" | ".join(c["text"] for c in r["cells"]))
+            lines.append("\t".join(c["text"] for c in r["cells"]))
     return "\n".join(lines)
 
 
