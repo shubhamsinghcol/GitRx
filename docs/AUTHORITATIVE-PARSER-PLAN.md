@@ -171,3 +171,24 @@ Changes (srlc-groups-0.2.0, srlc-changes-0.2.1, harness srlc-grade-0.3.1; parser
 Open split, final (…srlc-changes-0.2.1-h0.3.1): parser text accuracy same-group 98.2%
 (any-group 99.6%; strict 94.1%; ws 97.1%); section accuracy 99.5%; lowest group DI text 95.4%.
 End-to-end (Amendment 1 window): section 94.4%, text render 77.8% (strict 74.8%).
+
+## Freeze 1 — sealed exam (2026-11-11), declared before any sealed result
+Frozen at commit a00c5d27c8cc95cdf0f4216da198281ca9984ae0: parser spl-sections-0.2.2,
+changes srlc-changes-0.2.2, groups srlc-groups-0.2.0, harness srlc-grade-0.3.2.
+Inputs: gradebook.sqlite 863aea67…896db4, split.json 45725c78…4750a9 (sealed 983 DrugNameIDs,
+354025929110…d894), application index index-allversions.sqlite a5739f4d…3243e7.
+Code sha256:
+- spl_parser.py 99885a78f989ac65a255acf58629fd180642e40f92c1e3fefcad1bc5711add38
+- normalize.py 4a613040e6f1660d917f955ebea194b6084765a121e28e5caef3d45be886d12b
+- section_groups.py 92b4fd5c96ba9e8957ef5786542a2cdbc35629421b78591e8fb1f344f97e93f4
+- changes.py 1d22bc4cbb16263a01d8f375a430243a85072d86d60f34896ff93025767e181b
+- srlc_grade.py 26c40e528240bea241bedb75d82c15a7e587a293a483a5294e09bed9becb88e9
+- srlc.py 99702e2aee1d9bbdca59c20a2445872d82a7441965b1e36ee9923bc9e10179b9
+- srlc_split.py b8509beb71895874a14702a83184f8bd348426ff7bedb70874f1729e12343a79
+Runs (each exactly once): sealed --group-mode either, then sealed --group-mode primary.
+Primary pass/fail (Amendment 3 bar, ≥95%): parser accuracy on the sealed set, render matching,
+group-mode either — text same-group AND section accuracy. Reported alongside, without the bar:
+group-mode primary (WP-only), strict and ws text variants, any-group text, per-group results,
+not-locatable coverage, end-to-end SrLC concordance (Amendment 1 window).
+Open-split reference (same frozen code): either 98.44% text / 99.70% section; primary 97.83% / 98.70%.
+Every sealed miss is listed with its descriptive label; no tuning on sealed results.
