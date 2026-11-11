@@ -271,3 +271,16 @@ Reported alongside (no bar), Freeze 1 in brackets:
   strict 75.85% [75.44].
 No tuning on these results. Independent confirmation of Freeze 2 requires the fresh holdout
 (SrLC entries posted after 2026-11-11).
+
+### Freeze 2 sealed BW/C miss categorization (descriptive, after the result; no tuning)
+- BW, 30 of 313 missed. 28 come from SrLC rows filed under the "Boxed Warning" heading whose own text
+  or subheading names another section. These are XARELTO "5.4 Use in Patients with Renal Impairment" (8),
+  VENCLEXTA "5.1 Tumor Lysis Syndrome" and "6.1" (10), ROXYBOND "8.2 Lactation" (4), KESIMPTA "Medication
+  Guide" storage (3), LORBRENA "5.2 CNS Effects" (2) and JANUVIA "5.4 Hypoglycemia" (1). GitRx found
+  all of them in the section the row itself names. The other 2 are LATUDA: GitRx marks the box changed
+  and contains the sentence, but the word-level diff aligns most of it with the prior box sentence.
+- C, 18 of 290 missed. 17 come from one ZEPZELCA row filed under "4 Contraindications" whose text is
+  "5.1 Myelosuppression". The other 1 is TRILEPTAL: section 4 changed and contains the fragment, but the
+  word-level diff aligned "or to" with existing tokens.
+- Excluding SrLC self-contradicting rows: BW 283/285 (99.3%), C 272/273 (99.6%). Any-group text
+  recall is 100% for both groups. Not a structural parser defect; reported, not used to tune.
