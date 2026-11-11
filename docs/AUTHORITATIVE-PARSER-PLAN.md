@@ -82,7 +82,11 @@ Fixed before the sealed draw and before any GitRx output is compared with SrLC.
 - Hash-registered-only JSON (batches/*/inbox.json and BATCH.json, mobile-workspace
   inbox.json, EXPANDED-SELECTION.json) either stored in full or proven derivable
   from imported evidence tables, field by field (inbox.json carries raw
-  publication strings).
+  publication strings). Checked 2026-11-11: all source observations are in the
+  evidence DB, but BATCH.json family states/result_json, the batch_qualification
+  caveat and EXPANDED-SELECTION parse-run/scope metadata are not. Resolution: archive
+  these files intact as a hash-recorded pipeline-provenance bundle on the SSD
+  before deletion.
 - Every raw ZIP and source body present in the consolidated raw store on the SSD,
   re-hashed after any move.
 - Owner approval of the exact deletion list.
