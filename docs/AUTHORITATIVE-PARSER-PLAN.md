@@ -100,3 +100,22 @@ Fingerprint = sha256 of ascending decimal DrugNameIDs joined by "\n".
 - Open (70%): 2,295, sha256 `f494923ef173088e164810c46a312cd964a4e3ab78d12a63be4d7cb4646ed333`
 - Lists: /Volumes/Untitled/GitRx/srlc/split.json (sha256 `45725c78830a4a5a657bd92bf3f01d6d85580a3f8f4abd23d56ae82b664750a9`).
 Development reports must filter to the open list; sealed-drug grading runs once per frozen parser.
+
+## Amendment 2 — text matching and miss labels (2026-11-11, open split only; sealed set untouched)
+Open-split run 1 (parser 0.2.1, harness srlc-grade-0.1.0): section recall 94.2%, text recall 73.6%.
+Diagnosis on seeded open-split samples (seed 7/11/3, scripts kept in the session scratchpad):
+55% of sampled "absent from label" text misses are present in an in-window label version
+once spacing is ignored. Label XML puts spaces inside cross-references and symbols
+("( 5.1 )", "SPORANOX ®"); SrLC pages contain broken-word artifacts ("open- label",
+"His tamine"). These are matching failures, not parser or SrLC errors.
+Changes, fixed before re-grading:
+- Primary text metric: a fragment is "verbatim" if it equals the label text after literal-v1
+  normalization AND removal of all whitespace (the original plan's "whitespace and markup
+  normalized"). The overlap-with-added-token rule is unchanged, evaluated on the same mapping.
+- The strict literal-v1 result stays reported alongside, for both the open and sealed runs.
+- Automatic miss labels are descriptive, not attributions: "absent from label text",
+  "present before window", "present only after window", etc. No category is named
+  "SrLC-side inconsistency" unless confirmed per case.
+- Pre-existing checks are made per candidate setid; candidates sharing an application
+  number but with different product names are reported as sibling-product candidates.
+Thresholds, window, units, split and the 3-token rule are unchanged.
