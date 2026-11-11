@@ -27,6 +27,7 @@
 !/tests/fixtures/core_spl/
 !/tests/fixtures/core_srlc/
 !/tests/fixtures/core_golden/
+!/tests/fixtures/core_changes/
 !/tests/test_backend_portable.py
 !/tests/test_core_workflow.py
 !/tests/test_query_limits.py

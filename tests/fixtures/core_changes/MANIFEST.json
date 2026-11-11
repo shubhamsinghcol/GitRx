@@ -1,0 +1,38 @@
+{
+ "bw_anda_a": {
+  "setid": "57fd619e-687d-403c-a77a-3dc3a1bab65a",
+  "version": 3,
+  "xml_bytes": 85428,
+  "zip_sha256": "840193e1336629296249636358303367954baba269f86c7c3a6250517cfe1205"
+ },
+ "bw_anda_b": {
+  "setid": "57fd619e-687d-403c-a77a-3dc3a1bab65a",
+  "version": 4,
+  "xml_bytes": 86950,
+  "zip_sha256": "2b71adf078af6511c9e8a282d404cb82e6cda7f26fb8e2f4c38485744590f573"
+ },
+ "nonplr_anda_a": {
+  "setid": "b371e1a5-1fef-4df2-8940-c4fc02b9e2f0",
+  "version": 10,
+  "xml_bytes": 88219,
+  "zip_sha256": "48a4f84c1edcab21d8b774e6d2f41293ec6b9a0d0cc800860ba97766f2071bd0"
+ },
+ "nonplr_anda_b": {
+  "setid": "b371e1a5-1fef-4df2-8940-c4fc02b9e2f0",
+  "version": 11,
+  "xml_bytes": 87721,
+  "zip_sha256": "a9e302ada27b6fea18921a98baf7a5f1e3ea44f21bab2f147d80990f797f6423"
+ },
+ "plr_nda_a": {
+  "setid": "9a666065-d467-42b8-8ecd-0ec1de9986d5",
+  "version": 1,
+  "xml_bytes": 46500,
+  "zip_sha256": "2638f9cb13fa97bb91807880aadf8bd54d24c28a1502c310345007d95a5812b1"
+ },
+ "plr_nda_b": {
+  "setid": "9a666065-d467-42b8-8ecd-0ec1de9986d5",
+  "version": 2,
+  "xml_bytes": 46766,
+  "zip_sha256": "89e4a808c867ef80a5db87959e4ad85c45b254abf9a7edfaa9c6ffd8bd2ef0f5"
+ }
+}

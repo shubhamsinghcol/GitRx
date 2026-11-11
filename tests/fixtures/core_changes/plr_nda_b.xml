@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="http://www.accessdata.fda.gov/spl/stylesheet/spl.xsl" type="text/xsl"?>
+<document xmlns="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 http://www.accessdata.fda.gov/spl/schema/spl.xsd">
+   <id root="e03e6076-2d49-4513-be76-5e92cf14cc67"/>
+   <code code="34391-3" codeSystem="2.16.840.1.113883.6.1" displayName="HUMAN PRESCRIPTION DRUG LABEL"/>
+   <title>These highlights do not include all the information needed to use LOTEMAX<sup>® </sup> (loteprednol etabonate ophthalmic gel) 0.5% safely and effectively.  See full prescribing information for LOTEMAX<sup>®</sup>.<br/>
+      <br/>
+      <br/>LOTEMAX<sup>® </sup>(loteprednol etabonate ophthalmic gel) 0.5% <br/>Initial U.S. Approval: 1998</title>
+   <effectiveTime value="20140922"/>
+   <setId root="9a666065-d467-42b8-8ecd-0ec1de9986d5"/>
+   <versionNumber value="2"/>
+   <author>
+      <time/>
+      <assignedEntity>
+         <representedOrganization>
+            <id extension="196603781" root="1.3.6.1.4.1.519.1"/>
+            <name>Bausch &amp; Lomb Incorporated</name>
+            <assignedEntity>
+               <assignedOrganization>
+                  <assignedEntity>
+                     <assignedOrganization>
+                        <id extension="807927397" root="1.3.6.1.4.1.519.1"/>
+                        <name>Bausch &amp; Lomb Incorporated</name>
+                     </assignedOrganization>
+                     <performance>
+                        <actDefinition>
+                           <code code="C43360" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="MANUFACTURE"/>
+                           <product>
+                              <manufacturedProduct classCode="MANU">
+                                 <manufacturedMaterialKind>
+                                    <code code="24208-503" codeSystem="2.16.840.1.113883.6.69"/>
+                                 </manufacturedMaterialKind>
+                              </manufacturedProduct>
+                           </product>
+                        </actDefinition>
+                     </performance>
+                  </assignedEntity>
+               </assignedOrganization>
+            </assignedEntity>
+         </representedOrganization>
+      </assignedEntity>
+   </author>
+   <component>
+      <structuredBody>
+         <component>
+            <section>
+               <id root="4196792a-c370-4d65-8690-5b1aa0668b13"/>
+               <code code="48780-1" codeSystem="2.16.840.1.113883.6.1" displayName="SPL product data elements section"/>
+               <effectiveTime value="20120901"/>
+               <subject>
+                  <manufacturedProduct>
+                     <manufacturedProduct>
+                        <code code="24208-503" codeSystem="2.16.840.1.113883.6.69"/>
+                        <name>LOTEMAX</name>
+                        <formCode code="C42934" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="GEL"/>
+                        <asEntityWithGeneric>
+                           <genericMedicine>
+                              <name>loteprednol etabonate</name>
+                           </genericMedicine>
+                        </asEntityWithGeneric>
+                        <ingredient classCode="ACTIB">
+                           <quantity>
+                              <numerator unit="mg" value="5"/>
+                              <denominator unit="g" value="1"/>
+                           </quantity>
+                           <ingredientSubstance>
+                              <code code="YEH1EZ96K6" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>LOTEPREDNOL ETABONATE</name>
+                              <activeMoiety>
+                                 <activeMoiety>
+                                    <code code="Z8CBU6KR16" codeSystem="2.16.840.1.113883.4.9"/>
+                                    <name>LOTEPREDNOL</name>
+                                 </activeMoiety>
+                              </activeMoiety>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="R57ZHV85D4" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>BORIC ACID</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="7FLD91C86K" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>EDETATE DISODIUM</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="PDC6A3C0OX" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>GLYCERIN</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="W25LM17A4W" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>POLYCARBOPHIL</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="6DC9Q167V3" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>PROPYLENE GLYCOL</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="451W47IQ8X" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>SODIUM CHLORIDE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="Y27PUL9H56" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>TYLOXAPOL</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="059QF0KO0R" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>WATER</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="55X04QC32I" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>SODIUM HYDROXIDE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="F5UM2KM3W7" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>BENZALKONIUM CHLORIDE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <asContent>
+                           <quantity>
+                              <numerator unit="g" value="5"/>
+                              <denominator value="1"/>
+                           </quantity>
+                           <containerPackagedProduct>
+                              <code code="24208-503-07" codeSystem="2.16.840.1.113883.6.69"/>
+                              <formCode code="C43169" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="BOTTLE"/>
+                           </containerPackagedProduct>
+                        </asContent>
+                     </manufacturedProduct>
+                     <subjectOf>
+                        <approval>
+                           <id extension="NDA202872" root="2.16.840.1.113883.3.150"/>
+                           <code code="C73594" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="NDA"/>
+                           <author>
+                              <territorialAuthority>
+                                 <territory>
+                                    <code code="USA" codeSystem="2.16.840.1.113883.5.28"/>
+                                 </territory>
+                              </territorialAuthority>
+                           </author>
+                        </approval>
+                     </subjectOf>
+                     <subjectOf>
+                        <marketingAct>
+                           <code code="C53292" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                           <statusCode code="active"/>
+                           <effectiveTime>
+                              <low value="20121012"/>
+                           </effectiveTime>
+                        </marketingAct>
+                     </subjectOf>
+                     <consumedIn>
+                        <substanceAdministration>
+                           <routeCode code="C38287" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="OPHTHALMIC"/>
+                        </substanceAdministration>
+                     </consumedIn>
+                  </manufacturedProduct>
+               </subject>
+            </section>
+         </component>
+         <component>
+            <section ID="i4i_indications_id_860cbf98-f196-4743-bf5f-5cc3d7219c6d">
+               <id root="d090288c-b56e-47f3-a6c1-eed336703e82"/>
+               <code code="34067-9" codeSystem="2.16.840.1.113883.6.1" displayName="INDICATIONS &amp; USAGE SECTION"/>
+               <title>1 INDICATIONS AND USAGE</title>
+               <text>
+                  <paragraph>LOTEMAX<content styleCode="bold">
+                        <sup>®</sup>
+                     </content> is a corticosteroid indicated for the treatment of post-operative inflammation and pain following ocular surgery.</paragraph>
+               </text>
+               <effectiveTime value="20120901"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <paragraph>LOTEMAX is a corticosteroid indicated for the treatment of post-operative inflammation and pain following ocular surgery. (<linkHtml href="#i4i_indications_id_860cbf98-f196-4743-bf5f-5cc3d7219c6d">1</linkHtml>)</paragraph>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="i4i_dosage_admin_id_2dda1047-8719-433c-af56-83cd70921beb">
+               <id root="3df62dd7-1190-4840-aa39-384e7953d297"/>
+               <code code="34068-7" codeSystem="2.16.840.1.113883.6.1" displayName="DOSAGE &amp; ADMINISTRATION SECTION"/>
+               <title>2 DOSAGE AND ADMINISTRATION</title>
+               <text>
+                  <paragraph>Invert closed bottle and shake once to fill tip before instilling drops.</paragraph>
+                  <paragraph>Apply one to two drops of LOTEMAX into the conjunctival sac of the affected eye four times daily beginning the day after surgery and continuing throughout the first 2 weeks of the post-operative period. </paragraph>
+               </text>
+               <effectiveTime value="20120901"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <paragraph>Invert closed bottle and shake once to fill tip before instilling drops.<br/>
+                           <br/>
+                        </paragraph>
+                        <paragraph>Apply one to two drops of LOTEMAX into the conjunctival sac of the affected eye four times daily beginning the day after surgery and continuing throughout the first 2 weeks of the post-operative period. (<linkHtml href="#i4i_dosage_admin_id_2dda1047-8719-433c-af56-83cd70921beb">2</linkHtml>)</paragraph>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="i4i_dosage_form_strength_id_260e17c8-51cc-48c1-aa38-49cf84dbe83e">
+               <id root="63c3eb4f-bf8f-483a-856f-fef3214955a1"/>
+               <code code="43678-2" codeSystem="2.16.840.1.113883.6.1" displayName="DOSAGE FORMS &amp; STRENGTHS SECTION"/>
+               <title>3 DOSAGE FORMS AND STRENGTHS</title>
+               <text>
+                  <paragraph>LOTEMAX (loteprednol etabonate ophthalmic gel) 0.5% contains 5 mg/g of loteprednol etabonate, as a sterile preserved ophthalmic gel.</paragraph>
+               </text>
+               <effectiveTime value="20120901"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <paragraph>LOTEMAX contains 5 mg/g of loteprednol etabonate, as a sterile preserved ophthalmic gel. (<linkHtml href="#i4i_dosage_form_strength_id_260e17c8-51cc-48c1-aa38-49cf84dbe83e">3</linkHtml>)</paragraph>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="i4i_contraindications_id_19aa3838-f401-443c-a95a-c3d71bc050d1">
+               <id root="bad87fe1-d578-43ad-b6ed-ce7e612bb6dc"/>
+               <code code="34070-3" codeSystem="2.16.840.1.113883.6.1" displayName="CONTRAINDICATIONS SECTION"/>
+               <title>4 CONTRAINDICATIONS</title>
+               <text>
+                  <paragraph>LOTEMAX, as with other ophthalmic corticosteroids, is contraindicated in most viral diseases of the cornea and conjunctiva including epithelial herpes simplex keratitis (dendritic keratitis), vaccinia, and varicella, and also in mycobacterial infection of the eye and fungal diseases of ocular structures.</paragraph>
+               </text>
+               <effectiveTime value="20120901"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <paragraph>LOTEMAX, as with other ophthalmic corticosteroids, is contraindicated in most viral diseases of the cornea and conjunctiva including epithelial herpes simplex keratitis (dendritic keratitis), vaccinia, and varicella, and also in mycobacterial infection of the eye and fungal diseases of ocular structures. (<linkHtml href="#i4i_contraindications_id_19aa3838-f401-443c-a95a-c3d71bc050d1">4</linkHtml>)</paragraph>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="i4i_warnings_precautions_id_7183204f-3d1c-43e1-9020-f6cdd651107a">
+               <id root="20e06705-0daa-4f82-96b3-28b1e97e51f6"/>
+               <code code="43685-7" codeSystem="2.16.840.1.113883.6.1" displayName="WARNINGS AND PRECAUTIONS SECTION"/>
+               <title>5 WARNINGS AND PRECAUTIONS</title>
+               <effectiveTime value="20120901"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <list listType="unordered">
+                           <item>
+                              <caption>•</caption>Intraocular pressure (IOP) increase - Prolonged use of corticosteroids may result in glaucoma with damage to the optic nerve, defects in visual acuity and fields of vision. If this product is used for 10 days or longer, IOP should be monitored. (<linkHtml href="#i4i_section_id_fc45ea3b-ec32-41e7-835c-8b925c422515">5.1</linkHtml>)<br/>
+                              <br/>
+                           </item>
+                           <item>
+                              <caption>•</caption>Cataracts- Use of corticosteroids may result in posterior subcapsular cataract formation. (<linkHtml href="#i4i_section_id_cdccd923-dd18-4000-96c4-2e37db0b89c0">5.2</linkHtml>)<br/>
+                              <br/>
+                           </item>
+                           <item>
+                              <caption>•</caption>Delayed healing–The use of steroids after cataract surgery may delay healing and increase the incidence of bleb formation. In those diseases causing thinning of the cornea or sclera, perforations have been known to occur with the use of topical steroids.  The initial prescription and renewal of the medication order should be made by a physician only after examination of the patient with the aid of magnification such as slit lamp biomicroscopy and, where appropriate, fluorescein staining. (<linkHtml href="#i4i_section_id_317c9a25-fc7c-4fac-bde2-ce3eb4cf313a">5.3</linkHtml>)<br/>
+                              <br/>
+                           </item>
+                           <item>
+                              <caption>•</caption>Bacterial infections–Prolonged use of corticosteroids may suppress the host response and thus increase the hazard of secondary ocular infection. In acute purulent conditions, steroids may mask infection or enhance existing infection. (<linkHtml href="#i4i_section_id_2a638098-f5f0-444d-84b1-2252840f1de0">5.4</linkHtml>)<br/>
+                              <br/>
+                           </item>
+                           <item>
+                              <caption>•</caption>Viral infections–Employment of a corticosteroid medication in the treatment of patients with a history of herpes simplex requires great caution. Use of ocular steroids may prolong the course and may exacerbate the severity of many viral infections of the eye (including herpes simplex). (<linkHtml href="#i4i_section_id_67302d62-f12a-4672-87b6-b4d19c38e5ef">5.5</linkHtml>)<br/>
+                              <br/>
+                           </item>
+                           <item>
+                              <caption>•</caption>Fungal infections–Fungal infections of the cornea are particularly prone to develop coincidentally with long-term local steroid application. Fungus invasion must be considered in any persistent corneal ulceration where a steroid has been used or is in use. (<linkHtml href="#i4i_section_id_2b9b6c85-2611-4f86-855e-d7406c8bbea0">5.6</linkHtml>)</item>
+                        </list>
+                     </text>
+                  </highlight>
+               </excerpt>
+               <component>
+                  <section ID="i4i_section_id_fc45ea3b-ec32-41e7-835c-8b925c422515">
+                     <id root="56777c4a-0249-4007-8b46-7b7a0eb3a848"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>5.1 Intraocular Pressure (IOP) Increase</title>
+                     <text>
+                        <paragraph>Prolonged use of corticosteroids may result in glaucoma with damage to the optic nerve, defects in visual acuity and fields of vision. Steroids should be used with caution in the presence of glaucoma. If this product is used for 10 days or longer, intraocular pressure should be monitored.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="i4i_section_id_cdccd923-dd18-4000-96c4-2e37db0b89c0">
+                     <id root="9280b789-0602-41c8-a0c2-ba3ca3dcab64"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>5.2 Cataracts</title>
+                     <text>
+                        <paragraph>Use of corticosteroids may result in posterior subcapsular cataract formation<content styleCode="bold">.</content>
+                        </paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="i4i_section_id_317c9a25-fc7c-4fac-bde2-ce3eb4cf313a">
+                     <id root="2d8b28da-22ba-4daf-b0a9-ae78b83b6dd2"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>5.3 Delayed Healing</title>
+                     <text>
+                        <paragraph>The use of steroids after cataract surgery may delay healing and increase the incidence of bleb formation. In those diseases causing thinning of the cornea or sclera, perforations have been known to occur with the use of topical steroids. The initial prescription and renewal of the medication order should be made by a physician only after examination of the patient with the aid of magnification such as slit lamp biomicroscopy and, where appropriate, fluorescein staining.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="i4i_section_id_2a638098-f5f0-444d-84b1-2252840f1de0">
+                     <id root="3c49d4a4-e15b-40ab-8070-2ca59da97b28"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>5.4 Bacterial Infections</title>
+                     <text>
+                        <paragraph>Prolonged use of corticosteroids may suppress the host response and thus increase the hazard of secondary ocular infections. In acute purulent conditions of the eye, steroids may mask infection or enhance existing infection.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="i4i_section_id_67302d62-f12a-4672-87b6-b4d19c38e5ef">
+                     <id root="1cf8167a-2f71-4c23-a9ae-99e2be4ddeb9"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>5.5 Viral Infections</title>
+                     <text>
+                        <paragraph>Employment of a corticosteroid medication in the treatment of patients with a history of herpes simplex requires great caution. Use of ocular steroids may prolong the course and may exacerbate the severity of many viral infections of the eye (including herpes simplex).</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="i4i_section_id_2b9b6c85-2611-4f86-855e-d7406c8bbea0">
+                     <id root="96192ff1-f4f7-4c13-b10a-9e4afcd1a7c8"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>5.6 Fungal Infections</title>
+                     <text>
+                        <paragraph>Fungal infections of the cornea are particularly prone to develop coincidentally with long-term local steroid application. Fungus invasion must be considered in any persistent corneal ulceration where a steroid has been used or is in use. Fungal cultures should be taken when appropriate.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="i4i_section_id_96c59267-6184-42eb-880c-98bcae7da708">
+                     <id root="6daea735-0a26-45aa-84b6-cfd8d8d2bc85"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>5.7 Contact Lens Wear</title>
+                     <text>
+                        <paragraph>Patients should not wear contact lenses during their course of therapy with LOTEMAX.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="i4i_adverse_effects_id_674b0b61-3026-490b-a14d-e4113dfbefec">
+               <id root="6eb90a1a-c618-4251-ac81-462285f28d20"/>
+               <code code="34084-4" codeSystem="2.16.840.1.113883.6.1" displayName="ADVERSE REACTIONS SECTION"/>
+               <title>6 ADVERSE REACTIONS</title>
+               <text>
+                  <paragraph>Adverse reactions associated with ophthalmic steroids include elevated intraocular pressure, which may be associated with infrequent optic nerve damage, visual acuity and field defects, posterior subcapsular cataract formation, delayed wound healing and secondary ocular infection from pathogens including herpes simplex, and perforation of the globe where there is thinning of the cornea or sclera.</paragraph>
+                  <paragraph>The most common adverse drug reactions reported were anterior chamber inflammation (5%), eye pain (2%), and foreign body sensation (2%).</paragraph>
+               </text>
+               <effectiveTime value="20120901"/>
+               <excerpt>
+                  <highlight>
+                     <text>
+                        <paragraph> The most common adverse drug reactions were anterior chamber inflammation (5%), eye pain (2%), and foreign body sensation (2%). (<linkHtml href="#i4i_adverse_effects_id_674b0b61-3026-490b-a14d-e4113dfbefec">6</linkHtml>)<br/>
+                           <br/>
+                        </paragraph>
+                        <paragraph>
+                           <content styleCode="bold">To report SUSPECTED ADVERSE REACTIONS, contact Bausch &amp; Lomb at 1-800-323-0000 or FDA at 1-800-FDA-1088 or <linkHtml href="http://www.fda.gov/medwatch">www.fda.gov/medwatch</linkHtml>
+                           </content>
+                        </paragraph>
+                     </text>
+                  </highlight>
+               </excerpt>
+            </section>
+         </component>
+         <component>
+            <section ID="i4i_specific_populations_id_eed2f0d1-99d4-4775-9407-0a0fecaea413">
+               <id root="b161d6f8-5700-45bf-9d8e-980534bc3834"/>
+               <code code="43684-0" codeSystem="2.16.840.1.113883.6.1" displayName="USE IN SPECIFIC POPULATIONS SECTION"/>
+               <title>8 USE IN SPECIFIC POPULATIONS</title>
+               <effectiveTime value="20120901"/>
+               <component>
+                  <section ID="i4i_pregnancy_id_a9825b8a-6d83-4c99-896e-cb77b240fba5">
+                     <id root="2145c6cd-0ae6-4c17-a31d-c5d040da0784"/>
+                     <code code="42228-7" codeSystem="2.16.840.1.113883.6.1" displayName="PREGNANCY SECTION"/>
+                     <title>8.1 Pregnancy</title>
+                     <text>
+                        <paragraph>
+                           <content styleCode="bold">Teratogenic Effects:Pregnancy Category C.</content>
+                        </paragraph>
+                        <paragraph>Loteprednol etabonate has been shown to be embryotoxic (delayed ossification) and teratogenic (increased incidence of meningocele, abnormal left common carotid artery, and limb flexures) when administered orally to rabbits during organogenesis at a dose of 3 mg/kg/day (35 times the maximum daily clinical dose), a dose which caused no maternal toxicity. The no-observed-effect-level (NOEL) for these effects was 0.5 mg/kg/day (6 times the maximum daily clinical dose). Oral treatment of rats during organogenesis resulted in teratogenicity (absent innominate artery at ≥5 mg/kg/day doses, and cleft palate and umbilical hernia at ≥50 mg/kg/day) and embryotoxicity (increased post-implantation losses at 100 mg/kg/day and decreased fetal body weight and skeletal ossification with ≥50 mg/kg/day). Treatment of rats with 0.5 mg/kg/day (6 times the maximum clinical dose) during organogenesis did not result in any reproductive toxicity. Loteprednol etabonate was maternally toxic (significantly reduced body weight gain during treatment) when administered to pregnant rats during organogenesis at doses of ≥5 mg/kg/day.</paragraph>
+                        <paragraph>Oral exposure of female rats to 50 mg/kg/day of loteprednol etabonate from the start of the fetal period through the end of lactation, a maternally toxic treatment regimen (significantly decreased body weight gain), gave rise to decreased growth and survival, and retarded development in the offspring during lactation; the NOEL for these effects was 5 mg/kg/day<content styleCode="bold">. </content>Loteprednol etabonate had no effect on the duration of gestation or parturition when administered orally to pregnant rats at doses up to 50 mg/kg/day during the fetal period.</paragraph>
+                        <paragraph>There are no adequate and well controlled studies in pregnant women.  LOTEMAX<sup>® </sup> should be used during pregnancy only if the potential benefit justifies the potential risk to the fetus.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="i4i_nursing_mothers_id_0e607001-1cd8-4eb6-8009-d6d4b44124f3">
+                     <id root="793bfd79-1dec-470d-af66-5ff13353fdce"/>
+                     <code code="34080-2" codeSystem="2.16.840.1.113883.6.1" displayName="NURSING MOTHERS SECTION"/>
+                     <title>8.3 Nursing Mothers</title>
+                     <text>
+                        <paragraph>It is not known whether topical ophthalmic administration of corticosteroids could result in sufficient systemic absorption to produce detectable quantities in human milk. Systemic steroids appear in human milk and could suppress growth, interfere with endogenous corticosteroid production, or cause other untoward effects. Caution should be exercised when LOTEMAX is administered to a nursing woman.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="i4i_pediatric_use_id_811d1ddb-3468-40b4-bbab-919614590047">
+                     <id root="6cbac74a-4362-417d-8c0c-6e4239a2be37"/>
+                     <code code="34081-0" codeSystem="2.16.840.1.113883.6.1" displayName="PEDIATRIC USE SECTION"/>
+                     <title>8.4 Pediatric Use</title>
+                     <text>
+                        <paragraph>Safety and effectiveness in pediatric patients have not been established.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="i4i_geriatric_use_id_f99eda2e-9a55-4bfc-8fb4-9b4547d9a05a">
+                     <id root="552965cc-362b-4c82-9c52-8337c06e3c1a"/>
+                     <code code="34082-8" codeSystem="2.16.840.1.113883.6.1" displayName="GERIATRIC USE SECTION"/>
+                     <title>8.5 Geriatric Use</title>
+                     <text>
+                        <paragraph>No overall differences in safety and effectiveness have been observed between elderly and younger patients.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="i4i_description_id_2b605400-34f7-440a-ab73-deedfa9fef47">
+               <id root="ac4ea89e-169b-4936-aa77-396810595184"/>
+               <code code="34089-3" codeSystem="2.16.840.1.113883.6.1" displayName="DESCRIPTION SECTION"/>
+               <title>11 DESCRIPTION</title>
+               <text>
+                  <paragraph>LOTEMAX (loteprednol etabonate ophthalmic gel) 0.5% contains a sterile, topical corticosteroid for ophthalmic use. Loteprednol etabonate is a white to off-white powder.</paragraph>
+                  <paragraph>Loteprednol etabonate is represented by the following structural formula:</paragraph>
+                  <renderMultiMedia ID="id459" referencedObject="ID_1ac52957-5b05-4e01-9617-319f61b6ee9a"/>
+                  <paragraph>Chemical Name:</paragraph>
+                  <paragraph>chloromethyl 17α-[(ethoxycarbonyl)oxy]-11β-hydroxy-3-oxoandrosta-1,4-diene-17β-carboxylate</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Each gram contains:</content>
+                  </paragraph>
+                  <paragraph>ACTIVE: Loteprednol Etabonate 5 mg (0.5%);</paragraph>
+                  <paragraph>INACTIVES: Boric acid, edetate disodium dihydrate, glycerin, polycarbophil, propylene glycol, sodium chloride, tyloxapol, water for injection, and sodium hydroxide to adjust to a pH of between 6 and 7.</paragraph>
+                  <paragraph>PRESERVATIVE: benzalkonium chloride 0.003%.</paragraph>
+               </text>
+               <effectiveTime value="20120901"/>
+               <component>
+                  <observationMedia ID="ID_1ac52957-5b05-4e01-9617-319f61b6ee9a">
+                     <text>Loteprednol etabonate structural formula</text>
+                     <value mediaType="image/jpeg" xsi:type="ED">
+                        <reference value="9a666065-d467-42b8-8ecd-0ec1de9986d5-01.jpg"/>
+                     </value>
+                  </observationMedia>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="i4i_clinical_pharmacology_id_e50b7f8f-9bea-4f9e-99c6-30a391b00dba">
+               <id root="1602e182-d03e-4f19-8b7b-b0791b507ad1"/>
+               <code code="34090-1" codeSystem="2.16.840.1.113883.6.1" displayName="CLINICAL PHARMACOLOGY SECTION"/>
+               <title>12 CLINICAL PHARMACOLOGY</title>
+               <effectiveTime value="20120901"/>
+               <component>
+                  <section ID="i4i_mechanism_action_id_ca4cc77d-c034-44de-ba88-635fa2f73090">
+                     <id root="3a55e943-a1f1-4ff7-844f-148e77a79776"/>
+                     <code code="43679-0" codeSystem="2.16.840.1.113883.6.1" displayName="MECHANISM OF ACTION SECTION"/>
+                     <title>12.1 Mechanism of Action</title>
+                     <text>
+                        <paragraph>Corticosteroids inhibit the inflammatory response to a variety of inciting agents and probably delay or slow healing. They inhibit the edema, fibrin deposition, capillary dilation, leukocyte migration, capillary proliferation, fibroblast proliferation, deposition of collagen, and scar formation associated with inflammation. While glucocorticoids are known to bind to and activate the glucocorticoid receptor, the molecular mechanisms involved in glucocorticoid/glucocorticoid receptor-dependent modulation of inflammation are not clearly established.  However, corticosteroids are thought to inhibit prostaglandin production through several independent mechanisms.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="i4i_pharmacokinetics_id_c7185617-4dab-4f60-aec8-609c8d4e97f9">
+                     <id root="c00c736b-767b-48cc-98fd-f0484378e8ce"/>
+                     <code code="43682-4" codeSystem="2.16.840.1.113883.6.1" displayName="PHARMACOKINETICS SECTION"/>
+                     <title>12.3 Pharmacokinetics</title>
+                     <text>
+                        <paragraph>Loteprednol is lipid soluble and can penetrate into cells.  Loteprednol etabonate is synthesized through structural modifications of prednisolone-related compounds so that it will undergo a predictable transformation to an inactive metabolite. Based upon <content styleCode="italics">in vivo </content>and <content styleCode="italics">in vitro </content>preclinical metabolism studies, loteprednol etabonate undergoes extensive metabolism to the inactive carboxylic acid metabolites, PJ-91 and PJ-90. The systemic exposure to loteprednol etabonate following ocular administration of LOTEMAX has not been studied in humans.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="i4i_nonclinical_toxicology_id_4a73d5b1-1fdb-492e-9050-cdd1ab9a18d3">
+               <id root="3c0eafdd-2b5d-453c-a2e4-0bf9df5c9208"/>
+               <code code="43680-8" codeSystem="2.16.840.1.113883.6.1" displayName="NONCLINICAL TOXICOLOGY SECTION"/>
+               <title>13 NONCLINICAL TOXICOLOGY</title>
+               <effectiveTime value="20120901"/>
+               <component>
+                  <section ID="i4i_carcinogenesis_mutagenesis_fertility_id_b8f923e5-317b-404e-b7c6-851b08da3ac1">
+                     <id root="e0251343-c1cd-4f9b-bd5a-3b754de30d3f"/>
+                     <code code="34083-6" codeSystem="2.16.840.1.113883.6.1" displayName="CARCINOGENESIS &amp; MUTAGENESIS &amp; IMPAIRMENT OF FERTILITY SECTION"/>
+                     <title>13.1 Carcinogenesis, Mutagenesis, Impairment of Fertility</title>
+                     <text>
+                        <paragraph>Long-term animal studies have not been conducted to evaluate the carcinogenic potential of loteprednol etabonate.  Loteprednol etabonate was not genotoxic <content styleCode="italics">in vitro </content>in the Ames test, the mouse lymphoma tk assay, or in a chromosome aberration test in human lymphocytes, or <content styleCode="italics">in vivo </content>in the single dose mouse micronucleus assay. Treatment of male and female rats with up to 50 mg/kg/day and 25 mg/kg/day of loteprednol etabonate, respectively, (600 and 300 times the maximum clinical dose, respectively) prior to and during mating did not impair fertility in either gender.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="i4i_clinical_studies_id_443f2a57-bde2-48a0-9c0d-ab5ba552e8b6">
+               <id root="f95e586f-4e4b-4ef9-85eb-074204669dad"/>
+               <code code="34092-7" codeSystem="2.16.840.1.113883.6.1" displayName="CLINICAL STUDIES SECTION"/>
+               <title>14 CLINICAL STUDIES</title>
+               <text>
+                  <paragraph>In two randomized, multicenter, double-masked, parallel-group, vehicle-controlled studies in 813 subjects with, post-operative inflammation, LOTEMAX was more effective compared to its vehicle in resolving anterior chamber inflammation and pain following cataract surgery. Primary endpoints were complete resolution of anterior chamber cells (cell count of 0) and no pain at post-operative day 8. </paragraph>
+                  <paragraph>In these studies, LOTEMAX had a statistically significant higher incidence of subjects with complete clearing of anterior chamber cells (31% vs. 14-16%)  and were pain free at post-operative day 8 (73-76% vs. 42-46%).</paragraph>
+               </text>
+               <effectiveTime value="20120901"/>
+            </section>
+         </component>
+         <component>
+            <section ID="i4i_how_supplied_id_7548bea6-ecd6-445c-9ad5-dfff5cab12ae">
+               <id root="2774244d-7685-4d08-9bf9-e20d1dc26bbd"/>
+               <code code="34069-5" codeSystem="2.16.840.1.113883.6.1" displayName="HOW SUPPLIED SECTION"/>
+               <title>16 HOW SUPPLIED/STORAGE AND HANDLING</title>
+               <text>
+                  <paragraph>LOTEMAX<content styleCode="bold">
+                        <sup>®</sup>
+                     </content> (loteprednol etabonate ophthalmic gel) 0.5% is a sterile ophthalmic gel supplied in a white low density polyethylene plastic bottle with a white controlled drop tip and a pink polypropylene cap in the following size:</paragraph>
+                  <paragraph>5 g in a 10 mL bottle (NDC 24208-503-07)</paragraph>
+                  <paragraph>Use only if imprinted neckband is intact.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Storage:</content> Store upright at 15º-25º C (59º-77º F).</paragraph>
+               </text>
+               <effectiveTime value="20120901"/>
+            </section>
+         </component>
+         <component>
+            <section ID="i4i_info_patients_id_98c487d2-da54-44dd-b55f-d3b6848fcb1e">
+               <id root="22f31940-08bd-47ae-88aa-4309a024c3fb"/>
+               <code code="34076-0" codeSystem="2.16.840.1.113883.6.1" displayName="INFORMATION FOR PATIENTS SECTION"/>
+               <title>17 PATIENT COUNSELING INFORMATION</title>
+               <effectiveTime value="20120901"/>
+               <component>
+                  <section ID="i4i_section_id_4f15569f-52d3-4ba7-88ff-cb3801bea145">
+                     <id root="4dc8c06c-86b0-46a7-98f3-ac39d7c8011e"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>17.1 Administration</title>
+                     <text>
+                        <paragraph>Invert closed bottle and shake once to fill tip before instilling drops.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="i4i_section_id_35672cba-d31f-4738-9f27-4ea26ed09d44">
+                     <id root="6842d3a2-aa08-45f0-8c7e-cdeff846bd46"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>17.2 Risk of Contamination</title>
+                     <text>
+                        <paragraph>Patients should be advised not to allow the dropper tip to touch any surface, as this may contaminate the gel.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="i4i_section_id_56ee978b-82d7-4b8d-a5dd-36f9d4d00b5e">
+                     <id root="b1d2d35e-34e8-473b-86b7-6624a1f6cd12"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>17.3 Contact Lens Wear</title>
+                     <text>
+                        <paragraph>Patients should be advised not to wear contact lenses when using LOTEMAX.</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="i4i_section_id_02477c37-305e-499a-b6f9-e01460a575ff">
+                     <id root="8117877b-650a-4db1-9c1c-79e944c5262c"/>
+                     <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+                     <title>17.4 Risk of Secondary Infection</title>
+                     <text>
+                        <paragraph>If pain develops, redness, itching or inflammation becomes aggravated, the patient should be advised to consult a physician.<br/>
+                           <br/>
+                           <br/>
+                           <br/>
+                        </paragraph>
+                        <paragraph>Bausch &amp; Lomb Incorporated<br/>Tampa, Florida 33637 USA</paragraph>
+                        <paragraph>US Patent No. 5,800,807</paragraph>
+                        <paragraph>©Bausch &amp; Lomb Incorporated<br/>®/™ are trademarks of Bausch &amp; Lomb Incorporated or its affiliates.</paragraph>
+                        <paragraph>Reference ID: 3196435</paragraph>
+                        <paragraph>9269100 Flat</paragraph>
+                        <paragraph>9269200 Folded</paragraph>
+                     </text>
+                     <effectiveTime value="20120901"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="i4i_Principal_display_panel_id_8746597c-7b19-483e-b439-617ee180489e">
+               <id root="4eccd620-c1b6-4f88-b3c4-82503cf86e4e"/>
+               <code code="51945-4" codeSystem="2.16.840.1.113883.6.1" displayName="PACKAGE LABEL.PRINCIPAL DISPLAY PANEL"/>
+               <title>PACKAGE/LABEL PRINCIPAL DISPLAY PANEL</title>
+               <text>
+                  <renderMultiMedia ID="id603" referencedObject="ID_77fcf158-11d4-4a50-9830-4e1d676ae113"/>
+                  <paragraph>NDC 24208-503-07</paragraph>
+                  <paragraph>BAUSCH + LOMB</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">LOTEMAX<sup>®</sup>
+                     </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">loteprednol etabonate</content>
+                     <br/>
+                     <content styleCode="bold">ophthalmic gel 0.5%</content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Sterile</content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Rx only</content>
+                  </paragraph>
+                  <paragraph>5 g</paragraph>
+               </text>
+               <effectiveTime value="20120901"/>
+               <component>
+                  <observationMedia ID="ID_77fcf158-11d4-4a50-9830-4e1d676ae113">
+                     <text>LOTEMAX® (loteprednol etabonate ophthalmic gel) 0.5% label</text>
+                     <value mediaType="image/jpeg" xsi:type="ED">
+                        <reference value="9a666065-d467-42b8-8ecd-0ec1de9986d5-02.jpg"/>
+                     </value>
+                  </observationMedia>
+               </component>
+            </section>
+         </component>
+      </structuredBody>
+   </component>
+</document>

@@ -1,0 +1,1014 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="http://www.accessdata.fda.gov/spl/stylesheet/spl.xsl" type="text/xsl"?>
+<document xmlns="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 http://www.accessdata.fda.gov/spl/schema/spl.xsd">
+   <id root="6504ab07-faa1-4103-a71c-02619bc6e01e"/>
+   <code code="34391-3" codeSystem="2.16.840.1.113883.6.1" displayName="HUMAN PRESCRIPTION DRUG LABEL"/>
+   <title>Methylphenidate Hydrochloride Oral Solution, 5 mg/5 mL CII<br/>Methylphenidate Hydrochloride Oral Solution, 10 mg/5 mL CII<br/>Rx Only</title>
+   <effectiveTime value="20191204"/>
+   <setId root="57fd619e-687d-403c-a77a-3dc3a1bab65a"/>
+   <versionNumber value="3"/>
+   <author>
+      <time/>
+      <assignedEntity>
+         <representedOrganization>
+            <id extension="089153071" root="1.3.6.1.4.1.519.1"/>
+            <name>Lupin Pharmaceuticals,Inc.</name>
+            <assignedEntity>
+               <assignedOrganization>
+                  <id extension="793518643" root="1.3.6.1.4.1.519.1"/>
+                  <name>Novel Laboratories, Inc.</name>
+                  <assignedEntity>
+                     <assignedOrganization>
+                        <id extension="793518643" root="1.3.6.1.4.1.519.1"/>
+                        <name>Novel Laboratories, Inc.</name>
+                     </assignedOrganization>
+                     <performance>
+                        <actDefinition>
+                           <code code="C25391" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="ANALYSIS"/>
+                           <product>
+                              <manufacturedProduct classCode="MANU">
+                                 <manufacturedMaterialKind>
+                                    <code code="43386-930" codeSystem="2.16.840.1.113883.6.69"/>
+                                 </manufacturedMaterialKind>
+                              </manufacturedProduct>
+                           </product>
+                        </actDefinition>
+                     </performance>
+                     <performance>
+                        <actDefinition>
+                           <code code="C25391" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="ANALYSIS"/>
+                           <product>
+                              <manufacturedProduct classCode="MANU">
+                                 <manufacturedMaterialKind>
+                                    <code code="43386-931" codeSystem="2.16.840.1.113883.6.69"/>
+                                 </manufacturedMaterialKind>
+                              </manufacturedProduct>
+                           </product>
+                        </actDefinition>
+                     </performance>
+                     <performance>
+                        <actDefinition>
+                           <code code="C43360" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="MANUFACTURE"/>
+                           <product>
+                              <manufacturedProduct classCode="MANU">
+                                 <manufacturedMaterialKind>
+                                    <code code="43386-930" codeSystem="2.16.840.1.113883.6.69"/>
+                                 </manufacturedMaterialKind>
+                              </manufacturedProduct>
+                           </product>
+                        </actDefinition>
+                     </performance>
+                     <performance>
+                        <actDefinition>
+                           <code code="C43360" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="MANUFACTURE"/>
+                           <product>
+                              <manufacturedProduct classCode="MANU">
+                                 <manufacturedMaterialKind>
+                                    <code code="43386-931" codeSystem="2.16.840.1.113883.6.69"/>
+                                 </manufacturedMaterialKind>
+                              </manufacturedProduct>
+                           </product>
+                        </actDefinition>
+                     </performance>
+                     <performance>
+                        <actDefinition>
+                           <code code="C84731" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="PACK"/>
+                           <product>
+                              <manufacturedProduct classCode="MANU">
+                                 <manufacturedMaterialKind>
+                                    <code code="43386-930" codeSystem="2.16.840.1.113883.6.69"/>
+                                 </manufacturedMaterialKind>
+                              </manufacturedProduct>
+                           </product>
+                        </actDefinition>
+                     </performance>
+                     <performance>
+                        <actDefinition>
+                           <code code="C84731" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="PACK"/>
+                           <product>
+                              <manufacturedProduct classCode="MANU">
+                                 <manufacturedMaterialKind>
+                                    <code code="43386-931" codeSystem="2.16.840.1.113883.6.69"/>
+                                 </manufacturedMaterialKind>
+                              </manufacturedProduct>
+                           </product>
+                        </actDefinition>
+                     </performance>
+                  </assignedEntity>
+               </assignedOrganization>
+            </assignedEntity>
+         </representedOrganization>
+      </assignedEntity>
+   </author>
+   <component>
+      <structuredBody>
+         <component>
+            <section>
+               <id root="fc56ef1b-d091-40c4-873d-58d11d954b27"/>
+               <code code="48780-1" codeSystem="2.16.840.1.113883.6.1" displayName="SPL Product Data Elements Section"/>
+               <effectiveTime value="20191204"/>
+               <subject>
+                  <manufacturedProduct>
+                     <manufacturedProduct>
+                        <code code="43386-930" codeSystem="2.16.840.1.113883.6.69"/>
+                        <name>Methylphenidate Hydrochloride</name>
+                        <formCode code="C42986" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="SOLUTION"/>
+                        <asEntityWithGeneric>
+                           <genericMedicine>
+                              <name>Methylphenidate Hydrochloride</name>
+                           </genericMedicine>
+                        </asEntityWithGeneric>
+                        <ingredient classCode="ACTIB">
+                           <quantity>
+                              <numerator value="5" unit="mg"/>
+                              <denominator value="5" unit="mL"/>
+                           </quantity>
+                           <ingredientSubstance>
+                              <code code="4B3SC438HI" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>METHYLPHENIDATE HYDROCHLORIDE</name>
+                              <activeMoiety>
+                                 <activeMoiety>
+                                    <code code="207ZZ9QZ49" codeSystem="2.16.840.1.113883.4.9"/>
+                                    <name>METHYLPHENIDATE</name>
+                                 </activeMoiety>
+                              </activeMoiety>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="OJ4Z5Z32L4" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>POLYETHYLENE GLYCOL 1450</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="PDC6A3C0OX" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>GLYCERIN</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="E4GA8884NN" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>PHOSPHORIC ACID</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="6X543N684K" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>GRAPE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="059QF0KO0R" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>WATER</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <asContent>
+                           <quantity>
+                              <numerator value="500" unit="mL"/>
+                              <denominator value="1"/>
+                           </quantity>
+                           <containerPackagedProduct>
+                              <code code="43386-930-05" codeSystem="2.16.840.1.113883.6.69"/>
+                              <formCode code="C43169" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="BOTTLE"/>
+                           </containerPackagedProduct>
+                           <subjectOf>
+                              <marketingAct>
+                                 <code code="C53292" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                                 <statusCode code="active"/>
+                                 <effectiveTime>
+                                    <low value="20151215"/>
+                                 </effectiveTime>
+                              </marketingAct>
+                           </subjectOf>
+                           <subjectOf>
+                              <characteristic classCode="OBS">
+                                 <code code="SPLCMBPRDTP" codeSystem="2.16.840.1.113883.1.11.19255"/>
+                                 <value code="C112160" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="Type 0: Not a Combination Product" xsi:type="CE"/>
+                              </characteristic>
+                           </subjectOf>
+                        </asContent>
+                     </manufacturedProduct>
+                     <subjectOf>
+                        <approval>
+                           <id extension="ANDA204602" root="2.16.840.1.113883.3.150"/>
+                           <code code="C73584" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="ANDA"/>
+                           <author>
+                              <territorialAuthority>
+                                 <territory>
+                                    <code code="USA" codeSystem="2.16.840.1.113883.5.28"/>
+                                 </territory>
+                              </territorialAuthority>
+                           </author>
+                        </approval>
+                     </subjectOf>
+                     <subjectOf>
+                        <marketingAct>
+                           <code code="C53292" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                           <statusCode code="active"/>
+                           <effectiveTime>
+                              <low value="20151215"/>
+                           </effectiveTime>
+                        </marketingAct>
+                     </subjectOf>
+                     <subjectOf>
+                        <policy classCode="DEADrugSchedule">
+                           <code code="C48675" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="CII"/>
+                        </policy>
+                     </subjectOf>
+                     <subjectOf>
+                        <characteristic classCode="OBS">
+                           <code code="SPLFLAVOR" codeSystem="2.16.840.1.113883.1.11.19255"/>
+                           <value code="C73391" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="GRAPE" xsi:type="CE"/>
+                        </characteristic>
+                     </subjectOf>
+                     <consumedIn>
+                        <substanceAdministration>
+                           <routeCode code="C38288" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="ORAL"/>
+                        </substanceAdministration>
+                     </consumedIn>
+                  </manufacturedProduct>
+               </subject>
+               <subject>
+                  <manufacturedProduct>
+                     <manufacturedProduct>
+                        <code code="43386-931" codeSystem="2.16.840.1.113883.6.69"/>
+                        <name>Methylphenidate Hydrochloride</name>
+                        <formCode code="C42986" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="SOLUTION"/>
+                        <asEntityWithGeneric>
+                           <genericMedicine>
+                              <name>Methylphenidate Hydrochloride</name>
+                           </genericMedicine>
+                        </asEntityWithGeneric>
+                        <ingredient classCode="ACTIB">
+                           <quantity>
+                              <numerator value="10" unit="mg"/>
+                              <denominator value="5" unit="mL"/>
+                           </quantity>
+                           <ingredientSubstance>
+                              <code code="4B3SC438HI" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>METHYLPHENIDATE HYDROCHLORIDE</name>
+                              <activeMoiety>
+                                 <activeMoiety>
+                                    <code code="207ZZ9QZ49" codeSystem="2.16.840.1.113883.4.9"/>
+                                    <name>METHYLPHENIDATE</name>
+                                 </activeMoiety>
+                              </activeMoiety>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="OJ4Z5Z32L4" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>POLYETHYLENE GLYCOL 1450</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="PDC6A3C0OX" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>GLYCERIN</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="E4GA8884NN" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>PHOSPHORIC ACID</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="6X543N684K" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>GRAPE</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <ingredient classCode="IACT">
+                           <ingredientSubstance>
+                              <code code="059QF0KO0R" codeSystem="2.16.840.1.113883.4.9"/>
+                              <name>WATER</name>
+                           </ingredientSubstance>
+                        </ingredient>
+                        <asContent>
+                           <quantity>
+                              <numerator value="500" unit="mL"/>
+                              <denominator value="1"/>
+                           </quantity>
+                           <containerPackagedProduct>
+                              <code code="43386-931-05" codeSystem="2.16.840.1.113883.6.69"/>
+                              <formCode code="C43169" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="BOTTLE"/>
+                           </containerPackagedProduct>
+                           <subjectOf>
+                              <marketingAct>
+                                 <code code="C53292" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                                 <statusCode code="active"/>
+                                 <effectiveTime>
+                                    <low value="20151215"/>
+                                 </effectiveTime>
+                              </marketingAct>
+                           </subjectOf>
+                           <subjectOf>
+                              <characteristic classCode="OBS">
+                                 <code code="SPLCMBPRDTP" codeSystem="2.16.840.1.113883.1.11.19255"/>
+                                 <value code="C112160" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="Type 0: Not a Combination Product" xsi:type="CE"/>
+                              </characteristic>
+                           </subjectOf>
+                        </asContent>
+                     </manufacturedProduct>
+                     <subjectOf>
+                        <approval>
+                           <id extension="ANDA204602" root="2.16.840.1.113883.3.150"/>
+                           <code code="C73584" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="ANDA"/>
+                           <author>
+                              <territorialAuthority>
+                                 <territory>
+                                    <code code="USA" codeSystem="2.16.840.1.113883.5.28"/>
+                                 </territory>
+                              </territorialAuthority>
+                           </author>
+                        </approval>
+                     </subjectOf>
+                     <subjectOf>
+                        <marketingAct>
+                           <code code="C53292" codeSystem="2.16.840.1.113883.3.26.1.1"/>
+                           <statusCode code="active"/>
+                           <effectiveTime>
+                              <low value="20151215"/>
+                           </effectiveTime>
+                        </marketingAct>
+                     </subjectOf>
+                     <subjectOf>
+                        <policy classCode="DEADrugSchedule">
+                           <code code="C48675" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="CII"/>
+                        </policy>
+                     </subjectOf>
+                     <subjectOf>
+                        <characteristic classCode="OBS">
+                           <code code="SPLFLAVOR" codeSystem="2.16.840.1.113883.1.11.19255"/>
+                           <value code="C73391" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="GRAPE" xsi:type="CE"/>
+                        </characteristic>
+                     </subjectOf>
+                     <consumedIn>
+                        <substanceAdministration>
+                           <routeCode code="C38288" codeSystem="2.16.840.1.113883.3.26.1.1" displayName="ORAL"/>
+                        </substanceAdministration>
+                     </consumedIn>
+                  </manufacturedProduct>
+               </subject>
+            </section>
+         </component>
+         <component>
+            <section ID="ID2">
+               <id root="1090da2d-f9c9-4144-a889-a4a042b6de59"/>
+               <code code="34089-3" codeSystem="2.16.840.1.113883.6.1" displayName="DESCRIPTION SECTION"/>
+               <title>DESCRIPTION</title>
+               <text>
+                  <paragraph ID="ID47">Methylphenidate HCl oral solution, is a mild central nervous system (CNS) stimulant, available as 5 mg/5 mL and 10 mg/5 mL oral solutions for oral administration. Methylphenidate hydrochloride is methyl α-phenyl-2-piperidineacetate hydrochloride, and its structural formula is</paragraph>
+                  <renderMultiMedia referencedObject="MM1"/>
+                  <paragraph ID="ID49">Methylphenidate hydrochloride USP is a white to off white powder.  It is soluble in water,  alcohol, and chloroform.</paragraph>
+                  <paragraph>Each mL of Methylphenidate Hydrochloride Oral Solution 5 mg/5 mL contains 1 mg of methylphenidate hydrochloride USP.</paragraph>
+                  <paragraph>Each mL of Methylphenidate Hydrochloride Oral Solution 10 mg/5 mL contains 2 mg of methylphenidate hydrochloride USP.</paragraph>
+                  <paragraph>In addition, Methylphenidate Hydrochloride Oral Solution also contains the following inactive ingredients: PEG 1450, glycerin, phosphoric acid, grape flavor, and purified water.</paragraph>
+               </text>
+               <effectiveTime value="20171031"/>
+               <component>
+                  <observationMedia ID="MM1">
+                     <text>C:\Users\LdeepthI\Desktop\meth-oral-sol\methyl-strctre.jpg</text>
+                     <value xsi:type="ED" mediaType="image/jpeg">
+                        <reference value="06b6e9cf-a3fa-4ce7-b781-10d15bc071b0-01.jpg"/>
+                     </value>
+                  </observationMedia>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="ID3">
+               <id root="ca27d83d-0587-47d7-a8ce-c99c79788935"/>
+               <code code="34090-1" codeSystem="2.16.840.1.113883.6.1" displayName="CLINICAL PHARMACOLOGY SECTION"/>
+               <title>CLINICAL PHARMACOLOGY</title>
+               <text>
+                  <paragraph ID="ID50">Methylphenidate is a racemic mixture comprised of the <content styleCode="italics">d-</content> and <content styleCode="italics">l-threo</content> enantiomers. The <content styleCode="italics">d-threo</content> enantiomer is more pharmacologically active than the <content styleCode="italics">l-threo</content> enantiomer.</paragraph>
+                  <paragraph>Methylphenidate HCl is a central nervous system (CNS) stimulant.</paragraph>
+                  <paragraph>The mode of therapeutic action in humans is not completely understood, but methylphenidate presumably activates the brain stem arousal system and cortex to produce its stimulant effect. Methylphenidate is thought to block the reuptake of norepinephrine and dopamine into the presynaptic neuron and increase the release of these monoamines into the extraneuronal space.</paragraph>
+                  <paragraph>There is neither specific evidence which clearly establishes the mechanism whereby Methylphenidate Hydrochloride produces its mental and behavioral effects in children, nor conclusive evidence regarding how these effects relate to the condition of the central nervous system.</paragraph>
+               </text>
+               <effectiveTime value="20160106"/>
+               <component>
+                  <section ID="ID4">
+                     <id root="f1b9d0e5-e0b3-4f38-8ee8-a81f6d42ffe9"/>
+                     <code code="43682-4" codeSystem="2.16.840.1.113883.6.1" displayName="PHARMACOKINETICS SECTION"/>
+                     <title>Pharmacokinetics</title>
+                     <text>
+                        <paragraph ID="ID86">
+                           <content styleCode="bold">Absorption </content>
+                        </paragraph>
+                        <paragraph>Methylphenidate Hydrochloride Oral Solution is readily absorbed. Following oral administration of Methylphenidate Hydrochloride Oral Solution, peak plasma methylphenidate concentrations are achieved at 1 to 2 hours. Methylphenidate Hydrochloride Oral Solution has been shown to be bioequivalent to Ritalin® tablet. The mean C<sub>max</sub> following a 20 mg dose is approximately 9 ng/mL.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Food Effect </content>
+                        </paragraph>
+                        <paragraph>In a study in adult volunteers to investigate the effects of a high-fat meal on the bioavailability of Methylphenidate Hydrochloride Oral Solution at a dose of 20 mg, the presence of food delayed the peak by approximately 1 hour (1.7 hours, fasted and 2.7 hours, fed). Overall, a high-fat meal increased the C<sub>max </sub>of Methylphenidate Hydrochloride Oral Solution by about 13% and the AUC by about 25%, on average. Through a cross-study comparison, the magnitude of increase in C<sub>max</sub> and AUC is found to be comparable between the Methylphenidate Hydrochloride Oral Solution and Ritalin®, the immediate release tablet.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Metabolism and Excretion </content>
+                        </paragraph>
+                        <paragraph>In humans, methylphenidate is metabolized primarily via deesterification to alpha-phenylpiperidine acetic acid (PPA, ritalinic acid). The metabolite has little or no pharmacologic activity.</paragraph>
+                        <paragraph>After oral dosing of radiolabeled methylphenidate in humans, about 90% of the radioactivity was recovered in urine. The main urinary metabolite was PPA, accounting for approximately 80% of the dose.</paragraph>
+                        <paragraph>The pharmacokinetics of the Methylphenidate Hydrochloride Oral Solution have been studied in healthy adult volunteers. The mean terminal half-life (t<sub>½</sub>) of methylphenidate following administration of 20 mg Methylphenidate Hydrochloride (t<sub>½</sub> = 2.7 hours) is comparable to the mean terminal t<sub>½</sub> following administration of Ritalin® (methylphenidate hydrochloride immediate-release tablets) (t<sub>½</sub> = 2.8h) in healthy adult volunteers.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Special Populations </content>
+                        </paragraph>
+                        <paragraph>
+                           <content styleCode="underline">Gender </content>– The effect of gender on the pharmacokinetics of methylphenidate after Methylphenidate Hydrochloride Oral Solution administration has not been studied.</paragraph>
+                        <paragraph>
+                           <content styleCode="underline">Race</content> – The influence of race on the pharmacokinetics of methylphenidate after Methylphenidate Hydrochloride Oral Solution administration has not been studied.</paragraph>
+                        <paragraph>
+                           <content styleCode="underline">Age</content> – The pharmacokinetics of methylphenidate after Methylphenidate Hydrochloride Oral Solution administration have not been studied in pediatrics.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Renal Insufficiency </content>
+                        </paragraph>
+                        <paragraph>There is no experience with the use of Methylphenidate Hydrochloride Oral Solution in patients with renal insufficiency. After oral administration of radiolabeled methylphenidate in humans, methylphenidate was extensively metabolized and approximately 80% of the radioactivity was excreted in the urine in the form of ritalinic acid. Since renal clearance is not an important route of methylphenidate clearance, renal insufficiency is expected to have little effect on the pharmacokinetics of Methylphenidate Hydrochloride Oral Solution.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Hepatic Insufficiency </content>
+                        </paragraph>
+                        <paragraph>There is no experience with the use of Methylphenidate Hydrochloride Oral Solution in patients with hepatic insufficiency.</paragraph>
+                     </text>
+                     <effectiveTime value="20160106"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="ID5">
+               <id root="e4c0d18b-900e-4c1e-9a8e-576ec9310551"/>
+               <code code="34067-9" codeSystem="2.16.840.1.113883.6.1" displayName="INDICATIONS &amp; USAGE SECTION"/>
+               <title>INDICATIONS AND USAGE</title>
+               <text>
+                  <paragraph ID="ID51">
+                     <content styleCode="bold">Attention Deficit Disorders, Narcolepsy </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Attention Deficit Disorders</content> (previously known as Minimal Brain Dysfunction in Children). Other terms being used to describe the behavioral syndrome below include: Hyperkinetic Child Syndrome, Minimal Brain Damage, Minimal Cerebral Dysfunction, Minor Cerebral Dysfunction.</paragraph>
+                  <paragraph>Methylphenidate Hydrochloride is indicated as an integral part of a total treatment program which typically includes other remedial measures (psychological, educational, social) for a stabilizing effect in children with a behavioral syndrome characterized by the following group of developmentally inappropriate symptoms: moderate-to-severe distractibility, short attention span, hyperactivity, emotional lability, and impulsivity. The diagnosis of this syndrome should not be made with finality when these symptoms are only of comparatively recent origin. Nonlocalizing (soft) neurological signs, learning disability, and abnormal EEG may or may not be present, and a diagnosis of central nervous system dysfunction may or may not be warranted.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Special Diagnostic Considerations </content>
+                  </paragraph>
+                  <paragraph>Specific etiology of this syndrome is unknown, and there is no single diagnostic test. Adequate diagnosis requires the use not only of medical but of special psychological, educational, and social resources.</paragraph>
+                  <paragraph>Characteristics commonly reported include: chronic history of short attention span, distractibility, emotional lability, impulsivity, and moderate-to-severe hyperactivity; minor neurological signs and abnormal EEG. Learning may or may not be impaired. The diagnosis must be based upon a complete history and evaluation of the child and not solely on the presence of one or more of these characteristics.</paragraph>
+                  <paragraph>Drug treatment is not indicated for all children with this syndrome. Stimulants are not intended for use in the child who exhibits symptoms secondary to environmental factors and/or primary psychiatric disorders, including psychosis. Appropriate educational placement is essential and psychosocial intervention is generally necessary. When remedial measures alone are insufficient, the decision to prescribe stimulant medication will depend upon the physician's assessment of the chronicity and severity of the child's symptoms.</paragraph>
+               </text>
+               <effectiveTime value="20160106"/>
+            </section>
+         </component>
+         <component>
+            <section ID="ID6">
+               <id root="1777b95c-edc4-4fd7-9629-95a767d2569c"/>
+               <code code="34070-3" codeSystem="2.16.840.1.113883.6.1" displayName="CONTRAINDICATIONS SECTION"/>
+               <title>CONTRAINDICATIONS</title>
+               <text>
+                  <paragraph ID="ID52">Marked anxiety, tension, and agitation are contraindications to Methylphenidate Hydrochloride, since the drug may aggravate these symptoms. Methylphenidate Hydrochloride is contraindicated also in patients known to be hypersensitive to the drug, in patients with glaucoma, and in patients with motor tics or with a family history or diagnosis of Tourette's syndrome.</paragraph>
+                  <paragraph>Methylphenidate Hydrochloride is contraindicated during treatment with monoamine oxidase inhibitors, and also within a minimum of 14 days following discontinuation of a monoamine oxidase inhibitor (hypertensive crises may result).</paragraph>
+               </text>
+               <effectiveTime value="20160106"/>
+            </section>
+         </component>
+         <component>
+            <section ID="ID7">
+               <id root="16cff1b8-b567-454e-89ca-3378de3d088f"/>
+               <code code="34071-1" codeSystem="2.16.840.1.113883.6.1" displayName="WARNINGS SECTION"/>
+               <title>WARNINGS</title>
+               <text>
+                  <paragraph ID="ID53">
+                     <content styleCode="bold">Serious Cardiovascular Events </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Sudden Death and Pre-Existing Structural Cardiac Abnormalities or Other Serious Heart Problems </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="underline">Children and Adolescents</content> – Sudden death has been reported in association with CNS stimulant treatment at usual doses in children and adolescents with structural cardiac abnormalities or other serious heart problems. Although some serious heart problems alone carry an increased risk of sudden death, stimulant products generally should not be used in children or adolescents with known serious structural cardiac abnormalities, cardiomyopathy, serious heart rhythm abnormalities, or other serious cardiac problems that may place them at increased vulnerability to the sympathomimetic effects of a stimulant drug.</paragraph>
+                  <paragraph>
+                     <content styleCode="underline">Adults</content> – Sudden deaths, stroke, and myocardial infarction have been reported in adults taking stimulant drugs at usual doses for ADHD. Although the role of stimulants in these adult cases is also unknown, adults have a greater likelihood than children of having serious structural cardiac abnormalities, cardiomyopathy, serious heart rhythm abnormalities, coronary artery disease, or other serious cardiac problems. Adults with such abnormalities should also generally not be treated with stimulant drugs.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Hypertension and other Cardiovascular Conditions </content>
+                  </paragraph>
+                  <paragraph>Stimulant medications cause a modest increase in average blood pressure (about 2 to 4 mmHg) and average heart rate (about 3 to 6 bpm), and individuals may have larger increases. While the mean changes alone would not be expected to have short-term consequences, all patients should be monitored for larger changes in heart rate and blood pressure. Caution is indicated in treating patients whose underlying medical conditions might be compromised by increases in blood pressure or heart rate, e.g., those with pre-existing hypertension, heart failure, recent myocardial infarction, or ventricular arrhythmia.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Assessing Cardiovascular Status in Patients being Treated with Stimulant Medications </content>
+                  </paragraph>
+                  <paragraph>Children, adolescents, or adults who are being considered for treatment with stimulant medications should have a careful history (including assessment for a family history of sudden death or ventricular arrhythmia) and physical exam to assess for the presence of cardiac disease, and should receive further cardiac evaluation if findings suggest such disease (e.g., electrocardiogram and echocardiogram). Patients who develop symptoms such as exertional chest pain, unexplained syncope, or other symptoms suggestive of cardiac disease during stimulant treatment should undergo a prompt cardiac evaluation.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Psychiatric Adverse Events </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Pre-Existing Psychosis –</content> Administration of stimulants may exacerbate symptoms of behavior disturbance and thought disorder in patients with a pre-existing psychotic disorder.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Bipolar Illness – </content>Particular care should be taken in using stimulants to treat ADHD in patients with comorbid bipolar disorder because of concern for possible induction of a mixed/manic episode in such patients. Prior to initiating treatment with a stimulant, patients with comorbid depressive symptoms should be adequately screened to determine if they are at risk for bipolar disorder; such screening should include a detailed psychiatric history, including a family history of suicide, bipolar disorder, and depression.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Emergence of New Psychotic or Manic Symptoms –</content> Treatment emergent psychotic or manic symptoms, e.g., hallucinations, delusional thinking, or mania in children and adolescents without a prior history of psychotic illness or mania can be caused by stimulants at usual doses. If such symptoms occur, consideration should be given to a possible causal role of the stimulant, and discontinuation of treatment may be appropriate. In a pooled analysis of multiple short-term, placebo-controlled studies, such symptoms occurred in about 0.1% (4 patients with events out of 3482 exposed to methylphenidate or amphetamine for several weeks at usual doses) of stimulant-treated patients compared to 0 in placebo-treated patients.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Aggression – </content>Aggressive behavior or hostility is often observed in children and adolescents with ADHD, and has been reported in clinical trials and the postmarketing experience of some medications indicated for the treatment of ADHD. Although there is no systematic evidence that stimulants cause aggressive behavior or hostility, patients beginning treatment for ADHD should be monitored for the appearance of or worsening of aggressive behavior or hostility.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Seizures </content>
+                  </paragraph>
+                  <paragraph>There is some clinical evidence that stimulants may lower the convulsive threshold in patients with prior history of seizures, in patients with prior EEG abnormalities in absence of seizures, and, very rarely, in patients without a history of seizures and no prior EEG evidence of seizures. In the presence of seizures, the drug should be discontinued.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Priapism</content>
+                  </paragraph>
+                  <paragraph>Prolonged and painful erections, sometimes requiring surgical intervention, have been reported with methylphenidate products in both pediatric and adult patients. Priapism was not reported with drug initiation but developed after some time on the drug, often subsequent to an increase in dose. Priapism has also appeared during a period of drug withdrawal (drug holidays or discontinuation): Patients who develop abnormally sustained or frequent and painful erections should seek immediate medical attention.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Peripheral Vasculopathy, Including Raynaud's Phenomenon </content>
+                  </paragraph>
+                  <paragraph>Stimulants, including Methylin, used to treat ADHD are associated with peripheral vasculopathy, including Raynaud's phenomenon. Signs and symptoms are usually intermittent and mild; however, very rare sequelae include digital ulceration and/or soft tissue breakdown. Effects of peripheral vasculopathy, including Raynaud's phenomenon, were observed in post-marketing reports at different times and at therapeutic doses in all age groups throughout the course of treatment. Signs and symptoms generally improve after reduction in dose or discontinuation of drug. Careful observation for digital changes is necessary during treatment with ADHD stimulants. Further clinical evaluation (e.g., rheumatology referral) may be appropriate for certain patients.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Long-Term Suppression of Growth </content>
+                  </paragraph>
+                  <paragraph>Careful follow-up of weight and height in children ages 7 to 10 years who were randomized to either methylphenidate or non-medication treatment groups over 14 months, as well as in naturalistic subgroups of newly methylphenidate-treated and non-medication treated children over 36 months (to the ages of 10 to 13 years), suggests that consistently medicated children (i.e., treatment for 7 days per week throughout the year) have a temporary slowing in growth rate (on average, a total of about 2 cm less growth in height and 2.7 kg less growth in weight over 3 years), without evidence of growth rebound during this period of development.</paragraph>
+                  <paragraph>Published data are inadequate to determine whether chronic use of amphetamines may cause a similar suppression of growth, however, it is anticipated that they likely have this effect as well. Therefore, growth should be monitored during treatment with stimulants, and patients who are not growing or gaining height or weight as expected may need to have their treatment interrupted.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Visual Disturbance </content>
+                  </paragraph>
+                  <paragraph>Difficulties with accommodation and blurring of vision have been reported with stimulant treatment.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">USE IN CHILDREN LESS THAN SIX YEARS OF AGE </content>
+                  </paragraph>
+                  <paragraph>Methylphenidate Hydrochloride should not be used in children under six years, since safety and efficacy in this age group have not been established.</paragraph>
+               </text>
+               <effectiveTime value="20160106"/>
+            </section>
+         </component>
+         <component>
+            <section ID="ID8">
+               <id root="7d56d6cc-b6a6-4778-a1c9-8ddc3cea590f"/>
+               <code code="34066-1" codeSystem="2.16.840.1.113883.6.1" displayName="BOXED WARNING SECTION"/>
+               <title>DRUG ABUSE AND DEPENDENCE</title>
+               <text>
+                  <paragraph ID="ID92">Methylphenidate Hydrochloride should be given cautiously to emotionally unstable patients, such as those with a history of drug dependence or alcoholism, because such patients may increase dosage on their own initiative.</paragraph>
+                  <paragraph>Chronically abusive use can lead to marked tolerance and psychic dependence with varying degrees of abnormal behavior. Frank psychotic episodes can occur, especially with parenteral abuse. Careful supervision is required during drug withdrawal, since severe depression as well as the effects of chronic overactivity can be unmasked. Long-term follow-up may be required because of the patient's basic personality disturbances.</paragraph>
+               </text>
+               <effectiveTime value="20160106"/>
+            </section>
+         </component>
+         <component>
+            <section ID="ID9">
+               <id root="313cb2b8-b3c4-4155-aa57-f65b6dc6ac43"/>
+               <code code="42232-9" codeSystem="2.16.840.1.113883.6.1" displayName="PRECAUTIONS SECTION"/>
+               <title>PRECAUTIONS</title>
+               <effectiveTime value="20160106"/>
+               <component>
+                  <section ID="ID10">
+                     <id root="076502f6-d921-4617-b8a1-84a4dcc0db5d"/>
+                     <code code="34072-9" codeSystem="2.16.840.1.113883.6.1" displayName="GENERAL PRECAUTIONS SECTION"/>
+                     <title>General</title>
+                     <text>
+                        <paragraph ID="ID87">Patients with an element of agitation may react adversely; discontinue therapy if necessary.</paragraph>
+                        <paragraph>Periodic CBC, differential, and platelet counts are advised during prolonged therapy.</paragraph>
+                        <paragraph>Drug treatment is not indicated in all cases of this behavioral syndrome and should be considered only in light of the complete history and evaluation of the child. The decision to prescribe Methylphenidate Hydrochloride should depend on the physician's assessment of the chronicity and severity of the child's symptoms and their appropriateness for his/her age. Prescription should not depend solely on the presence of one or more of the behavioral characteristics.</paragraph>
+                        <paragraph>When these symptoms are associated with acute stress reactions, treatment with Methylphenidate Hydrochloride is usually not indicated.</paragraph>
+                        <paragraph>Long-term effects of Methylphenidate Hydrochloride in children have not been well established.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Information for Patients </content>
+                        </paragraph>
+                        <paragraph>Prescribers or other health professionals should inform patients, their families, and their caregivers about the benefits and risks associated with treatment with methylphenidate and should counsel them in its appropriate use. A patient Medication Guide is available for Methylphenidate Hydrochloride Oral Solution. The prescriber or health professional should instruct patients, their families, and their caregivers to read the Medication Guide and should assist them in understanding its contents. Patients should be given the opportunity to discuss the contents of the Medication Guide and to obtain answers to any questions they may have. The complete text of the Medication Guide is reprinted at the end of this document.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Priapism</content>
+                        </paragraph>
+                        <paragraph>Advise patients, caregivers, and family members of the possibility of painful or prolonged penile erections (priapism). <content styleCode="bold">Instruct the patient to seek immediate medical attention in the event of priapism.</content>
+                        </paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Circulation Problems in Fingers and Toes [Peripheral Vasculopathy, Including Raynaud's Phenomenon]</content>
+                        </paragraph>
+                        <list listType="unordered" ID="ID88" styleCode="Disc">
+                           <item>Instruct patients beginning treatment with Methylphenidate      Hydrochloride Oral Solution about the risk of peripheral vasculopathy,      including Raynaud's Phenomenon, and associated signs and symptoms:      fingers or toes may feel numb, cool, painful, and/or may change color from      pale, to blue, to red.</item>
+                           <item>Instruct patients to report to their physician any new      numbness, pain, skin color change, or sensitivity to temperature in      fingers or toes.</item>
+                           <item>
+                              <content styleCode="bold">Instruct patients to call their physician immediately      with any signs of unexplained wounds appearing on fingers or toes while      taking Methylphenidate Hydrochloride Oral Solution.</content>
+                           </item>
+                           <item>Further clinical evaluation (e.g., rheumatology referral)      may be appropriate for certain patients.</item>
+                        </list>
+                     </text>
+                     <effectiveTime value="20160106"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="ID11">
+                     <id root="db7b5211-a9be-4008-873d-a7b9b07adeab"/>
+                     <code code="34073-7" codeSystem="2.16.840.1.113883.6.1" displayName="DRUG INTERACTIONS SECTION"/>
+                     <title>Drug Interactions</title>
+                     <text>
+                        <paragraph ID="ID89">Methylphenidate Hydrochloride may decrease the hypotensive effect of guanethidine. Use cautiously with pressor agents.</paragraph>
+                        <paragraph>Human pharmacologic studies have shown that Methylphenidate Hydrochloride may inhibit the metabolism of coumarin anticoagulants, anticonvulsants (phenobarbital, diphenylhydantoin, primidone), phenylbutazone, and tricyclic drugs (imipramine, clomipramine, desipramine). Downward dosage adjustments of these drugs may be required when given concomitantly with Methylphenidate Hydrochloride.</paragraph>
+                     </text>
+                     <effectiveTime value="20160106"/>
+                  </section>
+               </component>
+               <component>
+                  <section ID="ID12">
+                     <id root="043e9e0c-5198-4b51-b27f-d767accda765"/>
+                     <title>Carcinogenesis, Mutagenesis, Impairment of Fertility</title>
+                     <text>
+                        <paragraph ID="ID90">In a lifetime carcinogenicity study carried out in B6C3F1 mice, methylphenidate caused an increase in hepatocellular adenomas and, in males only, an increase in hepatoblastomas, at a daily dose of approximately 60 mg/kg/day. This dose is approximately 30 times and 2.5 times the maximum recommended human dose on a mg/kg and mg/m<sup>2</sup> basis, respectively. Hepatoblastoma is a relatively rare rodent malignant tumor type. There was no increase in total malignant hepatic tumors. The mouse strain used is sensitive to the development of hepatic tumors, and the significance of these results to humans is unknown.</paragraph>
+                        <paragraph>Methylphenidate did not cause any increase in tumors in a lifetime carcinogenicity study carried out in F344 rats; the highest dose used was approximately 45 mg/kg/day, which is approximately 22 times and 4 times the maximum recommended human dose on a mg/kg and mg/m<sup>2</sup> basis, respectively.</paragraph>
+                        <paragraph>Methylphenidate was not mutagenic in the <content styleCode="italics">in vitro</content> Ames reverse mutation assay or in the <content styleCode="italics">in vitro</content> mouse lymphoma cell forward mutation assay. Sister chromatid exchanges and chromosome aberrations were increased, indicative of a weak clastogenic response, in an <content styleCode="italics">in vitro</content> assay in cultured Chinese Hamster Ovary (CHO) cells. The genotoxic potential of methylphenidate has not been evaluated in an <content styleCode="italics">in vivo</content> assay.</paragraph>
+                        <paragraph>
+                           <content styleCode="bold">Usage in Pregnancy </content>
+                        </paragraph>
+                        <paragraph>Adequate animal reproduction studies to establish safe use of Methylphenidate Hydrochloride during pregnancy have not been conducted. However, in a recently conducted study, methylphenidate has been shown to have teratogenic effects in rabbits when given in doses of 200 mg/kg/day, which is approximately 167 times and 78 times the maximum recommended human dose on a mg/kg and a mg/m<sup>2</sup> basis, respectively. In rats, teratogenic effects were not seen when the drug was given in doses of 75 mg/kg/day, which is approximately 62.5 and 13.5 times the maximum recommended human dose on a mg/kg and a mg/m<sup>2</sup> basis, respectively. Therefore, until more information is available, methylphenidate should not be prescribed for women of childbearing age unless, in the opinion of the physician, the potential benefits outweigh the possible risks.</paragraph>
+                     </text>
+                     <effectiveTime value="20160106"/>
+                  </section>
+               </component>
+            </section>
+         </component>
+         <component>
+            <section ID="ID13">
+               <id root="a673e7e8-6a51-4759-b542-6de666103370"/>
+               <code code="34084-4" codeSystem="2.16.840.1.113883.6.1" displayName="ADVERSE REACTIONS SECTION"/>
+               <title>ADVERSE REACTIONS</title>
+               <text>
+                  <paragraph ID="ID55">Nervousness and insomnia are the most common adverse reactions but are usually controlled by reducing dosage and omitting the drug in the afternoon or evening. Other reactions include hypersensitivity (including skin rash, urticaria, fever, arthralgia, exfoliative dermatitis, erythema multiforme with histopathological findings of necrotizing vasculitis, and thrombocytopenic purpura); anorexia; nausea; dizziness; palpitations; headache; dyskinesia; drowsiness; blood pressure and pulse changes, both up and down; tachycardia; angina; cardiac arrhythmia; abdominal pain; weight loss during prolonged therapy;  libido changes and rhabdomyolysis. There have been rare reports of Tourette's syndrome. Toxic psychosis has been reported. Although a definite causal relationship has not been established, the following have been reported in patients taking this drug: instances of abdominal liver function, ranging from transaminase elevation to hepatic coma; isolated cases of cerebral arteritis and/or occlusion; leukopenia and/or anemia; transient depressed mood; a few instances of scalp hair loss. Very rare reports of neuroleptic malignant syndrome (NMS) have been received, and, in most of these, patients were concurrently receiving therapies associated with NMS. In a single report, a ten year old boy who had been taking methylphenidate for approximately 18 months experienced an NMS-like event within 45 minutes of ingesting his first dose of venlafaxine. It is uncertain whether this case represented a drug-drug interaction, a response to either drug alone, or some other cause.</paragraph>
+                  <paragraph>In children, loss of appetite, abdominal pain, weight loss during prolonged therapy, insomnia, and tachycardia may occur more frequently; however, any of the other adverse reactions listed above may also occur.</paragraph>
+               </text>
+               <effectiveTime value="20160106"/>
+            </section>
+         </component>
+         <component>
+            <section ID="ID14">
+               <id root="76c6d4e7-f4f0-47d0-aa0a-bdc399a25f0d"/>
+               <code code="34088-5" codeSystem="2.16.840.1.113883.6.1" displayName="OVERDOSAGE SECTION"/>
+               <title>OVERDOSAGE</title>
+               <text>
+                  <paragraph ID="ID56">Signs and symptoms of acute overdosage, resulting principally from overstimulation of the central nervous system and from excessive sympathomimetic effects, may include the following: vomiting, agitation, tremors, hyperreflexia, muscle twitching, convulsions (may be followed by coma), euphoria, confusion, hallucinations, delirium, sweating, flushing, headache, hyperpyrexia, tachycardia, palpitations, cardiac arrhythmias, hypertension, mydriasis,  dryness of mucous membranes , and rhabdomyolysis.</paragraph>
+                  <paragraph>Consult with a Certified Poison Control Center regarding treatment for up-to-date guidance and advice.</paragraph>
+                  <paragraph>Treatment consists of appropriate supportive measures. The patient must be protected against self-injury and against external stimuli that would aggravate overstimulation already present. Gastric contents may be evacuated by gastric lavage. In the presence of severe intoxication, use a carefully titrated dosage of a short-acting barbiturate before performing gastric lavage. Other measures to detoxify the gut include administration of activated charcoal and a cathartic.</paragraph>
+                  <paragraph>Intensive care must be provided to maintain adequate circulation and respiratory exchange; external cooling procedures may be required for hyperpyrexia.</paragraph>
+                  <paragraph>Efficacy of peritoneal dialysis or extracorporeal hemodialysis for methylphenidate overdosage has not been established.</paragraph>
+               </text>
+               <effectiveTime value="20160106"/>
+            </section>
+         </component>
+         <component>
+            <section ID="ID15">
+               <id root="d16055be-8f43-4778-9b6a-ae3b84103ff5"/>
+               <code code="34068-7" codeSystem="2.16.840.1.113883.6.1" displayName="DOSAGE &amp; ADMINISTRATION SECTION"/>
+               <title>DOSAGE AND ADMINISTRATION</title>
+               <text>
+                  <paragraph ID="ID57">Dosage should be individualized according to the needs and responses of the patient.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Adults </content>
+                  </paragraph>
+                  <paragraph>Administer in divided doses 2 or 3 times daily, preferably 30 to 45 minutes before meals. Average dosage is 20 to 30 mg daily. Some patients may require 40 to 60 mg daily. In others, 10 to 15 mg daily will be adequate. Patients who are unable to sleep if medication is taken late in the day should take the last dose before 6 p.m.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Children (6 years and over) </content>
+                  </paragraph>
+                  <paragraph>Methylphenidate Hydrochloride should be initiated in small doses, with gradual weekly increments. Daily dosage above 60 mg is not recommended.</paragraph>
+                  <paragraph>If improvement is not observed after appropriate dosage adjustment over a one-month period, the drug should be discontinued.</paragraph>
+                  <paragraph>Start with 5 mg twice daily (before breakfast and lunch) with gradual increments of 5 to 10 mg weekly.</paragraph>
+                  <paragraph>If paradoxical aggravation of symptoms or other adverse effects occur, reduce dosage, or, if necessary, discontinue the drug.</paragraph>
+                  <paragraph>Methylphenidate Hydrochloride should be periodically discontinued to assess the child's condition. Improvement may be sustained when the drug is either temporarily or permanently discontinued.</paragraph>
+                  <paragraph>Drug treatment should not and need not be indefinite and usually may be discontinued after puberty.</paragraph>
+               </text>
+               <effectiveTime value="20160106"/>
+            </section>
+         </component>
+         <component>
+            <section ID="ID16">
+               <id root="5850f0a4-3b62-4613-8326-c597d4217ee2"/>
+               <code code="34069-5" codeSystem="2.16.840.1.113883.6.1" displayName="HOW SUPPLIED SECTION"/>
+               <title>HOW SUPPLIED</title>
+               <text>
+                  <paragraph ID="ID58">Methylphenidate Hydrochloride Oral Solution 5 mg per 5 mL is available as a colorless, grape flavored liquid.</paragraph>
+                  <paragraph>Bottles of 500 mL . . . . . . . . NDC 43386-930-05</paragraph>
+                  <paragraph>Methylphenidate Hydrochloride Oral Solution 10 mg per 5 mL is available as a colorless, grape flavored liquid.</paragraph>
+                  <paragraph>Bottles of 500 mL . . . . . . . . NDC 43386-931-05</paragraph>
+                  <paragraph>Dispense in tight container with child-resistant closure.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Storage:</content> Store at 20° to 25°C (68° to 77°F) [see USP Controlled Room Temperature].</paragraph>
+                  <paragraph>Ritalin is a registered trademark of Novartis Corporation.</paragraph>
+                  <paragraph>Manufactured by:</paragraph>
+                  <paragraph>Novel Laboratories, Inc.</paragraph>
+                  <paragraph>Somerset, NJ 08873</paragraph>
+                  <paragraph>Manufactured for:</paragraph>
+                  <paragraph>Lupin Pharmaceuticals, Inc</paragraph>
+                  <paragraph>Baltimore, MD 21202</paragraph>
+                  <paragraph>PI9300000203</paragraph>
+                  <paragraph>Rev. 05/2016</paragraph>
+               </text>
+               <effectiveTime value="20171031"/>
+            </section>
+         </component>
+         <component>
+            <section ID="ID100">
+               <id root="94bb1071-180a-46da-8581-fbdac337b433"/>
+               <code code="42231-1" codeSystem="2.16.840.1.113883.6.1" displayName="SPL MEDGUIDE SECTION"/>
+               <text>
+                  <paragraph ID="ID101">
+                     <content styleCode="bold">MEDICATION GUIDE</content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Methylphenidate Hydrochloride Oral Solution 5 mg/5 mL and 10 mg/5 mL </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">CII </content>
+                  </paragraph>
+                  <paragraph>Read the Medication Guide that comes with Methylphenidate Hydrochloride Oral Solution before you or your child starts taking it and each time you get a refill. There may be new information. This Medication Guide does not take the place of talking to your doctor about your or your child's treatment with Methylphenidate Hydrochloride Oral Solution.</paragraph>
+               </text>
+               <effectiveTime value="20171031"/>
+            </section>
+         </component>
+         <component>
+            <section ID="ID17">
+               <id root="b990f4fd-ecdd-4aba-ba3e-9938088a1dbd"/>
+               <code code="34066-1" codeSystem="2.16.840.1.113883.6.1" displayName="BOXED WARNING SECTION"/>
+               <text>
+                  <paragraph ID="ID59">
+                     <content styleCode="bold">What is the most important information I should know about Methylphenidate Hydrochloride Oral Solution?</content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">The following have been reported with use of methylphenidate HCl oral solution and other stimulant medicines.   </content>
+                  </paragraph>
+                  <paragraph>1. <content styleCode="bold">
+                        <content styleCode="underline">Heart-related problems: </content>
+                     </content>
+                  </paragraph>
+                  <list listType="unordered" ID="ID60" styleCode="Disc">
+                     <item>sudden death in patients who have heart problems or heart      defects</item>
+                     <item>stroke and heart attack in adults</item>
+                     <item>increased blood pressure and heart rate</item>
+                  </list>
+                  <paragraph ID="ID61">Tell your doctor if you or your child have any heart problems, heart defects, high blood pressure, or a family history of these problems.</paragraph>
+                  <paragraph>Your doctor should check you or your child carefully for heart problems before starting Methylphenidate Hydrochloride Oral Solution.</paragraph>
+                  <paragraph>Your doctor should check you or your child's blood pressure and heart rate regularly during treatment with Methylphenidate Hydrochloride Oral Solution.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Call your doctor right away if you or your child has any signs of heart problems such as chest pain, shortness of breath, or fainting while taking Methylphenidate Hydrochloride Oral Solution. </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">2.<content styleCode="underline">Mental (Psychiatric) problems:</content>
+                     </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">All Patients </content>
+                  </paragraph>
+                  <list listType="unordered" ID="ID62" styleCode="Disc">
+                     <item>
+                        <content styleCode="bold">new or worse behavior and thought problems </content>
+                     </item>
+                     <item>
+                        <content styleCode="bold">new or worse bipolar illness </content>
+                     </item>
+                     <item>
+                        <content styleCode="bold">new or worse aggressive behavior or hostility </content>
+                     </item>
+                  </list>
+                  <paragraph ID="ID63">
+                     <content styleCode="bold">Children and Teenagers </content>
+                  </paragraph>
+                  <list listType="unordered" ID="ID64" styleCode="Disc">
+                     <item>
+                        <content styleCode="bold">new psychotic symptoms (such as hearing voices,      believing things that are not true, are suspicious) or new manic symptoms </content>
+                     </item>
+                  </list>
+                  <paragraph ID="ID65">      Tell your doctor about any mental problems you or your child have, or about a family history of suicide, bipolar illness, or depression.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">      Call your doctor right away if you or your child have any new or worsening mental symptoms or problems while taking Methylphenidate       Hydrochloride Oral Solution, especially seeing or hearing things that are not real, believing things that are not real, or are suspicious.</content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">      3.<content styleCode="underline">Circulation problems in fingers and toes</content>
+                     </content> [Peripheral vasculopathy, including Raynaud's phenomenon]: fingers or toes may feel numb, cool,         painful, and/or may change color from pale, to blue, to red.</paragraph>
+                  <list listType="unordered" ID="ID66" styleCode="Disc">
+                     <item>Tell your doctor if you have or your child has numbness,      pain, skin color change, or sensitivity to temperature in your fingers or      toes.</item>
+                     <item>
+                        <content styleCode="bold">Call your doctor right away if you have or your child      has any signs of unexplained wounds appearing on fingers or toes while      taking Methylphenidate Hydrochloride Oral Solution.</content>
+                     </item>
+                  </list>
+               </text>
+               <effectiveTime value="20171031"/>
+            </section>
+         </component>
+         <component>
+            <section ID="ID18">
+               <id root="13d3278e-1429-4961-b7ca-137ad6c9c65d"/>
+               <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+               <text>
+                  <paragraph ID="ID67">
+                     <content styleCode="bold">What Is Methylphenidate Hydrochloride Oral Solution? </content>
+                  </paragraph>
+                  <paragraph>Methylphenidate Hydrochloride Oral Solution is a central nervous system stimulant prescription medicine. Methylphenidate Hydrochloride Oral Solution is a liquid form of medication that you take by mouth. <content styleCode="bold">It is used for the treatment of Attention-Deficit Hyperactivity Disorder (ADHD).</content> Methylphenidate Hydrochloride Oral Solution may help increase attention and decrease impulsiveness and hyperactivity in patients with ADHD.</paragraph>
+                  <paragraph>Methylphenidate Hydrochloride Oral Solution should be used as a part of a total treatment program for ADHD that may include counseling or other therapies.</paragraph>
+                  <paragraph>Methylphenidate Hydrochloride Oral Solution is also used in the treatment of a sleep disorder called narcolepsy.</paragraph>
+               </text>
+               <effectiveTime value="20160106"/>
+            </section>
+         </component>
+         <component>
+            <section ID="ID19">
+               <id root="677a6313-5c64-4b1c-ba3f-71120fd7d0db"/>
+               <code code="34066-1" codeSystem="2.16.840.1.113883.6.1" displayName="BOXED WARNING SECTION"/>
+               <text>
+                  <paragraph ID="ID95">
+                     <content styleCode="bold">Methylphenidate Hydrochloride Oral Solution is a federally controlled substance (CII) because it can be abused or lead to dependence. Keep Methylphenidate Hydrochloride Oral Solution in a safe place to prevent misuse and abuse. Selling or giving away Methylphenidate Hydrochloride Oral Solution may harm others, and is against the law. </content>
+                  </paragraph>
+                  <paragraph>Tell your doctor if you or your child have (or have a family history of) ever abused or been dependent on alcohol, prescription medicines or street drugs.</paragraph>
+               </text>
+               <effectiveTime value="20160106"/>
+            </section>
+         </component>
+         <component>
+            <section ID="ID20">
+               <id root="6da67a0d-de9e-4c2f-ad46-afdba3d8cdbb"/>
+               <code code="42229-5" codeSystem="2.16.840.1.113883.6.1" displayName="SPL UNCLASSIFIED SECTION"/>
+               <text>
+                  <paragraph ID="ID69">
+                     <content styleCode="bold">Who should not take Methylphenidate Hydrochloride Oral Solution? </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Methylphenidate Hydrochloride Oral Solution should not be taken if you or your child: </content>
+                  </paragraph>
+                  <list listType="unordered" ID="ID70" styleCode="Disc">
+                     <item>are very anxious, tense, or agitated</item>
+                     <item>have an eye problem called glaucoma</item>
+                     <item>have tics or Tourette's syndrome, or a family history      of Tourette's syndrome. Tics are hard to control repeated movements or      sounds.</item>
+                     <item>are taking or have taken within the past 14 days an      antidepression medicine called a monoamine oxidase inhibitor or MAOI.</item>
+                     <item>are allergic to anything in Methylphenidate Hydrochloride      Oral Solution. See the end of this Medication Guide for a complete list of      ingredients.</item>
+                  </list>
+                  <paragraph ID="ID71">Methylphenidate Hydrochloride Oral Solution should not be used in children less than 6 years old because it has not been studied in this age group.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Methylphenidate Hydrochloride Oral Solution may not be right for you or your child. Before starting Methylphenidate Hydrochloride Oral Solution tell your or your child's doctor about all health conditions (or a family history of) including: </content>
+                  </paragraph>
+                  <list listType="unordered" ID="ID72" styleCode="Disc">
+                     <item>heart problems, heart defects, high blood pressure</item>
+                     <item>mental problems including psychosis, mania, bipolar      illness, or depression</item>
+                     <item>tics or Tourette's syndrome</item>
+                     <item>seizures or have had an abnormal brain wave test (EEG)</item>
+                     <item>circulation problems in fingers and toes</item>
+                  </list>
+                  <paragraph ID="ID73">Tell your doctor if you or your child is pregnant, planning to become pregnant, or breastfeeding.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Can Methylphenidate Hydrochloride Oral Solution be taken with other medicines? </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Tell your doctor about all of the medicines that you or your child take including prescription and nonprescription medicines, vitamins, and herbal supplements. </content>
+                  </paragraph>
+                  <paragraph>Methylphenidate Hydrochloride Oral Solution and some medicines may interact with each other and cause serious side effects. Sometimes the doses of other medicines will need to be adjusted while taking Methylphenidate Hydrochloride Oral Solution.</paragraph>
+                  <paragraph>Your doctor will decide whether Methylphenidate Hydrochloride Oral Solution can be taken with other medicines.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Especially tell your doctor if you or your child takes: </content>
+                  </paragraph>
+                  <list listType="unordered" ID="ID74" styleCode="Disc">
+                     <item>antidepression medicines including MAOIs</item>
+                     <item>seizure medicines</item>
+                     <item>blood thinner medicines</item>
+                     <item>blood pressure medicines</item>
+                     <item>cold or allergy medicines that contain decongestants</item>
+                  </list>
+                  <paragraph ID="ID75">Know the medicines that you or your child takes. Keep a list of your medicines with you to show your doctor and pharmacist.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Do not start any new medicine while taking Methylphenidate Hydrochloride Oral Solution without talking to your doctor first. </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">How should Methylphenidate Hydrochloride Oral Solution be taken? </content>
+                  </paragraph>
+                  <list listType="unordered" ID="ID76" styleCode="Disc">
+                     <item>
+                        <content styleCode="bold">Take Methylphenidate Hydrochloride Oral Solution      exactly as prescribed. </content> Your doctor may adjust the dose until it is      right for you or your child.</item>
+                     <item>Methylphenidate Hydrochloride Oral Solution is usually      taken 2 to 3 times a day.</item>
+                     <item>Take Methylphenidate Hydrochloride Oral Solution 30 to 45      minutes before meals.</item>
+                     <item>From time to time, your doctor may stop Methylphenidate      Hydrochloride Oral Solution treatment for awhile to check ADHD symptoms.</item>
+                     <item>Your doctor may do regular checks of the blood, heart, and      blood pressure while taking Methylphenidate Hydrochloride Oral Solution.      Children should have their height and weight checked often while taking      Methylphenidate Hydrochloride Oral Solution. Methylphenidate Hydrochloride      Oral Solution treatment may be stopped if a problem is found during these      check-ups.</item>
+                     <item>
+                        <content styleCode="bold">If you or your child takes too much Methylphenidate      Hydrochloride Oral Solution or overdoses, call your doctor or poison      control center right away, or get emergency treatment. </content>
+                     </item>
+                  </list>
+                  <paragraph ID="ID77">
+                     <content styleCode="bold">What are possible side effects of Methylphenidate Hydrochloride Oral Solution? </content>
+                  </paragraph>
+                  <paragraph>See <content styleCode="bold">"What is the most important information I should know about Methylphenidate Hydrochloride Oral Solution?"</content> for information on reported heart and mental problems.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Other serious side effects include: </content>
+                  </paragraph>
+                  <list listType="unordered" ID="ID78" styleCode="Disc">
+                     <item>slowing of growth (height and weight) in children</item>
+                     <item>seizures, mainly in patients with a history of seizures</item>
+                     <item>eyesight changes or blurred vision</item>
+                     <item>Painful and prolonged erections (priapism) have occurred      with methylphenidate. If you or your child develop priapism, seek medical      help right away. Because of the potential for lasting damage, priapism      should be evaluated by a doctor immediately.</item>
+                  </list>
+                  <paragraph ID="ID79">
+                     <content styleCode="bold">Common side effects include</content>
+                  </paragraph>
+                  <table ID="ID80" width="100%">
+                     <col width="49%"/>
+                     <col width="51%"/>
+                     <tbody>
+                        <tr>
+                           <td align="left" valign="top" styleCode=" Toprule">nervousness<br/>
+                           </td>
+                           <td align="left" valign="top" styleCode=" Toprule">
+                              <br/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td align="left" valign="top">trouble sleeping<br/>
+                           </td>
+                           <td align="left" valign="top">nausea<br/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td align="left" valign="top">headache<br/>
+                           </td>
+                           <td align="left" valign="top">decreased appetite<br/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td align="left" valign="top">stomach ache<br/>
+                           </td>
+                           <td align="left" valign="top">dizziness<br/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td align="left" valign="top">fast heart beat<br/>
+                           </td>
+                           <td align="left" valign="top">weight loss<br/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td align="left" valign="top" styleCode=" Botrule">
+                              <br/>
+                           </td>
+                           <td align="left" valign="top" styleCode=" Botrule">
+                              <br/>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+                  <paragraph ID="ID81">Talk to your doctor if you or your child has side effects that are bothersome or do not go away.</paragraph>
+                  <paragraph>This is not a complete list of possible side effects. Ask your doctor or pharmacist for more information.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Call your doctor for medical advice about side effects. You may report side effects to FDA at 1-800-FDA-1088. </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">How should I store Methylphenidate Hydrochloride Oral Solution? </content>
+                  </paragraph>
+                  <list listType="unordered" ID="ID82" styleCode="Disc">
+                     <item>Store Methylphenidate Hydrochloride Oral Solution in a      safe place at room temperature, 68° to 77°F (20° to 25°C).</item>
+                     <item>
+                        <content styleCode="bold">Keep Methylphenidate Hydrochloride Oral Solution and      all medicines out of the reach of children. </content>
+                     </item>
+                  </list>
+                  <paragraph ID="ID83">
+                     <content styleCode="bold">General information about Methylphenidate Hydrochloride Oral Solution </content>
+                  </paragraph>
+                  <paragraph>Medicines are sometimes prescribed for purposes other than those listed in a Medication Guide. Do not use Methylphenidate Hydrochloride Oral Solution for a condition for which it was not prescribed. Do not give Methylphenidate Hydrochloride Oral Solution to other people, even if they have the same condition. It may harm them and it is against the law.</paragraph>
+                  <paragraph>This Medication Guide summarizes the most important information about Methylphenidate Hydrochloride Oral Solution. If you would like more information, talk with your doctor. You can ask your doctor or pharmacist for information about Methylphenidate Hydrochloride Oral Solution that was written for healthcare professionals. For more information, please contact Lupin Pharmaceuticals, Inc. at 1-866-403-7592.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">What are the ingredients in Methylphenidate Hydrochloride Oral Solution? </content>
+                  </paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Active Ingredient</content>: methylphenidate hydrochloride USP</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">Inactive Ingredients:</content> PEG 1450, glycerin, phosphoric acid, grape flavor, and purified water.</paragraph>
+                  <paragraph>
+                     <content styleCode="bold">This Medication Guide has been approved by the U.S. Food and Drug Administration. </content>
+                  </paragraph>
+                  <paragraph>Manufactured by:</paragraph>
+                  <paragraph>Novel Laboratories, Inc.</paragraph>
+                  <paragraph>Somerset, NJ 08873</paragraph>
+                  <paragraph>Manufactured for:</paragraph>
+                  <paragraph>Lupin Pharmaceuticals Inc.</paragraph>
+                  <paragraph>Baltimore, MD 21202</paragraph>
+                  <paragraph>PI9300000203</paragraph>
+                  <paragraph>Rev. 05/2016</paragraph>
+               </text>
+               <effectiveTime value="20171031"/>
+            </section>
+         </component>
+         <component>
+            <section ID="ID21">
+               <id root="7870c978-4d4d-4b30-8daf-57c7388006a1"/>
+               <code code="51945-4" codeSystem="2.16.840.1.113883.6.1" displayName="PACKAGE LABEL.PRINCIPAL DISPLAY PANEL"/>
+               <title>PACKAGE LABEL.PRINCIPAL DISPLAY PANEL</title>
+               <text>
+                  <paragraph ID="ID102">Methylphenidate Hydrochloride Oral Solution CII</paragraph>
+                  <paragraph>NDC # 43386-930-05</paragraph>
+                  <paragraph>5 mg per 5 mL</paragraph>
+                  <renderMultiMedia referencedObject="MM2"/>
+                  <paragraph ID="ID103">Methylphenidate Hydrochloride Oral Solution CII</paragraph>
+                  <paragraph>NDC # 43386-931-05</paragraph>
+                  <paragraph>10 mg per 5 mL</paragraph>
+                  <renderMultiMedia referencedObject="MM3"/>
+               </text>
+               <effectiveTime value="20171031"/>
+               <component>
+                  <observationMedia ID="MM2">
+                     <text>C:\Users\kvyas\Desktop\methylphenidate oral solution\5 mg.jpg</text>
+                     <value xsi:type="ED" mediaType="image/jpeg">
+                        <reference value="06b6e9cf-a3fa-4ce7-b781-10d15bc071b0-02.jpg"/>
+                     </value>
+                  </observationMedia>
+               </component>
+               <component>
+                  <observationMedia ID="MM3">
+                     <text>C:\Users\kvyas\Desktop\methylphenidate oral solution\10 mg.jpg</text>
+                     <value xsi:type="ED" mediaType="image/jpeg">
+                        <reference value="06b6e9cf-a3fa-4ce7-b781-10d15bc071b0-03.jpg"/>
+                     </value>
+                  </observationMedia>
+               </component>
+            </section>
+         </component>
+      </structuredBody>
+   </component>
+</document>
