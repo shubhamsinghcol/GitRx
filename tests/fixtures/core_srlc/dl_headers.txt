@@ -1,0 +1,18 @@
+HTTP/2 200 
+content-type: text/csv;charset=UTF-8
+content-length: 29480
+content-language: en-US
+content-disposition: filename=download_details.csv
+expires: Tue, 10 Nov 2026 23:55:45 GMT
+cache-control: max-age=0, no-cache, no-store
+pragma: no-cache
+date: Tue, 10 Nov 2026 23:55:45 GMT
+set-cookie: AWSALB=425X/tsslJzpZnfKj+81u6grl5CY5fpWaPIzv3RSxc1pWS6icYOXKF0qQRvDv4uzJMArz7tulSqNmZjkVEL2uRZ1kYgGiLXVOmFOARuAR3KTJV2avAVTnAvqZ8vW; Expires=Tue, 17 Nov 2026 23:55:45 GMT; Path=/
+set-cookie: AWSALBCORS=425X/tsslJzpZnfKj+81u6grl5CY5fpWaPIzv3RSxc1pWS6icYOXKF0qQRvDv4uzJMArz7tulSqNmZjkVEL2uRZ1kYgGiLXVOmFOARuAR3KTJV2avAVTnAvqZ8vW; Expires=Tue, 17 Nov 2026 23:55:45 GMT; Path=/; SameSite=None
+set-cookie: cfid=02c5c811-8873-4afa-9d78-1eb0ad2ad4a7;Path=/;Expires=Thu, 09-Nov-2056 07:47:15 GMT;HttpOnly;SameSite=Lax
+set-cookie: cftoken=0;Path=/;Expires=Thu, 09-Nov-2056 07:47:15 GMT;HttpOnly;SameSite=Lax
+alt-svc: h3=":443"; ma=93600
+strict-transport-security: max-age=31536000
+set-cookie: _abck=112D11F6834ABD16751A322FEF8CE56A~-1~YAAQ6yY+F85JJ5qhAQAAwZ7jxxAqR8RwwtEMtzrW5s5DlCn/QlXA3WHjnXleaj8OSWna0mkwVujs0jyBp961XLI6SITHmnx4/CZGb6YEXsmpFJt6zOOqAiMNOg2xjsC3JZ0HxNbN5OUB+XNIjzhgEqNGUMJuvaBaFpvKUNDlJ+b4migEcAQyvXchwTtfFOe4ZLu0I1nIREKAMbNS+43JqNuaOnjwFfC9oKCpoquvcxXiqKNTPMEiLoLP6xS1/vVifXipkQpVSfKuX+eyUtLeeZcmljlGafBSGF/T6PaDH12yYM3qXs5HEiBhZddm2Zj6BFqaKlFV/n59F5YZ/5FQaKTBGwUVWPn3rrSpkAITExd0+Dde1Q9dRK5KWYZ6z0S0/ZttTcWajcurzJnORaLFD71uVDPP1dwCDtRic3y0YQt+leOQ/tq0pcuR64GtPe7nyZI=~-1~-1~-1~-1~-1; Domain=.fda.gov; Path=/; Expires=Wed, 10 Nov 2027 23:55:45 GMT; Max-Age=31536000; Secure
+set-cookie: bm_sz=95F5B2F8A4A2512D816C8E554F8B84A9~YAAQ6yY+F89JJ5qhAQAAwZ7jxwHjwB5U56qaqxqfNwk4ogZvLv4gthhQw6Rj8PxFreAiQtxS81HeRIY+UZLrqh9l33KqlDYCCT65FlBTUWBsCtu5hwuBcQau1VzPQZlhmIqaj5BftQqCXJc/c04Di37ieisqC/UavvALZcYuiaoXto8WeM1gRGDG9ZR3JAHJG4kuHOB9H8I1VPe44J586lR97bezvrOk3jQLAJdRhw7lW+psu+7z5pToXNRWrs7UZ45u7ixJ3gQnDwV9tQSCQyCiTt2sAhVjmBTTii0d+bYdYGV1XCXRHtO5XcCnmishBAoe6GZNi8l5cABKNDn9v4U0w8GD6T7VoZ0NekEMNtQCrIJNqhFLLFYjWiLspAu0nD8wwaDS54EzySCB3A==~3224112~4469058; Domain=.fda.gov; Path=/; Expires=Wed, 11 Nov 2026 03:55:45 GMT; Max-Age=14400
+
