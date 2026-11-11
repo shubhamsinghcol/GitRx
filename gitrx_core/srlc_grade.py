@@ -37,7 +37,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from gitrx_core.normalize import normalize  # noqa: E402
 
-HARNESS_VERSION = "srlc-grade-0.1.0"
+HARNESS_VERSION = "srlc-grade-0.2.0"
 WINDOW_BEFORE_DAYS = 30
 WINDOW_AFTER_DAYS = 365
 MIN_FRAGMENT_TOKENS = 3
@@ -49,8 +49,29 @@ BODIES_DIR = "/Volumes/Untitled/GitRx/backfill-20261107/network/bodies"
 # document types that can carry SrLC applications (Rx human + biologics); unknown/missing type is kept
 RX_DOC_CODES = {"34391-3", "45129-4", "60683-0", "53404-0", "53405-7", "60684-8", "60682-2", "53408-1",
                 "78745-7", "53406-5"}
-MISS_CATEGORIES = ("parser", "alignment", "mapping", "version bracketing", "SrLC-side inconsistency",
-                   "missing DailyMed version", "uncategorized")
+# Amendment 2: descriptive, mechanical miss labels (not attributions).  Lower rank = closer to a match.
+L_OUT = "in changed same-group section but outside GitRx added tokens"
+L_FROM_IN = "present in from-version (published inside window)"
+L_FROM_BEFORE = "present in a version published >30 d before approval"
+L_TO_NOCHG = "present in to-version but not in a changed same-group section"
+L_XML = "present in raw XML but not parsed sections"
+L_INWIN_OTHER = "absent from compared pairs; present in another in-window version"
+L_AFTER = "absent from window versions; present only in versions after window"
+L_BEFORE = "absent from window versions; present only in versions before window"
+L_BOTH = "absent from window versions; present only in versions before and after window"
+L_NONE = "absent from every captured version (including all window versions)"
+L_NOPAIR = "no comparable in-window pair"
+L_NOTCOMP = "candidate pair not comparable"
+TEXT_LABEL_ORDER = (L_OUT, L_FROM_IN, L_FROM_BEFORE, L_TO_NOCHG, L_XML, L_INWIN_OTHER, L_AFTER, L_BEFORE, L_BOTH,
+                    L_NONE, L_NOPAIR, L_NOTCOMP)
+S_OTHER_SEC = "in-window pair(s) change other groups only; to-version has an unchanged section of this group"
+S_OTHER_NOSEC = "in-window pair(s) change other groups only; to-version has no section of this group"
+S_NOCHG = "in-window pair(s) have no substantive change"
+S_NOTCOMP = L_NOTCOMP
+S_NOPAIR = L_NOPAIR
+SECTION_LABEL_ORDER = (S_OTHER_SEC, S_OTHER_NOSEC, S_NOCHG, S_NOTCOMP, S_NOPAIR)
+_RANK = {l: i for i, l in enumerate(TEXT_LABEL_ORDER)}
+_SRANK = {l: i for i, l in enumerate(SECTION_LABEL_ORDER)}
 
 
 # ----------------------------------------------------------------------------- pure helpers
@@ -115,21 +136,48 @@ def split_fragments(underlined_spans):
 _TOK = re.compile(r"\S+")
 
 
-def norm_with_tokens(raw, added_intervals=()):
-    """Normalized (literal-v1) text of a channel as space-joined normalized tokens, with, per token, its
-    [start, end) position in that string and whether it overlaps a GitRx added char interval of the raw text."""
-    parts, toks, pos = [], [], 0
+def ws_squash(text):
+    """Remove all whitespace (Amendment 2 primary metric)."""
+    return "".join(text.split())
+
+
+def _norm_tokens(raw, added_intervals=()):
+    """[(normalized_token, overlaps_added_interval)] for the non-empty tokens of the raw channel text."""
+    out = []
     for m in _TOK.finditer(raw):
         t = normalize(m.group())
         if not t:
             continue
+        added = any(m.start() < e and m.end() > s for s, e in added_intervals)
+        out.append((t, added))
+    return out
+
+
+def norm_with_tokens(raw, added_intervals=()):
+    """Normalized (literal-v1) text of a channel as space-joined normalized tokens, with, per token, its
+    [start, end) position in that string and whether it overlaps a GitRx added char interval of the raw text."""
+    parts, toks, pos = [], [], 0
+    for t, added in _norm_tokens(raw, added_intervals):
         if parts:
             pos += 1
-        added = any(m.start() < e and m.end() > s for s, e in added_intervals)
         toks.append((pos, pos + len(t), added))
         parts.append(t)
         pos += len(t)
     return " ".join(parts), toks
+
+
+def norm_ws_with_flags(raw, added_intervals=()):
+    """Amendment 2: literal-v1 text with ALL whitespace removed, plus a per-character bytearray that is 1 where the
+    character belongs to a token overlapping a GitRx added interval (so the overlap rule is evaluated on the same
+    token mapping as the strict metric)."""
+    parts, flags = [], bytearray()
+    for t, added in _norm_tokens(raw, added_intervals):
+        t = ws_squash(t)
+        if not t:
+            continue
+        parts.append(t)
+        flags.extend((b"\x01" if added else b"\x00") * len(t))
+    return "".join(parts), flags
 
 
 def find_fragment(fragment, norm_text, toks):
@@ -143,6 +191,23 @@ def find_fragment(fragment, norm_text, toks):
         verbatim = True
         j = i + len(fragment)
         if any(a and s < j and e > i for s, e, a in toks):
+            overlap = True
+            break
+        start = i + 1
+    return verbatim, overlap
+
+
+def find_fragment_ws(fragment_ws, ws_text, flags):
+    """-> (verbatim, overlaps_added_token) for a whitespace-free fragment in a whitespace-free channel text."""
+    verbatim = overlap = False
+    start = 0
+    while fragment_ws:
+        i = ws_text.find(fragment_ws, start)
+        if i < 0:
+            break
+        verbatim = True
+        j = i + len(fragment_ws)
+        if flags.find(1, i, j) >= 0:
             overlap = True
             break
         start = i + 1
@@ -454,93 +519,202 @@ class DigestView:
         for c in digest["changes"]:
             if c["kind"] in ("modified", "added_section") and c.get("ordinal_to") is not None:
                 self.changed[c["ordinal_to"]] = c
+        self.to_groups = {sec["group"] for sec in digest.get("to_sections", [])}
+
+    def _added(self, sec):
+        return (self.changed.get(sec["o"]) or {}).get("added", {})
 
     def to_norm(self, sec, ch):
         key = ("to", sec["o"], ch)
         if key not in self._n:
-            c = self.changed.get(sec["o"])
-            iv = (c or {}).get("added", {}).get(ch, [])
-            self._n[key] = norm_with_tokens(sec["ch"].get(ch, ""), iv)
+            self._n[key] = norm_with_tokens(sec["ch"].get(ch, ""), self._added(sec).get(ch, []))
         return self._n[key]
 
-    def from_norm(self, sec, ch):
-        key = ("from", sec["o"], ch)
+    def to_ws(self, sec, ch):
+        key = ("tows", sec["o"], ch)
         if key not in self._n:
-            self._n[key] = norm_with_tokens(sec["ch"].get(ch, ""))
+            self._n[key] = norm_ws_with_flags(sec["ch"].get(ch, ""), self._added(sec).get(ch, []))
         return self._n[key]
+
+    def from_ws(self, sec, ch):
+        key = ("fromws", sec["o"], ch)
+        if key not in self._n:
+            self._n[key] = norm_ws_with_flags(sec["ch"].get(ch, ""))
+        return self._n[key]
+
+    def xml_ws(self):
+        if "xmlws" not in self._n:
+            self._n["xmlws"] = ws_squash(self.d.get("xml_text_to", ""))
+        return self._n["xmlws"]
 
     def has_group_change(self, group):
         return any(c["group"] == group for c in self.d["changes"])
 
     def fragment_status(self, frag, group):
-        """Amendment 1 text criterion plus diagnostics for categorization.
+        """Amendment 1 text criterion (Amendment 2 matching) plus diagnostics for labelling.
 
-        found: verbatim in a changed same-group to-section AND overlapping an added token.
-        Other keys describe where the fragment was seen when not found."""
-        res = {"found": False, "verbatim_changed_same_group": False, "in_unchanged_same_group": False,
-               "in_other_group": False, "in_from_same_group": False, "in_from_any": False, "in_xml_text": False}
+        found (ws, primary): whitespace-free fragment occurs in a changed same-group to-section AND overlaps an added
+        token.  found_strict: the literal-v1 criterion, unchanged.  Diagnostic keys are ws-based."""
+        fws = ws_squash(frag)
+        res = {"found": False, "found_strict": False, "verbatim_changed_same_group": False,
+               "in_unchanged_same_group": False, "in_other_group": False, "in_from_same_group": False,
+               "in_from_any": False, "in_xml_text": False}
         for sec in self.d["to_sections"]:
+            same = sec["group"] == group
             for ch in sec["ch"]:
-                nt, toks = self.to_norm(sec, ch)
-                v, ov = find_fragment(frag, nt, toks)
+                wt, flags = self.to_ws(sec, ch)
+                v, ov = find_fragment_ws(fws, wt, flags)
                 if not v:
                     continue
-                if sec["group"] == group:
+                if same:
                     if sec["o"] in self.changed:
                         res["verbatim_changed_same_group"] = True
                         if ov:
                             res["found"] = True
-                            return res
+                            nt, toks = self.to_norm(sec, ch)
+                            if find_fragment(frag, nt, toks)[1]:
+                                res["found_strict"] = True
+                                return res
                     else:
                         res["in_unchanged_same_group"] = True
                 else:
                     res["in_other_group"] = True
+        if res["found"]:
+            return res
         for sec in self.d["from_sections"]:
             for ch in sec["ch"]:
-                nt, toks = self.from_norm(sec, ch)
-                if find_fragment(frag, nt, toks)[0]:
+                wt, flags = self.from_ws(sec, ch)
+                if find_fragment_ws(fws, wt, flags)[0]:
                     res["in_from_any"] = True
                     if sec["group"] == group:
                         res["in_from_same_group"] = True
-        res["in_xml_text"] = frag in self.d.get("xml_text_to", "")
+        res["in_xml_text"] = fws in self.xml_ws()
         return res
 
 
-def categorize_fragment(stats, from_pub_date, approval_date):
-    """stats: list of fragment_status dicts, one per in-window pair of the best candidate.  Returns
-    (category, detail).  Heuristics are conservative and recorded; anything else is 'uncategorized'."""
-    if any(s["found"] for s in stats):
-        return None, None
-    if not stats:
-        return "missing DailyMed version", "no comparable in-window pair"
-    # prefer the most informative status across pairs
-    for s in stats:
-        if s["verbatim_changed_same_group"] and s["in_from_same_group"]:
-            return _pre_existing(from_pub_date, approval_date)
-    for s in stats:
-        if s["verbatim_changed_same_group"]:
-            return "alignment", "fragment in changed same-group section but not within GitRx added tokens"
-    for s in stats:
-        if s["in_unchanged_same_group"] and s["in_from_any"]:
-            return _pre_existing(from_pub_date, approval_date)
-    for s in stats:
-        if s["in_unchanged_same_group"]:
-            return "alignment", "fragment in same-group to-section not marked changed, absent from from-version"
-    for s in stats:
-        if s["in_other_group"]:
-            return "alignment", "fragment present only in to-section(s) of a different srlc_group"
-    for s in stats:
-        if s["in_xml_text"]:
-            return "parser", "fragment in raw XML text of to-version but in no parsed section"
-    return "SrLC-side inconsistency", "fragment absent from to-version label text (parsed and raw XML)"
-
-
 def _pre_existing(from_pub_date, approval_date):
-    """Fragment already in the from-version: label carried it before this pair."""
+    """Fragment already in the from-version of the compared pair."""
     p, a = parse_date(from_pub_date), parse_date(approval_date)
     if p and a and p < a - dt.timedelta(days=WINDOW_BEFORE_DAYS):
-        return "SrLC-side inconsistency", "text already in a version published >30 d before the SrLC approval"
-    return "version bracketing", "text already in the from-version, which is itself inside the window"
+        return L_FROM_BEFORE, "text already in a version published >30 d before the SrLC approval"
+    return L_FROM_IN, "text already in the from-version, which is itself inside the window"
+
+
+def label_stat(st, from_pub_date, approval_date):
+    """Descriptive label for one unfound per-pair fragment status; None when the fragment is absent from the
+    pair's to/from label text and raw XML (caller resolves with the all-version check)."""
+    if st["verbatim_changed_same_group"] and st["in_from_same_group"]:
+        return _pre_existing(from_pub_date, approval_date)
+    if st["verbatim_changed_same_group"]:
+        return L_OUT, "fragment in changed same-group to-section but not within GitRx added tokens"
+    if st["in_unchanged_same_group"] and st["in_from_any"]:
+        return _pre_existing(from_pub_date, approval_date)
+    if st["in_unchanged_same_group"]:
+        return L_TO_NOCHG, "fragment in same-group to-section not marked changed; not in from-version"
+    if st["in_other_group"]:
+        return L_TO_NOCHG, "fragment present only in to-section(s) of a different srlc_group"
+    if st["in_from_any"]:
+        lab = _pre_existing(from_pub_date, approval_date)
+        return lab[0], lab[1] + " (not in to-version)"
+    if st["in_xml_text"]:
+        return L_XML, "fragment in raw XML text of to-version but in no parsed section"
+    return None
+
+
+def candidate_label(stats):
+    """stats: [(fragment_status, from_pub_date)] for ONE candidate's comparable in-window pairs.
+    -> (label, detail) with the lowest-rank label over pairs, or (None, None) if absent from all."""
+    best = None
+    for st, fpub, apr in stats:
+        r = label_stat(st, fpub, apr)
+        if r and (best is None or _RANK[r[0]] < _RANK[best[0]]):
+            best = r
+    return best if best else (None, None)
+
+
+def classify_presence(pubs, approval_date, present):
+    """pubs: {version: pub_date}; present: set(version).  Position of a fragment among ALL captured versions
+    of one candidate relative to the window.  -> label."""
+    before = after = inwin = False
+    for v in present:
+        pd = parse_date(pubs.get(v))
+        a = parse_date(approval_date)
+        if pd is None or a is None:
+            continue
+        if pd < a - dt.timedelta(days=WINDOW_BEFORE_DAYS):
+            before = True
+        elif pd > a + dt.timedelta(days=WINDOW_AFTER_DAYS):
+            after = True
+        else:
+            inwin = True
+    if inwin:
+        return L_INWIN_OTHER
+    if before and after:
+        return L_BOTH
+    if after:
+        return L_AFTER
+    if before:
+        return L_BEFORE
+    return L_NONE
+
+
+# ----------------------------------------------------------------------------- product names / all-version presence
+
+_MP_NAME = re.compile(rb"<manufacturedProduct\b[^>]*>(?:(?!<name\b)(?!</manufacturedProduct>).){0,600}?"
+                      rb"<name\b[^>]*>(.*?)</name>", re.S)
+_TITLE = re.compile(rb"<title\b[^>]*>(.*?)</title>", re.S)
+
+
+def product_names_in_xml(xml_bytes):
+    """SPL product names (manufacturedProduct/name) plus the document title, tags stripped, de-duplicated."""
+    out = []
+    items = [m.group(1) for m in _MP_NAME.finditer(xml_bytes)]
+    t = _TITLE.search(xml_bytes)
+    if t:
+        items.append(t.group(1))
+    for raw in items:
+        s = normalize(html.unescape(re.sub(r"<[^>]+>", " ", raw.decode("utf-8", "replace"))))
+        if s and s not in out:
+            out.append(s)
+    return out
+
+
+def is_sibling_or_repackager(drug_name, names):
+    """True when none of the candidate's SPL product names contains the SrLC drug_name token (case-insensitive,
+    whitespace-insensitive).  Token = drug_name without parenthetical, or its first word."""
+    if not names:
+        return False
+    clean = normalize(re.sub(r"\(.*?\)", " ", drug_name or ""), True) or normalize(drug_name or "", True)
+    toks = {ws_squash(clean)}
+    if clean.split():
+        toks.add(ws_squash(clean.split()[0]))
+    toks.discard("")
+    if not toks:
+        return False
+    hay = ws_squash(normalize(" | ".join(names), True))
+    return not any(t in hay for t in toks)
+
+
+def _names_task(task):
+    setid, member, path = task
+    try:
+        return setid, product_names_in_xml(read_xml_from_zip(path, member)), None
+    except Exception as exc:  # noqa: BLE001
+        return setid, [], "%s: %s" % (type(exc).__name__, exc)
+
+
+def _presence_task(task):
+    """task = (setid, [(version, member, path)], [fragment_ws, ...]) -> (setid, {version: [indices present] | None})."""
+    setid, versions, frags = task
+    out = {}
+    for ver, member, path in versions:
+        try:
+            text = ws_squash(_strip_xml_text(read_xml_from_zip(path, member)))
+        except Exception:  # noqa: BLE001 - recorded as unchecked
+            out[ver] = None
+            continue
+        out[ver] = [i for i, f in enumerate(frags) if f in text]
+    return setid, out
 
 
 # ----------------------------------------------------------------------------- grading
@@ -656,6 +830,25 @@ def run_grade(args):
                 log("digest tasks %d/%d %s" % (done, len(tasks), dict(build_status)))
     log("digests: %s" % dict(build_status))
 
+    # ---- candidate product names (sibling / repackager flag)
+    cand_names, name_err = {}, 0
+    all_cands = sorted({c for p in plans if p["approval_date"] and p["candidates"]
+                        and any(p["window_versions"][x] for x in p["candidates"]) for c in p["candidates"]})
+    ntasks = []
+    for c in all_cands:
+        vs = [v for v in vers(c) if v[2]]
+        # representative: latest captured version (names are stable across a family's versions)
+        if vs:
+            r = vs[-1]
+            path = resolve(r[2])
+            if path:
+                ntasks.append((c, r[3], path))
+    with cf.ProcessPoolExecutor(args.workers) as ex:
+        for c, names, err in ex.map(_names_task, ntasks, chunksize=16):
+            cand_names[c] = names
+            name_err += 1 if err else 0
+    log("product names read for %d/%d candidate setids (%d errors)" % (len(cand_names), len(all_cands), name_err))
+
     # ---- grade
     dig_views = {}
 
@@ -670,6 +863,7 @@ def run_grade(args):
     cov = collections.Counter()
     gitrx_only = {}
     graded_pair_keys = {}  # (setid, to_ver) -> {"view":..., "groups_srlc": set(), "drugs": set()}
+    pending = []           # fragment records awaiting the all-version check: (fr_rec, plan, {setid: label-or-None})
     for p in plans:
         did, sid = p["drug_name_id"], p["supplement_id"]
         rows = gb.execute(
@@ -694,6 +888,8 @@ def run_grade(args):
                 cov["rows_excluded_" + p["status"]] += 1
         if p["status"] != "graded":
             continue
+        sib = {s: is_sibling_or_repackager(p["drug_name"], cand_names.get(s, [])) for s in p["candidates"]}
+        p["sibling"] = sib
         # mark pairs for gitrx-only accounting
         for s in p["candidates"]:
             for a, b, gap in p["pairs"][s]:
@@ -710,7 +906,9 @@ def run_grade(args):
         for group, grows in by_group.items():
             rowrec = {"drug_name_id": did, "drug_name": p["drug_name"], "appl": p["appl"], "supplement_id": sid,
                       "suppl_ref": p["suppl_ref"], "approval_date": p["approval_date"], "group": group,
-                      "n_change_rows": len(grows), "candidates": {}, "section_found": False}
+                      "n_change_rows": len(grows), "candidates": {}, "section_found": False,
+                      "candidate_product_names": {s: cand_names.get(s) for s in p["candidates"]},
+                      "sibling_or_repackager": sorted(s for s, f in sib.items() if f)}
             if group not in SRLC_GROUPS:
                 rowrec["status"] = "unmapped_group"
                 cov["rows_unmapped_group"] += 1
@@ -718,13 +916,16 @@ def run_grade(args):
                 continue
             rowrec["status"] = "graded"
             cov["triples_graded"] += 1
-            stats_for_row = []  # (setid, pair a/b, [fragment stats])
+            stats_for_row = []
             for s in p["candidates"]:
                 cres = {"window_versions": p["window_versions"][s], "pairs": [], "found": False}
                 for a, b, gap in p["pairs"][s]:
                     v = view(a[2], b[2])
                     ent = {"from_version": a[0], "to_version": b[0], "to_pub_date": b[1], "version_gap": gap,
                            "comparison": (v.d["comparison"] if v else "no_digest")}
+                    if v:
+                        ent["n_substantive_changes"] = len(v.d["changes"])
+                        ent["to_version_has_group_section"] = group in v.to_groups
                     if v and v.d["comparison"] == "ok" and v.has_group_change(group):
                         ent["group_changed"] = True
                         cres["found"] = True
@@ -733,6 +934,8 @@ def run_grade(args):
                     cres["pairs"].append(ent)
                 rowrec["candidates"][s] = cres
                 rowrec["section_found"] = rowrec["section_found"] or cres["found"]
+            rowrec["section_found_nonsibling"] = any(rowrec["candidates"][s]["found"] for s in p["candidates"] if not sib[s])
+            rowrec["has_nonsibling_candidate"] = any(not sib[s] for s in p["candidates"])
             # fragments
             for r in grows:
                 spans = json.loads(r[4] or "[]")
@@ -744,33 +947,101 @@ def run_grade(args):
                     fr_rec = {"drug_name_id": did, "supplement_id": sid, "change_id": r[0], "group": group,
                               "section_number": r[2], "section_title": r[3], "fragment": fr["text"],
                               "tokens": fr["tokens"], "class": fclass, "approval_date": p["approval_date"],
-                              "per_candidate": {}, "found": False}
-                    pair_stats = []
+                              "per_candidate": {}, "per_candidate_strict": {}, "found": False, "found_strict": False,
+                              "sibling_or_repackager": sorted(s for s, f in sib.items() if f)}
+                    cand_stats = {}
                     for s in p["candidates"]:
-                        cf_found = False
+                        cf_found = cf_strict = False
+                        cand_stats[s] = []
                         for a, b, gap in p["pairs"][s]:
                             v = view(a[2], b[2])
                             if v is None or v.d["comparison"] != "ok":
                                 continue
                             st = v.fragment_status(fr["text"], group)
-                            pair_stats.append((s, a, b, st))
-                            if st["found"]:
-                                cf_found = True
+                            cand_stats[s].append((st, a[1], p["approval_date"]))
+                            cf_found = cf_found or st["found"]
+                            cf_strict = cf_strict or st["found_strict"]
                         fr_rec["per_candidate"][s] = cf_found
+                        fr_rec["per_candidate_strict"][s] = cf_strict
                         fr_rec["found"] = fr_rec["found"] or cf_found
+                        fr_rec["found_strict"] = fr_rec["found_strict"] or cf_strict
+                    if fr_rec["found_strict"] and not fr_rec["found"]:
+                        cov["INVARIANT_strict_found_but_ws_not"] += 1
                     if not fr_rec["found"]:
-                        # categorize using the best-scoring pair: the earliest pair that carries any signal
-                        cat, detail = categorize_fragment([x[3] for x in pair_stats],
-                                                          pair_stats[0][1][1] if pair_stats else None, p["approval_date"])
-                        if not pair_stats:
-                            cat, detail = _no_pair_category(rowrec)
-                        fr_rec["miss_category"], fr_rec["miss_detail"] = cat, detail
+                        labs = {}
+                        for s, sts in cand_stats.items():
+                            labs[s] = candidate_label(sts) if sts else (None, None)
+                        pending.append((fr_rec, p, rowrec, cand_stats, labs))
                     frags_out.append(fr_rec)
                     stats_for_row.append(fr_rec)
-            # section miss category
-            if not rowrec["section_found"]:
-                rowrec["miss_category"], rowrec["miss_detail"] = _section_category(rowrec, stats_for_row, group)
             rows_out.append(rowrec)
+            if not rowrec["section_found"]:
+                pending.append((None, p, rowrec, None, None))
+
+    # ---- all-captured-version presence for fragments absent from every compared pair of every candidate
+    need_frags = collections.defaultdict(set)  # setid -> {fragment_ws}
+    for fr_rec, p, rowrec, cand_stats, labs in pending:
+        if fr_rec is None:
+            continue
+        if any(l[0] is not None for l in labs.values()):
+            continue
+        for s, sts in cand_stats.items():
+            if sts:
+                need_frags[s].add(ws_squash(fr_rec["fragment"]))
+    ptasks, frag_lists = [], {}
+    for s, fs in sorted(need_frags.items()):
+        fl = sorted(fs)
+        frag_lists[s] = fl
+        vl = []
+        for v in vers(s):
+            if v[2]:
+                pth = resolve(v[2])
+                if pth:
+                    vl.append((v[0], v[3], pth))
+        ptasks.append((s, vl, fl))
+    nver = sum(len(t[1]) for t in ptasks)
+    log("all-version presence check: %d setids, %d version reads, %d distinct fragments" %
+        (len(ptasks), nver, sum(len(t[2]) for t in ptasks)))
+    presence = {}
+    done = 0
+    with cf.ProcessPoolExecutor(args.workers) as ex:
+        for s, res in ex.map(_presence_task, ptasks, chunksize=1):
+            presence[s] = res
+            done += 1
+            if done % 200 == 0:
+                log("presence %d/%d" % (done, len(ptasks)))
+
+    # ---- finalize miss labels
+    for fr_rec, p, rowrec, cand_stats, labs in pending:
+        if fr_rec is None:
+            rowrec["miss_label"], rowrec["miss_detail"] = _section_label(rowrec)
+            continue
+        fws = ws_squash(fr_rec["fragment"])
+        cands = []
+        for s, (lab, det) in labs.items():
+            if lab is not None:
+                cands.append((_RANK[lab], lab, "%s [%s]" % (det, s)))
+            elif cand_stats[s]:
+                if fws not in frag_lists.get(s, ()):
+                    continue  # another candidate already has a more informative label; all-version check skipped
+                pres = presence.get(s, {})
+                vs = {v[0]: v[1] for v in vers(s) if v[2]}
+                unchecked = [v for v in vs if pres.get(v) is None]
+                idx = frag_lists[s].index(fws)
+                present = {v for v, hit in pres.items() if hit is not None and idx in hit}
+                lab2 = classify_presence(vs, p["approval_date"], present)
+                det2 = "present in versions %s of %d captured; %d unreadable [%s]" % (sorted(present), len(vs), len(unchecked), s)
+                cands.append((_RANK[lab2], lab2, det2))
+            else:
+                comp = any(e["comparison"] in ("not_comparable", "error", "no_digest")
+                           for e in rowrec["candidates"][s]["pairs"])
+                lab2 = L_NOTCOMP if comp else L_NOPAIR
+                cands.append((_RANK[lab2], lab2, "%s [%s]" % (lab2, s)))
+        if not cands:
+            cands.append((_RANK[L_NOPAIR], L_NOPAIR, "no candidate"))
+        cands.sort(key=lambda x: x[0])
+        fr_rec["miss_label"], fr_rec["miss_detail"] = cands[0][1], cands[0][2]
+        fr_rec["miss_label_all_candidates"] = sorted({c[1] for c in cands})
 
     # ---- GitRx-only changes (pairs in a graded entry's window)
     go = collections.Counter()
@@ -795,11 +1066,31 @@ def run_grade(args):
     main = [f for f in frags_out if f["class"] == "main"]
     short = [f for f in frags_out if f["class"] == "short"]
     tblf = [f for f in frags_out if f["class"] == "table_referring"]
-    miss_sec = collections.Counter(r.get("miss_category") for r in sec_rows if not r["section_found"])
-    miss_txt = collections.Counter(f.get("miss_category") for f in main if not f["found"])
+    miss_sec = collections.Counter(r.get("miss_label") for r in sec_rows if not r["section_found"])
+    miss_txt = collections.Counter(f.get("miss_label") for f in main if not f["found"])
+
+    def trate(fs, key="found"):
+        return rate(sum(1 for f in fs if f[key]), len(fs))
+
+    def by_group(fs, key="found"):
+        return {g: trate([f for f in fs if f["group"] == g], key) for g in SRLC_GROUPS}
+
+    def sib_diag_text(fs):
+        nn = [f for f in fs if len(f["per_candidate"]) > len(f["sibling_or_repackager"])]
+        out = {}
+        for key, pc in (("ws", "per_candidate"), ("strict", "per_candidate_strict")):
+            out[key] = {"all_candidates": trate(fs, "found" if key == "ws" else "found_strict"),
+                        "excluding_sibling_candidates": rate(
+                            sum(1 for f in nn if any(v for c, v in f[pc].items() if c not in f["sibling_or_repackager"])),
+                            len(nn))}
+        out["fragments_with_only_sibling_candidates"] = len(fs) - len(nn)
+        return out
+    nn_rows = [r for r in sec_rows if r["has_nonsibling_candidate"]]
+    sib_all = {s for r in sec_rows for s in r["sibling_or_repackager"]}
     summary = {
         "harness_version": HARNESS_VERSION, "split": mode, "parser_version": parser_version,
         "changes_version": changes.CHANGES_VERSION, "normalization": spl_parser.NORMALIZATION,
+        "text_match_primary": "literal-v1 + all whitespace removed (ws); strict = literal-v1 only (Amendment 2)",
         "window_days": [-WINDOW_BEFORE_DAYS, WINDOW_AFTER_DAYS], "min_fragment_tokens": MIN_FRAGMENT_TOKENS,
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "coverage": dict(cov),
@@ -809,15 +1100,30 @@ def run_grade(args):
         "section_recall": rate(sec_found, len(sec_rows)),
         "section_recall_by_group": {g: rate(sum(1 for r in sec_rows if r["group"] == g and r["section_found"]),
                                             sum(1 for r in sec_rows if r["group"] == g)) for g in SRLC_GROUPS},
-        "text_recall_main": rate(sum(1 for f in main if f["found"]), len(main)),
-        "text_recall_main_by_group": {g: rate(sum(1 for f in main if f["group"] == g and f["found"]),
-                                              sum(1 for f in main if f["group"] == g)) for g in SRLC_GROUPS},
-        "text_short_fragments_lt3_tokens": rate(sum(1 for f in short if f["found"]), len(short)),
-        "text_table_referring_rows": rate(sum(1 for f in tblf if f["found"]), len(tblf)),
-        "section_miss_categories": dict(miss_sec),
-        "text_miss_categories": dict(miss_txt),
+        "text_recall_main": trate(main),
+        "text_recall_main_strict": trate(main, "found_strict"),
+        "text_recall_main_by_group": by_group(main),
+        "text_recall_main_strict_by_group": by_group(main, "found_strict"),
+        "text_short_fragments_lt3_tokens": trate(short),
+        "text_short_fragments_lt3_tokens_strict": trate(short, "found_strict"),
+        "text_table_referring_rows": trate(tblf),
+        "text_table_referring_rows_strict": trate(tblf, "found_strict"),
+        "section_miss_labels": dict(miss_sec),
+        "text_miss_labels": dict(miss_txt),
+        "sibling_or_repackager_diagnostic": {
+            "definition": "candidate setid none of whose SPL product names/title contains the SrLC drug_name "
+                          "(parenthetical removed) or its first word, case/whitespace-insensitive; diagnostic only, "
+                          "primary metrics count any candidate (Amendment 1)",
+            "candidate_setids_flagged": len(sib_all), "candidate_setids_total": len(all_cands),
+            "candidate_setids_without_names": len([c for c in all_cands if not cand_names.get(c)]),
+            "section_rows": {"all_candidates": rate(sec_found, len(sec_rows)),
+                             "excluding_sibling_candidates": rate(sum(1 for r in nn_rows if r["section_found_nonsibling"]), len(nn_rows)),
+                             "rows_with_only_sibling_candidates": len(sec_rows) - len(nn_rows)},
+            "text_main": sib_diag_text(main)},
         "gitrx_only": dict(go),
         "digest_build": dict(build_status),
+        "all_version_presence": {"setids": len(ptasks), "version_reads": nver,
+                                 "unreadable_versions": sum(1 for r in presence.values() for h in r.values() if h is None)},
         "inputs": {
             "gradebook": args.gradebook, "gradebook_sha256": sha256_file(args.gradebook),
             "gradebook_drugs_with_detail": gb.execute("SELECT COUNT(*) FROM drugs WHERE detail_sha256 IS NOT NULL").fetchone()[0],
@@ -840,32 +1146,27 @@ def run_grade(args):
     return summary
 
 
-def _no_pair_category(rowrec):
-    """No comparable in-window pair existed for any candidate."""
-    ok = False
+def _section_label(rowrec):
+    """Descriptive label for a section row no candidate's compared pair marked as changed in the group."""
+    best = None
+    pairs_any = False
     for c in rowrec["candidates"].values():
         for e in c["pairs"]:
-            if e["comparison"] in ("not_comparable", "error"):
-                ok = True
-    if ok:
-        return "parser", "in-window pair not comparable (extraction defect / parse error)"
-    return "missing DailyMed version", "window version has no captured predecessor or pair"
-
-
-def _section_category(rowrec, frags, group):
-    pairs = [e for c in rowrec["candidates"].values() for e in c["pairs"]]
-    if not pairs:
-        return "missing DailyMed version", "in-window version(s) have no captured predecessor"
-    if all(e["comparison"] in ("not_comparable", "error", "no_digest") for e in pairs):
-        return "parser", "all in-window pairs not comparable (%s)" % ",".join(sorted({e["comparison"] for e in pairs}))
-    cats = collections.Counter(f.get("miss_category") for f in frags
-                               if f["class"] != "short" and not f["found"] and f.get("miss_category"))
-    if cats:
-        cat = cats.most_common(1)[0][0]
-        return cat, "from fragment categories %s" % dict(cats)
-    if any(e["version_gap"] for e in pairs):
-        return "missing DailyMed version", "in-window pair spans a version gap"
-    return "uncategorized", "no >=3-token fragment to test"
+            pairs_any = True
+            if e["comparison"] != "ok":
+                lab = S_NOTCOMP
+            elif e.get("n_substantive_changes", 0) == 0:
+                lab = S_NOCHG
+            elif e.get("to_version_has_group_section"):
+                lab = S_OTHER_SEC
+            else:
+                lab = S_OTHER_NOSEC
+            if best is None or _SRANK[lab] < _SRANK[best]:
+                best = lab
+    if not pairs_any:
+        best = S_NOPAIR
+    gap = any(e["version_gap"] for c in rowrec["candidates"].values() for e in c["pairs"])
+    return best, "%d candidate(s), pairs span a version gap: %s" % (len(rowrec["candidates"]), gap)
 
 
 def main(argv=None):
@@ -897,8 +1198,8 @@ def main(argv=None):
     a.gradebook = a.gradebook or os.path.join(a.srlc_root, "gradebook.sqlite")
     s = run_grade(a)
     print(json.dumps({k: s[k] for k in ("split", "parser_version", "coverage", "mapping", "section_recall",
-                                        "text_recall_main", "section_miss_categories", "text_miss_categories",
-                                        "gitrx_only")}, indent=1))
+                                        "text_recall_main", "text_recall_main_strict", "section_miss_labels",
+                                        "text_miss_labels", "sibling_or_repackager_diagnostic", "gitrx_only")}, indent=1))
     return 0
 
 

@@ -92,7 +92,37 @@ def test_approvals_in_xml():
     assert G.approvals_in_xml(b"<a/>") == set()
 
 
-def test_digest_found_and_categories():
+def test_ws_matching_and_added_token_overlap():
+    cases = [("Use ( 5.1 ) for details and more text.", "( 5.1 )", "(5.1)", "details"),
+             ("The brand SPORANOX ® is oral.", "SPORANOX ®", "SPORANOX®", "oral."),
+             ("An open- label study was run.", "open- label", "open-label", "study")]
+    for raw, spaced, joined, other in cases:
+        s0 = raw.index(spaced)
+        iv = [[s0, s0 + len(spaced)]]
+        nt, toks = G.norm_with_tokens(raw, iv)
+        wt, flags = G.norm_ws_with_flags(raw, iv)
+        frag_strict = G.normalize(joined)
+        assert G.find_fragment(frag_strict, nt, toks)[0] is False      # strict literal-v1 misses
+        assert G.find_fragment(G.normalize(spaced), nt, toks) == (True, True)
+        assert G.find_fragment_ws(G.ws_squash(joined), wt, flags) == (True, True)   # ws hits, overlaps added tokens
+        # same text but the added interval is elsewhere: verbatim, no overlap
+        e0 = raw.index(other)
+        wt, flags = G.norm_ws_with_flags(raw, [[e0, e0 + len(other)]])
+        assert G.find_fragment_ws(G.ws_squash(joined), wt, flags) == (True, False)
+    assert G.find_fragment_ws("zzz", "abc", bytearray(3)) == (False, False)
+
+
+def test_ws_digest_found_but_strict_not():
+    a = spl(1, "Nausea was reported.")
+    b = spl(2, "Nausea was reported. Hepatic failure ( 5.1 ) has occurred rarely.")
+    v = G.DigestView(G.make_digest(a, b, "a" * 64, "b" * 64))
+    st = v.fragment_status("Hepatic failure (5.1) has occurred rarely", "AR")
+    assert st["found"] and not st["found_strict"]
+    st = v.fragment_status("Hepatic failure ( 5.1 ) has occurred rarely", "AR")
+    assert st["found"] and st["found_strict"]
+
+
+def test_digest_found_and_labels():
     a = spl(1, "Nausea was reported.")
     b = spl(2, "Nausea was reported. Hepatic failure has occurred rarely in treated patients.")
     d = G.make_digest(a, b, "a" * 64, "b" * 64)
@@ -100,17 +130,40 @@ def test_digest_found_and_categories():
     v = G.DigestView(d)
     assert v.has_group_change("AR") and not v.has_group_change("BW")
     st = v.fragment_status("Hepatic failure has occurred rarely", "AR")
-    assert st["found"]
+    assert st["found"] and st["found_strict"]
     st = v.fragment_status("Nausea was reported.", "AR")     # verbatim in changed section, no added token
     assert not st["found"] and st["verbatim_changed_same_group"] and st["in_from_same_group"]
-    assert G.categorize_fragment([st], "2019-01-01", "2020-06-01")[0] == "SrLC-side inconsistency"
-    assert G.categorize_fragment([st], "2020-06-01", "2020-06-01")[0] == "version bracketing"
+    assert G.candidate_label([(st, "2019-01-01", "2020-06-01")])[0] == G.L_FROM_BEFORE
+    assert G.candidate_label([(st, "2020-06-01", "2020-06-01")])[0] == G.L_FROM_IN
     st = v.fragment_status("Hepatic failure has occurred rarely", "WP")  # wrong group
     assert not st["found"] and st["in_other_group"]
-    assert G.categorize_fragment([st], None, "2020-06-01")[0] == "alignment"
+    assert G.candidate_label([(st, None, "2020-06-01")])[0] == G.L_TO_NOCHG
     st = v.fragment_status("completely absent words here", "AR")
-    assert G.categorize_fragment([st], None, "2020-06-01")[0] == "SrLC-side inconsistency"
-    assert G.categorize_fragment([], None, "2020-06-01")[0] == "missing DailyMed version"
+    assert G.candidate_label([(st, None, "2020-06-01")]) == (None, None)
+    st = v.fragment_status("Used for things.", "AR")     # in an unchanged other-group section
+    assert G.candidate_label([(st, None, "2020-06-01")])[0] == G.L_TO_NOCHG
+    # raw-XML only (title text is not a parsed section)
+    st = v.fragment_status("ADVERSE REACTIONS", "AR")
+    assert not st["found"]
+
+
+def test_presence_classification():
+    pubs = {1: "2018-01-01", 2: "2020-06-15", 3: "2023-01-01"}
+    ap = "2020-06-01"
+    assert G.classify_presence(pubs, ap, {3}) == G.L_AFTER
+    assert G.classify_presence(pubs, ap, {1}) == G.L_BEFORE
+    assert G.classify_presence(pubs, ap, {1, 3}) == G.L_BOTH
+    assert G.classify_presence(pubs, ap, set()) == G.L_NONE
+    assert G.classify_presence(pubs, ap, {2}) == G.L_INWIN_OTHER
+
+
+def test_sibling_flag_and_names():
+    assert G.is_sibling_or_repackager("SPORANOX", ["Sporanox- itraconazole capsule"]) is False
+    assert G.is_sibling_or_repackager("SPORANOX", ["Itraconazole capsules"]) is True
+    assert G.is_sibling_or_repackager("Humira (adalimumab)", ["HUMIRA"]) is False
+    assert G.is_sibling_or_repackager("X", []) is False
+    xml = spl(1, "x")
+    assert G.product_names_in_xml(xml) == ["X", "T"]
 
 
 def _make_world(tmp_path):
@@ -172,7 +225,15 @@ def test_end_to_end_open_grade_and_coverage_exclusion(tmp_path):
     rows = [json.loads(x) for x in open(tmp_path / "out" / "rows.jsonl")]
     assert {r["drug_name_id"] for r in rows} == {1}
     bw = next(r for r in rows if r["group"] == "BW")
-    assert not bw["section_found"] and bw["miss_category"] == "SrLC-side inconsistency"
+    assert not bw["section_found"] and bw["miss_label"] == G.S_OTHER_NOSEC
+    assert bw["sibling_or_repackager"] == [SID]   # product name X does not contain "D1"
+    assert s["sibling_or_repackager_diagnostic"]["section_rows"]["rows_with_only_sibling_candidates"] == 3
+    frs = [json.loads(x) for x in open(tmp_path / "out" / "fragments.jsonl")]
+    boxed = next(f for f in frs if f["group"] == "BW")
+    assert boxed["miss_label"] == G.L_NONE and not boxed["found"] and not boxed["found_strict"]
+    assert s["text_recall_main_strict"]["k"] == 1
+    assert s["text_miss_labels"] == {G.L_NONE: 1}
+    assert s["section_miss_labels"] == {G.S_OTHER_NOSEC: 2}
     frags = open(tmp_path / "out" / "fragments.jsonl").read()
     assert "SEALED" not in frags
     # a second run reuses the digest cache

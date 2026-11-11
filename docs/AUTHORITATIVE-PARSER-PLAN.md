@@ -119,3 +119,7 @@ Changes, fixed before re-grading:
 - Pre-existing checks are made per candidate setid; candidates sharing an application
   number but with different product names are reported as sibling-product candidates.
 Thresholds, window, units, split and the 3-token rule are unchanged.
+Correction (same day, after the Amendment 2 re-grade): the "55%" figure above came from a
+looser comparison (letters and digits only, case-folded), not from whitespace removal alone.
+Whitespace-free matching raised open-split text recall from 73.6% to 75.7% (strict unchanged
+at 73.6%); section recall unchanged at 94.2%. Run: grading/open-spl-sections-0.2.1-h0.2.0.
