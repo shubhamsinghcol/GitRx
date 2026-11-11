@@ -239,3 +239,99 @@ def test_end_to_end_open_grade_and_coverage_exclusion(tmp_path):
     # a second run reuses the digest cache
     s2 = G.run_grade(args)
     assert s2["digest_build"].get("cached", 0) >= 1
+
+
+# ---------------------------------------------------------------- Amendment 3
+
+def test_render_normalization():
+    rk = G.render_key
+    assert rk("• Initiation of X") == rk("Initiation of X") == G.render_squash("initiation of x")
+    assert rk("o Initiation of X") == rk("Initiation of X")
+    assert rk("• ◦ - * Alpha beta") == rk("Alpha beta")
+    assert rk("INITIATION of x") == rk("initiation OF X")
+    assert rk("Alpha‎ beta") == rk("Alpha beta")                      # U+200E (Cf) dropped
+    assert rk("only text") != rk("only  text extra")
+
+    def hit(frag, label):
+        t, fl = G.norm_render_with_flags(label)
+        return G.find_render(rk(frag), t, fl)[0]
+    assert hit("Grade ?3 neutropenia", "Grade ≥3 neutropenia occurred")
+    assert not hit("Grade ?3 neutropenia", "Grade 3 neutropenia occurred")     # '?' stands for one char, must exist
+    assert hit("Grade ?3 neutropenia", "Grade ?3 neutropenia occurred")        # literal ? tolerated
+    assert hit("Initiation of X", "• Initiation‎ of X therapy")
+    assert hit("INITIATION OF X", "initiation of x therapy")
+    assert not hit("Initiation of Y", "Initiation of X therapy")
+    # overlap rule keeps the char -> added-token map
+    raw = "Old text. Grade ≥3 neutropenia occurred."
+    s0 = raw.index("Grade")
+    t, fl = G.norm_render_with_flags(raw, [[s0, len(raw)]])
+    assert G.find_render(rk("Grade ?3 neutropenia"), t, fl) == (True, True)
+    t, fl = G.norm_render_with_flags(raw, [[0, 3]])
+    assert G.find_render(rk("Grade ?3 neutropenia"), t, fl) == (True, False)
+
+
+def test_render_found_where_ws_and_strict_miss():
+    a = spl(1, "Nausea was reported.")
+    b = spl(2, "Nausea was reported. • Grade ≥3 neutropenia has occurred.")
+    v = G.DigestView(G.make_digest(a, b, "a" * 64, "b" * 64))
+    st = v.fragment_status("Grade ?3 neutropenia has occurred", "AR")
+    assert st["found"] and st["found_render"] and not st["found_ws"] and not st["found_strict"]
+    assert st["any_render"] and not st["any_ws"]
+    st = v.fragment_status("Grade ?3 neutropenia has occurred", "WP")
+    assert not st["found_render"] and st["any_render"] and G.located_label(v, st) == G.LL_OTHER_GROUP
+
+
+def test_locate_transition_nearest_within_range():
+    ap = "2020-06-01"
+    C = {"S1": [(1, "2017-01-01", False), (2, "2018-01-01", True), (3, "2019-01-01", False), (4, "2020-05-01", True),
+                (5, "2020-07-01", False), (6, "2021-03-01", True)],
+         "S0": [(1, "2019-01-01", False), (2, "2020-04-01", True)]}
+    loc, reason = G.locate_transition(C, ap)
+    # candidates: S1 v2 (2018-01-01, -882 d: out of range), S1 v4 (-31 d), S1 v6 (+273 d), S0 v2 (-61 d)
+    assert reason is None and (loc["setid"], loc["to_version"], loc["from_version"]) == ("S1", 4, 3)
+    assert loc["delta_days"] == -31
+    # tie across candidates -> lowest setid
+    loc, _ = G.locate_transition({"B": [(1, "2020-01-01", False), (2, "2020-05-01", True)],
+                                  "A": [(1, "2020-01-01", False), (2, "2020-05-01", True)]}, ap)
+    assert loc["setid"] == "A"
+    # inclusive range edges: -730 d and +365 d
+    assert G.locate_transition({"A": [(1, "2018-01-01", False), (2, "2018-06-02", True)]}, ap)[0]["delta_days"] == -730
+    assert G.locate_transition({"A": [(1, "2018-01-01", False), (2, "2021-06-01", True)]}, ap)[0]["delta_days"] == 365
+    assert G.locate_transition({"A": [(1, "2018-01-01", False), (2, "2018-06-01", True)]}, ap)[0] is None
+
+
+def test_locate_transition_not_locatable_reasons():
+    ap = "2020-06-01"
+    assert G.locate_transition({"A": [(1, "2019-01-01", True), (2, "2020-06-01", True)]}, ap) == (None, G.NL_FIRST)
+    assert G.locate_transition({"A": [(1, "2019-01-01", False), (2, "2020-06-01", False)]}, ap) == (None, G.NL_NEVER)
+    assert G.locate_transition({"A": [(1, "2010-01-01", False), (2, "2011-06-01", True)]}, ap) == (None, G.NL_RANGE)
+    assert G.locate_transition({"A": [(1, "2022-01-01", False), (2, "2023-06-01", True)]}, ap) == (None, G.NL_RANGE)
+    assert G.locate_transition({"A": [(1, "2019-01-01", None)]}, ap) == (None, G.NL_UNREADABLE)
+    assert G.locate_transition({}, ap) == (None, G.NL_UNREADABLE)
+    # present, removed, never re-added: no transition -> first-version reason
+    assert G.locate_transition({"A": [(1, "2019-01-01", True), (2, "2020-01-01", False)]}, ap) == (None, G.NL_FIRST)
+    # unreadable middle version is skipped when forming a transition
+    loc, _ = G.locate_transition({"A": [(1, "2019-01-01", False), (2, "2019-09-01", None), (3, "2020-05-01", True)]}, ap)
+    assert (loc["from_version"], loc["to_version"]) == (1, 3)
+
+
+def test_parser_accuracy_in_end_to_end(tmp_path):
+    root = _make_world(tmp_path)
+    args = argparse.Namespace(
+        split="open", sealed_final=False, parser_version=None, frozen_parser_marker=None, srlc_root=str(root),
+        gradebook=str(tmp_path / "gb.sqlite"), index=str(tmp_path / "index.sqlite"), evidence_db="unused",
+        raw_manifest=None, workers=1, out_dir=str(tmp_path / "out"), cache_dir=str(tmp_path / "cache"))
+    s = G.run_grade(args)
+    pa = s["parser_accuracy"]
+    # two main fragments: AR (located, found) and BW (never present)
+    assert pa["main_fragments_in_parser_gradable_entries"] == 2 and pa["located"] == 1 and pa["not_locatable"] == 1
+    assert pa["not_locatable_reasons"] == {G.NL_NEVER: 1}
+    assert pa["text_same_group"]["render"]["k"] == 1 and pa["text_same_group"]["render"]["n"] == 1
+    assert pa["text_any_group"]["strict"]["k"] == 1
+    assert pa["section_accuracy"]["k"] == 1 and pa["section_accuracy"]["n"] == 1
+    assert s["end_to_end"]["text_recall_main"]["render"]["k"] == 1
+    assert set(s["end_to_end"]["text_recall_main"]) == {"strict", "ws", "render"}
+    frs = [json.loads(x) for x in open(tmp_path / "out" / "fragments.jsonl")]
+    ar = next(f for f in frs if f["group"] == "AR" and f["class"] == "main")
+    assert ar["parser"]["located"] and (ar["parser"]["from_version"], ar["parser"]["to_version"]) == (1, 2)
+    assert (tmp_path / "fulltext-render").is_dir()

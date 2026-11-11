@@ -29,7 +29,9 @@ import os
 import re
 import sqlite3
 import sys
+import functools
 import time
+import unicodedata
 import zipfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -37,9 +39,12 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from gitrx_core.normalize import normalize  # noqa: E402
 
-HARNESS_VERSION = "srlc-grade-0.2.0"
+HARNESS_VERSION = "srlc-grade-0.3.0"
 WINDOW_BEFORE_DAYS = 30
 WINDOW_AFTER_DAYS = 365
+# Amendment 3 item 2: transition search range around the SrLC approval date
+LOCATE_BEFORE_DAYS = 730
+LOCATE_AFTER_DAYS = 365
 MIN_FRAGMENT_TOKENS = 3
 SRLC_GROUPS = ("BW", "C", "WP", "AR", "DI", "USP", "MG")
 CHANNELS = ("text", "table", "excerpt")
@@ -70,6 +75,19 @@ S_NOCHG = "in-window pair(s) have no substantive change"
 S_NOTCOMP = L_NOTCOMP
 S_NOPAIR = L_NOPAIR
 SECTION_LABEL_ORDER = (S_OTHER_SEC, S_OTHER_NOSEC, S_NOCHG, S_NOTCOMP, S_NOPAIR)
+# Amendment 3 item 2: reasons a fragment is "not locatable" and labels for located-but-missed fragments
+NL_FIRST = "present from first captured version (no absent->present transition)"
+NL_NEVER = "never present in any captured version"
+NL_RANGE = "absent->present transitions only outside [approval-730 d, approval+365 d]"
+NL_UNREADABLE = "no readable captured version"
+NOT_LOCATABLE_ORDER = (NL_FIRST, NL_NEVER, NL_RANGE, NL_UNREADABLE)
+LL_NOTCOMP = "located pair not comparable"
+LL_OTHER_GROUP = "in pair, inside added tokens but different group (alignment/grouping)"
+LL_SAME_NOTADDED = "in to-version same-group changed section, not within added tokens"
+LL_SAME_UNCHANGED = "in to-version same-group section not marked changed"
+LL_OTHER_NOADDED = "in to-version other-group section only, not within added tokens"
+LL_XML = "in raw XML of to-version but not in parsed sections (parser)"
+LL_UNEXPLAINED = "located by full text but not found in the pair's digest"
 _RANK = {l: i for i, l in enumerate(TEXT_LABEL_ORDER)}
 _SRANK = {l: i for i, l in enumerate(SECTION_LABEL_ORDER)}
 
@@ -207,6 +225,90 @@ def find_fragment_ws(fragment_ws, ws_text, flags):
             break
         verbatim = True
         j = i + len(fragment_ws)
+        if flags.find(1, i, j) >= 0:
+            overlap = True
+            break
+        start = i + 1
+    return verbatim, overlap
+
+
+# ---- Amendment 3 item 1: rendering normalization (on top of the Amendment 2 whitespace-free match)
+
+_LIST_MARKERS = ("\u2022", "\u25e6", "\u25aa", "-", "*")
+
+
+def _drop_cf(t):
+    """Remove Unicode format characters (category Cf) from t."""
+    if t.isascii():
+        return t
+    drop = {ord(c): None for c in set(t) if unicodedata.category(c) == "Cf"}
+    return t.translate(drop) if drop else t
+
+
+def render_squash(text):
+    """Rendering-normalized, whitespace-free text: literal-v1, casefold, Cf characters removed, whitespace removed."""
+    return "".join(_drop_cf(normalize(text).casefold()).split())
+
+
+def strip_list_markers(text):
+    """Remove leading list markers (bullet, white bullet, small square, '-', '*', or 'o' + space), repeatedly."""
+    s = normalize(text)
+    while True:
+        if s[:1] in _LIST_MARKERS:
+            s = s[1:].lstrip(" ")
+        elif s.startswith("o "):
+            s = s[2:].lstrip(" ")
+        else:
+            return s
+
+
+def render_key(fragment):
+    """Rendering-normalized, whitespace-free key of an SrLC fragment (list markers stripped first)."""
+    return render_squash(strip_list_markers(fragment))
+
+
+@functools.lru_cache(maxsize=200000)
+def compile_key(key):
+    """-> compiled regex when the key holds SrLC '?' placeholders (each matches one non-ASCII label char, or a
+    literal '?'), else None (plain substring search)."""
+    if "?" not in key:
+        return None
+    return re.compile("".join(r"(?:[^\x00-\x7f]|\?)" if c == "?" else re.escape(c) for c in key))
+
+
+def norm_render_with_flags(raw, added_intervals=()):
+    """Amendment 3 rendering-normalized, whitespace-free label text plus per-character added flags (1 where the
+    character belongs to a token overlapping a GitRx added interval; same token mapping as the strict metric)."""
+    parts, flags = [], bytearray()
+    for m in _TOK.finditer(raw):
+        t = render_squash(m.group())
+        if not t:
+            continue
+        added = any(m.start() < e and m.end() > s for s, e in added_intervals)
+        parts.append(t)
+        flags.extend((b"\x01" if added else b"\x00") * len(t))
+    return "".join(parts), flags
+
+
+def find_render(key, text, flags=None):
+    """-> (verbatim, overlaps_added_token) for a render key in rendering-normalized text.  `flags` None = presence."""
+    verbatim = overlap = False
+    if not key:
+        return False, False
+    rx = compile_key(key)
+    start = 0
+    while True:
+        if rx is None:
+            i = text.find(key, start)
+            j = i + len(key)
+        else:
+            m = rx.search(text, start)
+            i, j = (m.start(), m.end()) if m else (-1, -1)
+        if i < 0:
+            break
+        verbatim = True
+        if flags is None:
+            break
         if flags.find(1, i, j) >= 0:
             overlap = True
             break
@@ -536,59 +638,76 @@ class DigestView:
             self._n[key] = norm_ws_with_flags(sec["ch"].get(ch, ""), self._added(sec).get(ch, []))
         return self._n[key]
 
-    def from_ws(self, sec, ch):
-        key = ("fromws", sec["o"], ch)
+    def to_render(self, sec, ch):
+        key = ("torender", sec["o"], ch)
         if key not in self._n:
-            self._n[key] = norm_ws_with_flags(sec["ch"].get(ch, ""))
+            self._n[key] = norm_render_with_flags(sec["ch"].get(ch, ""), self._added(sec).get(ch, []))
         return self._n[key]
 
-    def xml_ws(self):
-        if "xmlws" not in self._n:
-            self._n["xmlws"] = ws_squash(self.d.get("xml_text_to", ""))
-        return self._n["xmlws"]
+    def from_render(self, sec, ch):
+        key = ("fromrender", sec["o"], ch)
+        if key not in self._n:
+            self._n[key] = norm_render_with_flags(sec["ch"].get(ch, ""))
+        return self._n[key]
+
+    def xml_render(self):
+        if "xmlrender" not in self._n:
+            self._n["xmlrender"] = render_squash(self.d.get("xml_text_to", ""))
+        return self._n["xmlrender"]
 
     def has_group_change(self, group):
         return any(c["group"] == group for c in self.d["changes"])
 
     def fragment_status(self, frag, group):
-        """Amendment 1 text criterion (Amendment 2 matching) plus diagnostics for labelling.
+        """Amendment 1 text criterion with Amendment 2/3 matching, plus diagnostics for labelling.
 
-        found (ws, primary): whitespace-free fragment occurs in a changed same-group to-section AND overlaps an added
-        token.  found_strict: the literal-v1 criterion, unchanged.  Diagnostic keys are ws-based."""
+        found / found_render (primary): rendering-normalized fragment (Amendment 3) occurs in a changed same-group
+        to-section AND overlaps an added token.  found_ws: Amendment 2 whitespace-free match; found_strict: literal-v1.
+        any_*: same criteria but in a substantive change of ANY group.  Diagnostic keys are render-based."""
         fws = ws_squash(frag)
-        res = {"found": False, "found_strict": False, "verbatim_changed_same_group": False,
-               "in_unchanged_same_group": False, "in_other_group": False, "in_from_same_group": False,
-               "in_from_any": False, "in_xml_text": False}
+        rkey = render_key(frag)
+        res = {"found": False, "found_render": False, "found_ws": False, "found_strict": False,
+               "any_render": False, "any_ws": False, "any_strict": False,
+               "verbatim_changed_same_group": False, "in_unchanged_same_group": False, "in_other_group": False,
+               "in_from_same_group": False, "in_from_any": False, "in_xml_text": False}
         for sec in self.d["to_sections"]:
             same = sec["group"] == group
+            chg = sec["o"] in self.changed
             for ch in sec["ch"]:
-                wt, flags = self.to_ws(sec, ch)
-                v, ov = find_fragment_ws(fws, wt, flags)
+                rt, rflags = self.to_render(sec, ch)
+                v, ov = find_render(rkey, rt, rflags)
                 if not v:
                     continue
                 if same:
-                    if sec["o"] in self.changed:
+                    if chg:
                         res["verbatim_changed_same_group"] = True
-                        if ov:
-                            res["found"] = True
-                            nt, toks = self.to_norm(sec, ch)
-                            if find_fragment(frag, nt, toks)[1]:
-                                res["found_strict"] = True
-                                return res
                     else:
                         res["in_unchanged_same_group"] = True
                 else:
                     res["in_other_group"] = True
+                if not (chg and ov):
+                    continue
+                res["any_render"] = True
+                if same:
+                    res["found_render"] = res["found"] = True
+                wt, flags = self.to_ws(sec, ch)
+                if find_fragment_ws(fws, wt, flags)[1]:
+                    res["any_ws"] = True
+                    res["found_ws"] = res["found_ws"] or same
+                    nt, toks = self.to_norm(sec, ch)
+                    if find_fragment(frag, nt, toks)[1]:
+                        res["any_strict"] = True
+                        res["found_strict"] = res["found_strict"] or same
         if res["found"]:
             return res
         for sec in self.d["from_sections"]:
             for ch in sec["ch"]:
-                wt, flags = self.from_ws(sec, ch)
-                if find_fragment_ws(fws, wt, flags)[0]:
+                wt, _ = self.from_render(sec, ch)
+                if find_render(rkey, wt)[0]:
                     res["in_from_any"] = True
                     if sec["group"] == group:
                         res["in_from_same_group"] = True
-        res["in_xml_text"] = fws in self.xml_ws()
+        res["in_xml_text"] = find_render(rkey, self.xml_render())[0]
         return res
 
 
@@ -703,18 +822,99 @@ def _names_task(task):
         return setid, [], "%s: %s" % (type(exc).__name__, exc)
 
 
+def fulltext_path(ft_dir, sha):
+    return os.path.join(ft_dir, sha[:2], sha + ".txt.gz")
+
+
+def load_or_build_fulltext(ft_dir, sha, member, path):
+    """Rendering-normalized whitespace-free full label text of one raw artifact, cached per raw sha256
+    (cache/fulltext-render/<sha[:2]>/<sha>.txt.gz; existing files are never overwritten)."""
+    fp = fulltext_path(ft_dir, sha)
+    if os.path.exists(fp):
+        with gzip.open(fp, "rt", encoding="utf-8") as f:
+            return f.read()
+    text = render_squash(_strip_xml_text(read_xml_from_zip(path, member)))
+    os.makedirs(os.path.dirname(fp), exist_ok=True)
+    tmp = "%s.%d.tmp" % (fp, os.getpid())
+    with gzip.open(tmp, "wt", encoding="utf-8", compresslevel=3) as f:
+        f.write(text)
+    if os.path.exists(fp):
+        os.remove(tmp)
+    else:
+        os.replace(tmp, fp)
+    return text
+
+
 def _presence_task(task):
-    """task = (setid, [(version, member, path)], [fragment_ws, ...]) -> (setid, {version: [indices present] | None})."""
-    setid, versions, frags = task
+    """task = (setid, [(version, sha, member, path)], [render_key, ...], ft_dir)
+    -> (setid, {version: [indices of keys present] | None})."""
+    setid, versions, keys, ft_dir = task
     out = {}
-    for ver, member, path in versions:
+    for ver, sha, member, path in versions:
         try:
-            text = ws_squash(_strip_xml_text(read_xml_from_zip(path, member)))
+            text = load_or_build_fulltext(ft_dir, sha, member, path)
         except Exception:  # noqa: BLE001 - recorded as unchecked
             out[ver] = None
             continue
-        out[ver] = [i for i, f in enumerate(frags) if f in text]
+        out[ver] = [i for i, k in enumerate(keys) if find_render(k, text)[0]]
     return setid, out
+
+
+def locate_transition(cands, approval_date):
+    """Amendment 3 item 2.  cands: {setid: [(version, pub_date, present)]} for the captured versions of each candidate
+    in version order; present is True/False, or None when the version could not be read.
+
+    A transition is two consecutive readable captured versions with the fragment absent in the first and present in
+    the next.  Of transitions whose to-version publication date lies in [approval-730 d, approval+365 d] the one
+    nearest the approval is chosen (within a candidate: earlier date, then lower version on ties; across candidates:
+    lowest setid on ties).  -> (location dict | None, not_locatable_reason | None)."""
+    a = parse_date(approval_date)
+    lo = a - dt.timedelta(days=LOCATE_BEFORE_DAYS) if a else None
+    hi = a + dt.timedelta(days=LOCATE_AFTER_DAYS) if a else None
+    best = None
+    any_transition = any_present = any_readable = False
+    for setid in sorted(cands):
+        rd = [(v, pd, pr) for v, pd, pr in cands[setid] if pr is not None]
+        if rd:
+            any_readable = True
+        any_present = any_present or any(pr for _, _, pr in rd)
+        for (va, pda, pra), (vb, pdb, prb) in zip(rd, rd[1:]):
+            if pra or not prb:
+                continue
+            any_transition = True
+            d = parse_date(pdb)
+            if d is None or a is None or not (lo <= d <= hi):
+                continue
+            key = (abs((d - a).days), setid, d, vb)
+            if best is None or key < best[0]:
+                best = (key, {"setid": setid, "from_version": va, "to_version": vb, "to_pub_date": pdb,
+                              "delta_days": (d - a).days})
+    if best:
+        return best[1], None
+    if any_transition:
+        return None, NL_RANGE
+    if any_present:
+        return None, NL_FIRST
+    if any_readable:
+        return None, NL_NEVER
+    return None, NL_UNREADABLE
+
+
+def located_label(view, st):
+    """Descriptive label for a located fragment that GitRx did not report in the pair's same-group added tokens."""
+    if view is None or view.d["comparison"] != "ok":
+        return LL_NOTCOMP
+    if st["any_render"]:
+        return LL_OTHER_GROUP
+    if st["verbatim_changed_same_group"]:
+        return LL_SAME_NOTADDED
+    if st["in_unchanged_same_group"]:
+        return LL_SAME_UNCHANGED
+    if st["in_other_group"]:
+        return LL_OTHER_NOADDED
+    if st["in_xml_text"]:
+        return LL_XML
+    return LL_UNEXPLAINED
 
 
 # ----------------------------------------------------------------------------- grading
@@ -759,6 +959,18 @@ def plan_entries(gb, ix, drug_ids):
     return plans
 
 
+VARIANTS = (("strict", "found_strict"), ("ws", "found_ws"), ("render", "found"))
+
+
+def _ssd_guard(*paths):
+    """Stop (rather than create stray directories) if the external SSD vanished mid-run."""
+    for p in paths:
+        if p and p.startswith("/Volumes/"):
+            root = os.sep.join(p.split(os.sep)[:4])
+            if not os.path.isdir(root):
+                raise SystemExit("external volume %s is gone; stopping" % root)
+
+
 def run_grade(args):
     mode = check_split_mode(args)
     from gitrx_core import changes, section_groups, spl_parser
@@ -773,9 +985,11 @@ def run_grade(args):
     out_dir = args.out_dir or os.path.join(root, "grading", "%s-%s" % (mode, parser_version))
     if mode == "sealed" and os.path.exists(os.path.join(out_dir, "summary.json")):
         raise SystemExit("refusing: sealed grading already run for this frozen parser version")
-    os.makedirs(out_dir, exist_ok=True)
     cache_dir = args.cache_dir or os.path.join(root, "grading", "cache", "pairs")
+    ft_dir = getattr(args, "fulltext_dir", None) or os.path.join(os.path.dirname(cache_dir.rstrip(os.sep)), "fulltext-render")
     index_path = args.index or os.path.join(root, "grading", "cache", "index.sqlite")
+    _ssd_guard(out_dir, cache_dir, ft_dir, index_path)
+    os.makedirs(out_dir, exist_ok=True)
     if not os.path.exists(index_path):
         build_index(args.evidence_db, index_path, args.workers, args.raw_manifest)
     ix = sqlite3.connect("file:%s?mode=ro" % index_path, uri=True)
@@ -788,13 +1002,14 @@ def run_grade(args):
     plans = plan_entries(gb, ix, ids)
     log("entries: %d (drug,supplement) in %s split with detail pages" % (len(plans), mode))
 
-    # ---- decide pairs per candidate setid
     vcache = {}
 
     def vers(setid):
         if setid not in vcache:
             vcache[setid] = candidate_versions(ix, setid)
         return vcache[setid]
+
+    # ---- window pairs per candidate setid (end-to-end metric, Amendment 1 bracketing)
     need = collections.defaultdict(dict)  # setid -> {(a_ver,b_ver): row tuple}
     for p in plans:
         p["window_versions"] = {}
@@ -806,29 +1021,34 @@ def run_grade(args):
             p["pairs"][s] = pr
             for a, b, gap in pr:
                 need[s][(a[0], b[0])] = (a, b)
-    tasks, unresolved = [], set()
-    for s, d in need.items():
-        chain = []
-        for (av, bv), (a, b) in sorted(d.items()):
-            pa, pb = resolve(a[2]), resolve(b[2])
-            if pa is None or pb is None:
-                unresolved.add((s, av, bv))
-                continue
-            chain.append((a[2], a[3], pa, b[2], b[3], pb))
-        if chain:
-            tasks.append((cache_dir, chain))
-    npairs = sum(len(t[1]) for t in tasks)
-    log("pairs needed: %d across %d setids (%d unresolved raw)" % (npairs, len(tasks), len(unresolved)))
+    unresolved = set()
     build_status = collections.Counter()
-    done = 0
-    with cf.ProcessPoolExecutor(args.workers) as ex:
-        for res in ex.map(_digest_task, tasks, chunksize=1):
-            for key, st in res:
-                build_status[st.split(":")[0]] += 1
-            done += 1
-            if done % 100 == 0:
-                log("digest tasks %d/%d %s" % (done, len(tasks), dict(build_status)))
-    log("digests: %s" % dict(build_status))
+
+    def build_digests(need_map, what):
+        tasks = []
+        for s, d in need_map.items():
+            chain = []
+            for (av, bv), (a, b) in sorted(d.items()):
+                pa, pb = resolve(a[2]), resolve(b[2])
+                if pa is None or pb is None:
+                    unresolved.add((s, av, bv))
+                    continue
+                chain.append((a[2], a[3], pa, b[2], b[3], pb))
+            if chain:
+                tasks.append((cache_dir, chain))
+        log("%s pairs needed: %d across %d setids (%d unresolved raw so far)" %
+            (what, sum(len(t[1]) for t in tasks), len(tasks), len(unresolved)))
+        _ssd_guard(cache_dir)
+        done = 0
+        with cf.ProcessPoolExecutor(args.workers) as ex:
+            for res in ex.map(_digest_task, tasks, chunksize=1):
+                for key, st in res:
+                    build_status[st.split(":")[0]] += 1
+                done += 1
+                if done % 100 == 0:
+                    log("%s digest tasks %d/%d %s" % (what, done, len(tasks), dict(build_status)))
+        log("%s digests: %s" % (what, dict(build_status)))
+    build_digests(need, "window")
 
     # ---- candidate product names (sibling / repackager flag)
     cand_names, name_err = {}, 0
@@ -837,7 +1057,6 @@ def run_grade(args):
     ntasks = []
     for c in all_cands:
         vs = [v for v in vers(c) if v[2]]
-        # representative: latest captured version (names are stable across a family's versions)
         if vs:
             r = vs[-1]
             path = resolve(r[2])
@@ -849,24 +1068,103 @@ def run_grade(args):
             name_err += 1 if err else 0
     log("product names read for %d/%d candidate setids (%d errors)" % (len(cand_names), len(all_cands), name_err))
 
+    # ---- Amendment 3: fragments of every parser-gradable entry, full-text presence per captured version
+    need_keys = collections.defaultdict(set)  # setid -> {render key}
+    for p in plans:
+        p["rows"], p["frs"] = [], {}
+        if not p["approval_date"] or not p["candidates"]:
+            continue
+        p["rows"] = gb.execute(
+            "SELECT id, section_group, section_number, section_title, underlined_spans_json, refers_to_table, has_elision "
+            "FROM changes WHERE supplement_id=? ORDER BY id", (p["supplement_id"],)).fetchall()
+        for r in p["rows"]:
+            frs = split_fragments(json.loads(r[4] or "[]"))
+            p["frs"][r[0]] = frs
+            if r[1] in SRLC_GROUPS and not r[5]:
+                for fr in frs:
+                    k = render_key(fr["text"])
+                    if fr["tokens"] >= MIN_FRAGMENT_TOKENS and k:
+                        for s in p["candidates"]:
+                            need_keys[s].add(k)
+    ptasks = []
+    for s, ks in sorted(need_keys.items()):
+        vl = []
+        for v in vers(s):
+            if v[2]:
+                pth = resolve(v[2])
+                if pth:
+                    vl.append((v[0], v[2], v[3], pth))
+        ptasks.append((s, vl, sorted(ks), ft_dir))
+    nver = sum(len(t[1]) for t in ptasks)
+    log("full-text presence: %d setids, %d version reads, %d (setid,fragment) pairs" %
+        (len(ptasks), nver, sum(len(t[2]) for t in ptasks)))
+    _ssd_guard(ft_dir)
+    pres = {}  # setid -> {version: set(render keys) | None}
+    done = 0
+    with cf.ProcessPoolExecutor(args.workers) as ex:
+        for (s, res), t in zip(ex.map(_presence_task, ptasks, chunksize=1), ptasks):
+            ks = t[2]
+            pres[s] = {v: (None if hit is None else {ks[i] for i in hit}) for v, hit in res.items()}
+            done += 1
+            if done % 200 == 0:
+                log("presence %d/%d" % (done, len(ptasks)))
+                _ssd_guard(ft_dir)
+    log("full-text presence done")
+
+    # ---- locate the transition pair of every main fragment
+    loc_memo = {}
+
+    def locate(p, key):
+        mk = (tuple(p["candidates"]), p["approval_date"], key)
+        if mk not in loc_memo:
+            cands = {}
+            for s in p["candidates"]:
+                ps = pres.get(s, {})
+                cands[s] = [(v[0], v[1], (key in ps[v[0]]) if ps.get(v[0]) is not None else None)
+                            for v in vers(s) if v[2]]
+            loc_memo[mk] = locate_transition(cands, p["approval_date"])
+        return loc_memo[mk]
+    need_loc = collections.defaultdict(dict)
+    for p in plans:
+        for r in p["rows"]:
+            if r[1] in SRLC_GROUPS and not r[5]:
+                for fr in p["frs"][r[0]]:
+                    k = render_key(fr["text"])
+                    if fr["tokens"] >= MIN_FRAGMENT_TOKENS and k:
+                        loc, _ = locate(p, k)
+                        if loc:
+                            s = loc["setid"]
+                            rowmap = {v[0]: v for v in vers(s)}
+                            need_loc[s][(loc["from_version"], loc["to_version"])] = (
+                                rowmap[loc["from_version"]], rowmap[loc["to_version"]])
+    log("located %d distinct (entry,fragment) memo keys; %d distinct located pairs" %
+        (len(loc_memo), sum(len(d) for d in need_loc.values())))
+    build_digests(need_loc, "located")
+
     # ---- grade
-    dig_views = {}
+    dig_views = collections.OrderedDict()
 
     def view(a_sha, b_sha):
         key = digest_key(a_sha, b_sha, parser_version, changes.CHANGES_VERSION)
-        if key not in dig_views:
-            d = load_digest(cache_dir, key)
-            dig_views[key] = DigestView(d) if d else None
+        if key in dig_views:
+            dig_views.move_to_end(key)
+            return dig_views[key]
+        d = load_digest(cache_dir, key)
+        dig_views[key] = DigestView(d) if d else None
+        if len(dig_views) > 300:
+            dig_views.popitem(last=False)
         return dig_views[key]
+
+    def sha_of(s, ver):
+        return next(v[2] for v in vers(s) if v[0] == ver)
 
     rows_out, frags_out = [], []
     cov = collections.Counter()
-    gitrx_only = {}
-    graded_pair_keys = {}  # (setid, to_ver) -> {"view":..., "groups_srlc": set(), "drugs": set()}
-    pending = []           # fragment records awaiting the all-version check: (fr_rec, plan, {setid: label-or-None})
+    graded_pair_keys = {}  # (setid, to_ver) -> {"shas": (a_sha, b_sha), "srlc_groups": set(), "from": ver, "drugs": set()}
+    pending = []           # e2e fragment records awaiting final labels: (fr_rec, plan, rowrec, cand_stats, labs)
     for p in plans:
         did, sid = p["drug_name_id"], p["supplement_id"]
-        rows = gb.execute(
+        rows = p["rows"] if p["approval_date"] and p["candidates"] else gb.execute(
             "SELECT id, section_group, section_number, section_title, underlined_spans_json, refers_to_table, has_elision "
             "FROM changes WHERE supplement_id=? ORDER BY id", (sid,)).fetchall()
         cov["entries_total"] += 1
@@ -886,27 +1184,36 @@ def run_grade(args):
             cov["rows_total_changes_table"] += 1
             if p["status"] != "graded":
                 cov["rows_excluded_" + p["status"]] += 1
-        if p["status"] != "graded":
+        if p["status"] == "excluded_no_candidate_setid":
             continue
+        e2e = p["status"] == "graded"
         sib = {s: is_sibling_or_repackager(p["drug_name"], cand_names.get(s, [])) for s in p["candidates"]}
         p["sibling"] = sib
-        # mark pairs for gitrx-only accounting
-        for s in p["candidates"]:
-            for a, b, gap in p["pairs"][s]:
-                v = view(a[2], b[2])
-                if v is None:
-                    continue
-                g = graded_pair_keys.setdefault((s, b[0]), {"view": v, "srlc_groups": set(), "from": a[0], "drugs": set()})
-                g["drugs"].add(did)
-                g["srlc_groups"].update(r[1] for r in rows)
-        # triples
+        if e2e:
+            for s in p["candidates"]:
+                for a, b, gap in p["pairs"][s]:
+                    v = view(a[2], b[2])
+                    if v is None:
+                        continue
+                    g = graded_pair_keys.setdefault((s, b[0]), {"shas": (a[2], b[2]), "srlc_groups": set(),
+                                                                "from": a[0], "drugs": set()})
+                    g["drugs"].add(did)
+                    g["srlc_groups"].update(r[1] for r in rows)
+        status_memo = {}
+
+        def status(a_sha, b_sha, text, group):
+            k = (a_sha, b_sha, text, group)
+            if k not in status_memo:
+                v = view(a_sha, b_sha)
+                status_memo[k] = (v, v.fragment_status(text, group) if v and v.d["comparison"] == "ok" else None)
+            return status_memo[k]
         by_group = collections.OrderedDict()
         for r in rows:
             by_group.setdefault(r[1], []).append(r)
         for group, grows in by_group.items():
             rowrec = {"drug_name_id": did, "drug_name": p["drug_name"], "appl": p["appl"], "supplement_id": sid,
                       "suppl_ref": p["suppl_ref"], "approval_date": p["approval_date"], "group": group,
-                      "n_change_rows": len(grows), "candidates": {}, "section_found": False,
+                      "n_change_rows": len(grows), "candidates": {}, "section_found": False, "e2e": e2e,
                       "candidate_product_names": {s: cand_names.get(s) for s in p["candidates"]},
                       "sibling_or_repackager": sorted(s for s, f in sib.items() if f)}
             if group not in SRLC_GROUPS:
@@ -914,9 +1221,9 @@ def run_grade(args):
                 cov["rows_unmapped_group"] += 1
                 rows_out.append(rowrec)
                 continue
-            rowrec["status"] = "graded"
-            cov["triples_graded"] += 1
-            stats_for_row = []
+            rowrec["status"] = "graded" if e2e else "parser_only"
+            if e2e:
+                cov["triples_graded"] += 1
             for s in p["candidates"]:
                 cres = {"window_versions": p["window_versions"][s], "pairs": [], "found": False}
                 for a, b, gap in p["pairs"][s]:
@@ -936,99 +1243,97 @@ def run_grade(args):
                 rowrec["section_found"] = rowrec["section_found"] or cres["found"]
             rowrec["section_found_nonsibling"] = any(rowrec["candidates"][s]["found"] for s in p["candidates"] if not sib[s])
             rowrec["has_nonsibling_candidate"] = any(not sib[s] for s in p["candidates"])
-            # fragments
+            located_pairs = []
             for r in grows:
-                spans = json.loads(r[4] or "[]")
-                frs = split_fragments(spans)
-                for fi, fr in enumerate(frs):
+                for fi, fr in enumerate(p["frs"][r[0]]):
                     big = fr["tokens"] >= MIN_FRAGMENT_TOKENS
-                    table_row = bool(r[5])
-                    fclass = "table_referring" if table_row else ("main" if big else "short")
+                    fclass = "table_referring" if r[5] else ("main" if big else "short")
                     fr_rec = {"drug_name_id": did, "supplement_id": sid, "change_id": r[0], "group": group,
                               "section_number": r[2], "section_title": r[3], "fragment": fr["text"],
-                              "tokens": fr["tokens"], "class": fclass, "approval_date": p["approval_date"],
-                              "per_candidate": {}, "per_candidate_strict": {}, "found": False, "found_strict": False,
+                              "tokens": fr["tokens"], "class": fclass, "approval_date": p["approval_date"], "e2e": e2e,
+                              "per_candidate": {}, "per_candidate_ws": {}, "per_candidate_strict": {},
+                              "found": False, "found_ws": False, "found_strict": False,
                               "sibling_or_repackager": sorted(s for s, f in sib.items() if f)}
                     cand_stats = {}
-                    for s in p["candidates"]:
-                        cf_found = cf_strict = False
-                        cand_stats[s] = []
-                        for a, b, gap in p["pairs"][s]:
-                            v = view(a[2], b[2])
-                            if v is None or v.d["comparison"] != "ok":
-                                continue
-                            st = v.fragment_status(fr["text"], group)
-                            cand_stats[s].append((st, a[1], p["approval_date"]))
-                            cf_found = cf_found or st["found"]
-                            cf_strict = cf_strict or st["found_strict"]
-                        fr_rec["per_candidate"][s] = cf_found
-                        fr_rec["per_candidate_strict"][s] = cf_strict
-                        fr_rec["found"] = fr_rec["found"] or cf_found
-                        fr_rec["found_strict"] = fr_rec["found_strict"] or cf_strict
-                    if fr_rec["found_strict"] and not fr_rec["found"]:
-                        cov["INVARIANT_strict_found_but_ws_not"] += 1
-                    if not fr_rec["found"]:
-                        labs = {}
-                        for s, sts in cand_stats.items():
-                            labs[s] = candidate_label(sts) if sts else (None, None)
-                        pending.append((fr_rec, p, rowrec, cand_stats, labs))
+                    if e2e:
+                        for s in p["candidates"]:
+                            c_r = c_w = c_s = False
+                            cand_stats[s] = []
+                            for a, b, gap in p["pairs"][s]:
+                                v, st = status(a[2], b[2], fr["text"], group)
+                                if st is None:
+                                    continue
+                                cand_stats[s].append((st, a[1], p["approval_date"]))
+                                c_r, c_w, c_s = c_r or st["found"], c_w or st["found_ws"], c_s or st["found_strict"]
+                            fr_rec["per_candidate"][s], fr_rec["per_candidate_ws"][s], fr_rec["per_candidate_strict"][s] = c_r, c_w, c_s
+                            fr_rec["found"] = fr_rec["found"] or c_r
+                            fr_rec["found_ws"] = fr_rec["found_ws"] or c_w
+                            fr_rec["found_strict"] = fr_rec["found_strict"] or c_s
+                        if fr_rec["found_strict"] and not fr_rec["found_ws"]:
+                            cov["INVARIANT_strict_found_but_ws_not"] += 1
+                        if fr_rec["found_ws"] and not fr_rec["found"]:
+                            cov["INVARIANT_ws_found_but_render_not"] += 1
+                        if not fr_rec["found"]:
+                            labs = {s: (candidate_label(sts) if sts else (None, None)) for s, sts in cand_stats.items()}
+                            pending.append((fr_rec, p, rowrec, cand_stats, labs))
+                    if fclass == "main":
+                        key = render_key(fr["text"])
+                        loc, reason = locate(p, key) if key else (None, NL_NEVER)
+                        pr = {"located": loc is not None}
+                        if loc is None:
+                            pr["not_locatable_reason"] = reason
+                        else:
+                            pr.update(loc)
+                            a_sha, b_sha = sha_of(loc["setid"], loc["from_version"]), sha_of(loc["setid"], loc["to_version"])
+                            v, st = status(a_sha, b_sha, fr["text"], group)
+                            located_pairs.append((v, loc))
+                            pr["comparable"] = st is not None
+                            for name, kk in VARIANTS:
+                                pr["found_" + name] = bool(st and st[kk])
+                            for name, kk in (("strict", "any_strict"), ("ws", "any_ws"), ("render", "any_render")):
+                                pr["any_group_" + name] = bool(st and st[kk])
+                            if not pr["found_render"]:
+                                pr["miss_label"] = located_label(v, st) if st else LL_NOTCOMP
+                        fr_rec["parser"] = pr
                     frags_out.append(fr_rec)
-                    stats_for_row.append(fr_rec)
+            rowrec["parser_located_fragments"] = len(located_pairs)
+            if located_pairs:
+                rowrec["parser_section_found"] = any(v is not None and v.d["comparison"] == "ok" and v.has_group_change(group)
+                                                    for v, _ in located_pairs)
+                if not rowrec["parser_section_found"]:
+                    best = None
+                    for v, _ in located_pairs:
+                        if v is None or v.d["comparison"] != "ok":
+                            lab = S_NOTCOMP
+                        elif not v.d["changes"]:
+                            lab = S_NOCHG
+                        elif group in v.to_groups:
+                            lab = S_OTHER_SEC
+                        else:
+                            lab = S_OTHER_NOSEC
+                        if best is None or _SRANK[lab] < _SRANK[best]:
+                            best = lab
+                    rowrec["parser_section_miss_label"] = best
             rows_out.append(rowrec)
-            if not rowrec["section_found"]:
+            if e2e and not rowrec["section_found"]:
                 pending.append((None, p, rowrec, None, None))
+    log("graded entries; finalizing labels")
 
-    # ---- all-captured-version presence for fragments absent from every compared pair of every candidate
-    need_frags = collections.defaultdict(set)  # setid -> {fragment_ws}
-    for fr_rec, p, rowrec, cand_stats, labs in pending:
-        if fr_rec is None:
-            continue
-        if any(l[0] is not None for l in labs.values()):
-            continue
-        for s, sts in cand_stats.items():
-            if sts:
-                need_frags[s].add(ws_squash(fr_rec["fragment"]))
-    ptasks, frag_lists = [], {}
-    for s, fs in sorted(need_frags.items()):
-        fl = sorted(fs)
-        frag_lists[s] = fl
-        vl = []
-        for v in vers(s):
-            if v[2]:
-                pth = resolve(v[2])
-                if pth:
-                    vl.append((v[0], v[3], pth))
-        ptasks.append((s, vl, fl))
-    nver = sum(len(t[1]) for t in ptasks)
-    log("all-version presence check: %d setids, %d version reads, %d distinct fragments" %
-        (len(ptasks), nver, sum(len(t[2]) for t in ptasks)))
-    presence = {}
-    done = 0
-    with cf.ProcessPoolExecutor(args.workers) as ex:
-        for s, res in ex.map(_presence_task, ptasks, chunksize=1):
-            presence[s] = res
-            done += 1
-            if done % 200 == 0:
-                log("presence %d/%d" % (done, len(ptasks)))
-
-    # ---- finalize miss labels
+    # ---- finalize end-to-end miss labels (presence among all captured versions comes from the full-text scan)
     for fr_rec, p, rowrec, cand_stats, labs in pending:
         if fr_rec is None:
             rowrec["miss_label"], rowrec["miss_detail"] = _section_label(rowrec)
             continue
-        fws = ws_squash(fr_rec["fragment"])
+        key = render_key(fr_rec["fragment"])
         cands = []
         for s, (lab, det) in labs.items():
             if lab is not None:
                 cands.append((_RANK[lab], lab, "%s [%s]" % (det, s)))
             elif cand_stats[s]:
-                if fws not in frag_lists.get(s, ()):
-                    continue  # another candidate already has a more informative label; all-version check skipped
-                pres = presence.get(s, {})
+                ps = pres.get(s, {})
                 vs = {v[0]: v[1] for v in vers(s) if v[2]}
-                unchecked = [v for v in vs if pres.get(v) is None]
-                idx = frag_lists[s].index(fws)
-                present = {v for v, hit in pres.items() if hit is not None and idx in hit}
+                unchecked = [v for v in vs if ps.get(v) is None]
+                present = {v for v, hit in ps.items() if hit is not None and key in hit}
                 lab2 = classify_presence(vs, p["approval_date"], present)
                 det2 = "present in versions %s of %d captured; %d unreadable [%s]" % (sorted(present), len(vs), len(unchecked), s)
                 cands.append((_RANK[lab2], lab2, det2))
@@ -1047,8 +1352,8 @@ def run_grade(args):
     go = collections.Counter()
     go_rows = []
     for (s, to_ver), g in sorted(graded_pair_keys.items()):
-        v = g["view"]
-        if v.d["comparison"] != "ok":
+        v = view(*g["shas"])
+        if v is None or v.d["comparison"] != "ok":
             continue
         for c in v.d["changes"]:
             grp = c["group"]
@@ -1063,14 +1368,18 @@ def run_grade(args):
     # ---- summary
     sec_rows = [r for r in rows_out if r["status"] == "graded"]
     sec_found = sum(1 for r in sec_rows if r["section_found"])
-    main = [f for f in frags_out if f["class"] == "main"]
-    short = [f for f in frags_out if f["class"] == "short"]
-    tblf = [f for f in frags_out if f["class"] == "table_referring"]
+    e2e_frs = [f for f in frags_out if f["e2e"]]
+    main = [f for f in e2e_frs if f["class"] == "main"]
+    short = [f for f in e2e_frs if f["class"] == "short"]
+    tblf = [f for f in e2e_frs if f["class"] == "table_referring"]
     miss_sec = collections.Counter(r.get("miss_label") for r in sec_rows if not r["section_found"])
     miss_txt = collections.Counter(f.get("miss_label") for f in main if not f["found"])
 
     def trate(fs, key="found"):
         return rate(sum(1 for f in fs if f[key]), len(fs))
+
+    def tvariants(fs):
+        return {name: trate(fs, kk) for name, kk in VARIANTS}
 
     def by_group(fs, key="found"):
         return {g: trate([f for f in fs if f["group"] == g], key) for g in SRLC_GROUPS}
@@ -1078,38 +1387,89 @@ def run_grade(args):
     def sib_diag_text(fs):
         nn = [f for f in fs if len(f["per_candidate"]) > len(f["sibling_or_repackager"])]
         out = {}
-        for key, pc in (("ws", "per_candidate"), ("strict", "per_candidate_strict")):
-            out[key] = {"all_candidates": trate(fs, "found" if key == "ws" else "found_strict"),
-                        "excluding_sibling_candidates": rate(
-                            sum(1 for f in nn if any(v for c, v in f[pc].items() if c not in f["sibling_or_repackager"])),
-                            len(nn))}
+        for name, kk in VARIANTS:
+            pc = {"strict": "per_candidate_strict", "ws": "per_candidate_ws", "render": "per_candidate"}[name]
+            out[name] = {"all_candidates": trate(fs, kk),
+                         "excluding_sibling_candidates": rate(
+                             sum(1 for f in nn if any(v for c, v in f[pc].items() if c not in f["sibling_or_repackager"])),
+                             len(nn))}
         out["fragments_with_only_sibling_candidates"] = len(fs) - len(nn)
         return out
     nn_rows = [r for r in sec_rows if r["has_nonsibling_candidate"]]
     sib_all = {s for r in sec_rows for s in r["sibling_or_repackager"]}
+
+    # parser accuracy (Amendment 3 item 2)
+    pf = [f for f in frags_out if f["class"] == "main" and "parser" in f]
+    locf = [f for f in pf if f["parser"]["located"]]
+
+    def prate(fs, key):
+        return rate(sum(1 for f in fs if f["parser"][key]), len(fs))
+
+    def pvariants(fs, prefix):
+        return {name: prate(fs, prefix + name) for name in ("strict", "ws", "render")}
+    prow = [r for r in rows_out if r.get("parser_located_fragments")]
+    parser_accuracy = {
+        "definition": "Amendment 3 item 2: located = nearest absent->present transition (render matcher on full label "
+                      "text) with to-version date in [approval-730 d, approval+365 d]; accuracy = located fragments GitRx "
+                      "reports inside added tokens of a substantive change in that pair",
+        "main_fragments_in_parser_gradable_entries": len(pf),
+        "located": len(locf), "not_locatable": len(pf) - len(locf),
+        "not_locatable_reasons": dict(collections.Counter(f["parser"]["not_locatable_reason"] for f in pf if not f["parser"]["located"])),
+        "located_pair_comparable": sum(1 for f in locf if f["parser"]["comparable"]),
+        "located_delta_days_buckets": dict(collections.Counter(
+            "<-365" if f["parser"]["delta_days"] < -365 else ("-365..-31" if f["parser"]["delta_days"] < -30 else
+                                                              ("-30..365")) for f in locf)),
+        "text_same_group": pvariants(locf, "found_"),
+        "text_any_group": pvariants(locf, "any_group_"),
+        "text_same_group_by_group": {g: pvariants([f for f in locf if f["group"] == g], "found_") for g in SRLC_GROUPS},
+        "text_any_group_by_group": {g: pvariants([f for f in locf if f["group"] == g], "any_group_") for g in SRLC_GROUPS},
+        "located_miss_labels": dict(collections.Counter(f["parser"]["miss_label"] for f in locf
+                                                        if not f["parser"]["found_render"])),
+        "section_accuracy": rate(sum(1 for r in prow if r["parser_section_found"]), len(prow)),
+        "section_accuracy_by_group": {g: rate(sum(1 for r in prow if r["group"] == g and r["parser_section_found"]),
+                                              sum(1 for r in prow if r["group"] == g)) for g in SRLC_GROUPS},
+        "section_miss_labels": dict(collections.Counter(r.get("parser_section_miss_label") for r in prow
+                                                        if not r["parser_section_found"])),
+        "rows_without_located_fragment": sum(1 for r in rows_out if r["status"] in ("graded", "parser_only")
+                                             and not r.get("parser_located_fragments")),
+    }
+    end_to_end = {
+        "definition": "Amendment 1 window [-30 d, +365 d]; strict = literal-v1, ws = Amendment 2, render = Amendment 3 "
+                      "(primary for end-to-end)",
+        "section_recall": rate(sec_found, len(sec_rows)),
+        "section_recall_by_group": {g: rate(sum(1 for r in sec_rows if r["group"] == g and r["section_found"]),
+                                            sum(1 for r in sec_rows if r["group"] == g)) for g in SRLC_GROUPS},
+        "text_recall_main": tvariants(main),
+        "text_recall_main_by_group": {name: by_group(main, kk) for name, kk in VARIANTS},
+        "text_short_fragments_lt3_tokens": tvariants(short),
+        "text_table_referring_rows": tvariants(tblf),
+        "section_miss_labels": dict(miss_sec),
+        "text_miss_labels": dict(miss_txt),
+    }
     summary = {
         "harness_version": HARNESS_VERSION, "split": mode, "parser_version": parser_version,
         "changes_version": changes.CHANGES_VERSION, "normalization": spl_parser.NORMALIZATION,
-        "text_match_primary": "literal-v1 + all whitespace removed (ws); strict = literal-v1 only (Amendment 2)",
+        "text_match_primary": "render (Amendment 3: literal-v1 + casefold + Cf removed + leading list markers stripped "
+                              "+ SrLC '?' = one non-ASCII char + whitespace removed); ws = Amendment 2; strict = literal-v1",
         "window_days": [-WINDOW_BEFORE_DAYS, WINDOW_AFTER_DAYS], "min_fragment_tokens": MIN_FRAGMENT_TOKENS,
+        "locate_range_days": [-LOCATE_BEFORE_DAYS, LOCATE_AFTER_DAYS],
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
         "coverage": dict(cov),
         "mapping": {"drugs_in_split_with_detail": len({p["drug_name_id"] for p in plans}),
                     "drugs_with_candidate_setid": len({p["drug_name_id"] for p in plans if p["candidates"]}),
                     "setids_unresolved_raw_pairs": len(unresolved)},
-        "section_recall": rate(sec_found, len(sec_rows)),
-        "section_recall_by_group": {g: rate(sum(1 for r in sec_rows if r["group"] == g and r["section_found"]),
-                                            sum(1 for r in sec_rows if r["group"] == g)) for g in SRLC_GROUPS},
-        "text_recall_main": trate(main),
-        "text_recall_main_strict": trate(main, "found_strict"),
-        "text_recall_main_by_group": by_group(main),
-        "text_recall_main_strict_by_group": by_group(main, "found_strict"),
-        "text_short_fragments_lt3_tokens": trate(short),
-        "text_short_fragments_lt3_tokens_strict": trate(short, "found_strict"),
-        "text_table_referring_rows": trate(tblf),
-        "text_table_referring_rows_strict": trate(tblf, "found_strict"),
-        "section_miss_labels": dict(miss_sec),
-        "text_miss_labels": dict(miss_txt),
+        "parser_accuracy": parser_accuracy,
+        "end_to_end": end_to_end,
+        # legacy top-level keys (render is the primary text variant)
+        "section_recall": end_to_end["section_recall"],
+        "section_recall_by_group": end_to_end["section_recall_by_group"],
+        "text_recall_main": end_to_end["text_recall_main"]["render"],
+        "text_recall_main_strict": end_to_end["text_recall_main"]["strict"],
+        "text_recall_main_ws": end_to_end["text_recall_main"]["ws"],
+        "section_miss_labels": end_to_end["section_miss_labels"],
+        "text_miss_labels": end_to_end["text_miss_labels"],
+        "text_short_fragments_lt3_tokens": end_to_end["text_short_fragments_lt3_tokens"]["render"],
+        "text_table_referring_rows": end_to_end["text_table_referring_rows"]["render"],
         "sibling_or_repackager_diagnostic": {
             "definition": "candidate setid none of whose SPL product names/title contains the SrLC drug_name "
                           "(parenthetical removed) or its first word, case/whitespace-insensitive; diagnostic only, "
@@ -1122,8 +1482,9 @@ def run_grade(args):
             "text_main": sib_diag_text(main)},
         "gitrx_only": dict(go),
         "digest_build": dict(build_status),
-        "all_version_presence": {"setids": len(ptasks), "version_reads": nver,
-                                 "unreadable_versions": sum(1 for r in presence.values() for h in r.values() if h is None)},
+        "full_text_presence": {"setids": len(ptasks), "version_reads": nver,
+                               "unreadable_versions": sum(1 for r in pres.values() for h in r.values() if h is None) +
+                               sum(1 for s in need_keys for v in vers(s) if v[2] and v[0] not in pres.get(s, {}))},
         "inputs": {
             "gradebook": args.gradebook, "gradebook_sha256": sha256_file(args.gradebook),
             "gradebook_drugs_with_detail": gb.execute("SELECT COUNT(*) FROM drugs WHERE detail_sha256 IS NOT NULL").fetchone()[0],
@@ -1136,6 +1497,7 @@ def run_grade(args):
         },
         "runtime_seconds": round(time.time() - t0, 1),
     }
+    _ssd_guard(out_dir)
     for name, recs in (("rows.jsonl", rows_out), ("fragments.jsonl", frags_out), ("gitrx_only.jsonl", go_rows)):
         with open(os.path.join(out_dir, name), "w", encoding="utf-8") as f:
             for r in recs:
@@ -1196,10 +1558,11 @@ def main(argv=None):
         build_index(a.evidence_db, ip, a.workers, a.raw_manifest, limit=a.limit, scan_all_versions=a.scan_all_versions)
         return 0
     a.gradebook = a.gradebook or os.path.join(a.srlc_root, "gradebook.sqlite")
+    if a.out_dir and os.path.exists(a.out_dir) and os.listdir(a.out_dir):
+        raise SystemExit("refusing: --out-dir %s already exists and is not empty" % a.out_dir)
     s = run_grade(a)
-    print(json.dumps({k: s[k] for k in ("split", "parser_version", "coverage", "mapping", "section_recall",
-                                        "text_recall_main", "text_recall_main_strict", "section_miss_labels",
-                                        "text_miss_labels", "sibling_or_repackager_diagnostic", "gitrx_only")}, indent=1))
+    print(json.dumps({k: s[k] for k in ("split", "parser_version", "coverage", "mapping", "parser_accuracy",
+                                        "end_to_end", "gitrx_only")}, indent=1))
     return 0
 
 
