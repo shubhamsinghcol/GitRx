@@ -90,3 +90,13 @@ Fixed before the sealed draw and before any GitRx output is compared with SrLC.
 - Every raw ZIP and source body present in the consolidated raw store on the SSD,
   re-hashed after any move.
 - Owner approval of the exact deletion list.
+
+## Sealed split record (2026-11-11, before any grading)
+Drawn by `gitrx_core/srlc_split.py` from the SrLC enumeration ledger (crawl still
+fetching detail pages; no SrLC change data compared with GitRx output yet).
+Fingerprint = sha256 of ascending decimal DrugNameIDs joined by "\n".
+- Population: 3,278 DrugNameIDs, sha256 `b065c433be0b393db3b734bdbfe61ea5b319d86cf0eee46f1681b85f9c2f03f0`
+- Sealed (30%): 983, sha256 `354025929110b2c565129d565b2ddcdc6ab7e5bc7a9d889f0ba4a241e897d894`
+- Open (70%): 2,295, sha256 `f494923ef173088e164810c46a312cd964a4e3ab78d12a63be4d7cb4646ed333`
+- Lists: /Volumes/Untitled/GitRx/srlc/split.json (sha256 `45725c78830a4a5a657bd92bf3f01d6d85580a3f8f4abd23d56ae82b664750a9`).
+Development reports must filter to the open list; sealed-drug grading runs once per frozen parser.
