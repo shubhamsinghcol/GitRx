@@ -31,6 +31,10 @@ def verify(query,sid,version,raw_sha256,snapshot,ordinal=None,quote=None):
 def installation_plan(query,setids):
     if not isinstance(setids,list) or not 1<=len(setids)<=200:raise ValueError('Select 1..200 explicit families')
     selected=sorted({query._sid(s) for s in setids});prefixes=sorted({s[0] for s in selected})
+    if hasattr(query.reader,'installation_plan'):
+        required,omitted=query.reader.installation_plan(selected)
+        return query.envelope(selected_setids=selected,required_shards=required,omitted_shards=omitted,
+            meaning='Setid-prefix SQLite shards of the pinned rebuild (file size and SHA-256 are recorded in its COMPLETE.json). A shard contains other families too. No download or network availability claim.')
     shards=getattr(query.reader,'shards',None);root=getattr(query.reader,'root',None)
     return query.envelope(selected_setids=selected,required_shards=[{
         'prefix':p,'commit':shards[p]['head'] if shards else None,

@@ -21,6 +21,10 @@ class Query:
         from .research import installation_plan
         return installation_plan(self,setids)
     @bounded
+    def change_records(self,sid,to_version=None,from_version=None,group=None,limit=25,offset=0,max_chars=16000):
+        from .change_records import records
+        return records(self,sid,to_version,from_version,group,limit,offset,max_chars)
+    @bounded
     def inventory_on_date(self,setids=None,on_date=None,limit=50,offset=0,all_families=False):
         from .research import dated_inventory
         return dated_inventory(self,setids,on_date,limit,offset,all_families)
@@ -70,7 +74,9 @@ class Query:
     def resolve(self,family):
         try:
             sid=canonical_sid(family)
-            rows=[r for r in self.reader.families() if r['setid']==sid]
+            if hasattr(self.reader,'family'):
+                one=self.reader.family(sid);rows=[one] if one else []
+            else:rows=[r for r in self.reader.families() if r['setid']==sid]
         except ValueError:
             rows=self.reader.families();exact=[r for r in rows if r['title'].casefold()==family.casefold()]
             rows=exact or [r for r in rows if family.casefold() in r['title'].casefold()]
@@ -104,7 +110,7 @@ class Query:
             result.append({'ordinal':s['ordinal'],'source_code':s['loinc_code'],'code_system':s['code_system'],
               'title':s['title'],'parent_ordinal':s['parent_ordinal'],'ancestry':s['ancestry_path'],
               'text':excerpt,'text_characters':len(text),'offset':start,'truncated':start+len(excerpt)<len(text),
-              'next_offset':start+len(excerpt) if start+len(excerpt)<len(text) else None})
+              'next_offset':start+len(excerpt) if start+len(excerpt)<len(text) else None,**(s.get('extra') or {})})
             budget-=len(excerpt)
         versions=self.reader.versions(sid);meta=next(r for r in versions if r['version']==version)
         return self.envelope(setid=sid,version=version,citation=citation,sections=result,total_section_instances=len(sections),

@@ -12,7 +12,7 @@ from .limits import deadline
 def main(argv=None):
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--config',default=os.environ.get('GITRX_CONFIG'))
-    p.add_argument('--backend',choices=['sqlite','git']);p.add_argument('--timeout-seconds',type=float,default=10)
+    p.add_argument('--backend',choices=['sqlite','git','rebuild']);p.add_argument('--timeout-seconds',type=float,default=10)
     sub=p.add_subparsers(dest='command',required=True)
     c=sub.add_parser('verify-citation');c.add_argument('setid');c.add_argument('version',type=int);c.add_argument('--raw-sha256',required=True);c.add_argument('--snapshot',required=True);c.add_argument('--ordinal',type=int);c.add_argument('--quote')
     c=sub.add_parser('installation-plan');c.add_argument('setids',nargs='+')
@@ -29,6 +29,7 @@ def main(argv=None):
     h=sub.add_parser('phrase-history');h.add_argument('setid');h.add_argument('phrase');h.add_argument('--code');h.add_argument('--case-sensitive',action='store_true');h.add_argument('--limit',type=int,default=50);h.add_argument('--offset',type=int,default=0);h.add_argument('--cursor')
     d=sub.add_parser('version-changes');d.add_argument('setid');d.add_argument('version',type=int);d.add_argument('--previous',type=int);d.add_argument('--code');d.add_argument('--limit',type=int,default=50);d.add_argument('--offset',type=int,default=0);d.add_argument('--max-chars',type=int,default=16000)
     d=sub.add_parser('search-changes');d.add_argument('setid');d.add_argument('phrase');d.add_argument('--code');d.add_argument('--case-sensitive',action='store_true');d.add_argument('--start');d.add_argument('--end');d.add_argument('--limit',type=int,default=25);d.add_argument('--cursor');d.add_argument('--max-transitions',type=int,default=50)
+    c=sub.add_parser('change-records');c.add_argument('setid');c.add_argument('to_version',type=int,nargs='?');c.add_argument('--from-version',type=int);c.add_argument('--group',choices=['BW','C','WP','AR','DI','USP','MG']);c.add_argument('--limit',type=int,default=25);c.add_argument('--offset',type=int,default=0);c.add_argument('--max-chars',type=int,default=16000)
     c=sub.add_parser('coverage');c.add_argument('setid')
     h=sub.add_parser('section-history');h.add_argument('setid');h.add_argument('--code',required=True);h.add_argument('--max-versions',type=int,default=500);h.add_argument('--offset',type=int,default=0)
     args=vars(p.parse_args(argv));config=args.pop('config');backend=args.pop('backend');command=args.pop('command');timeout=args.pop('timeout_seconds')
@@ -42,6 +43,7 @@ def main(argv=None):
     if command=='phrase-history':
         command='phrase_history';args['ignore_case']=not args.pop('case_sensitive')
     if command=='section-history':command='section_history'
+    if command=='change-records':command='change_records'
     if command=='show':
         on_date=args.pop('on_date')
         if (on_date is None)==(args['version'] is None):p.error('Choose one version or --date YYYY-MM-DD')

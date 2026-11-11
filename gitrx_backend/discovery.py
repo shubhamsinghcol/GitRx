@@ -22,6 +22,7 @@ CAPABILITIES = {
     'section_history': 'Source-code occurrence counts across captured versions.',
     'version_changes': 'Summarize a captured version against its predecessor or an explicit earlier version; baseline is not introduction.',
     'search_changes': 'Search exact wording intersecting edits across one family’s captured transitions; gaps and incomplete scans remain explicit.',
+    'change_records': 'SrLC-style change records per captured version pair (groups BW/C/WP/AR/DI/USP/MG, verbatim added/removed spans, formatting changes, reference_only, consecutive/gap flags); rebuild releases only.',
     'search': 'Bounded, resumable literal search over greatest captured versions.',
 }
 LIMITATIONS = '''# Native evidence limits
@@ -44,12 +45,16 @@ Reads never collect data, build indexes, promote releases or make network calls.
 
 
 def describe(reader):
-    return {
+    release = reader.release_description() if hasattr(reader, 'release_description') else None
+    capabilities = dict(CAPABILITIES)
+    if not hasattr(reader, 'change_pairs'):
+        capabilities['change_records'] += ' Not available in this release.'
+    return dict(({'release': release} if release else {}), **{
         'description': 'Source-native captured DailyMed label-family history',
         'served_scope': {'families': len(reader.families()),
                          'basis': 'Family register in this configured immutable release; not a national completeness claim',
                          'availability': 'Payload/shard availability is checked on read; the register count is not a per-family readiness proof'},
-        'capabilities': dict(CAPABILITIES),
+        'capabilities': capabilities,
         'evidence_metadata': {'available': bool(getattr(reader, 'evidence_metadata_available', False)),
                               'sha256': getattr(reader, 'evidence_metadata_sha256', None)},
         'search_acceleration': {'available': hasattr(reader, 'search_candidates'),
@@ -62,7 +67,7 @@ def describe(reader):
         'citations': 'Preserve snapshot, raw SHA-256, native occurrence and publisher references; Git adds commits and SQLite adds parse keys',
         'limitations': LIMITATIONS,
         'workflow': ['describe_release', 'resolve', 'coverage', 'versions', 'show or show_date', 'compare or phrase_history'],
-    }
+    })
 
 
 def resources(snapshot):

@@ -1,0 +1,20 @@
+{
+  "format": "gitrx-backend-config-1",
+  "backend": "rebuild",
+  "snapshot": "bbe9223a91eb3a663501d00dea854a5f81a2192c930f015597a5b3b2b9a6869c",
+  "rebuild_root": "/Volumes/Untitled/GitRx/rebuild/spl-sections-0.2.3__srlc-changes-0.3.2",
+  "rebuild_complete_sha256": "bbe9223a91eb3a663501d00dea854a5f81a2192c930f015597a5b3b2b9a6869c",
+  "names_index": "/Volumes/Untitled/GitRx/rebuild/spl-sections-0.2.3__srlc-changes-0.3.2/index/names.sqlite",
+  "names_index_sha256": "8382662634b3d1f3d16b650b788ab373199c454b0acdd9f1531e18dd1247a685",
+  "verify_shards": "sha256",
+  "release_notes": {
+    "scope": "158,955 families / 488,016 captured versions rebuilt deterministically from retained raw SPL ZIPs (Step E). 82 versions have no retained raw (status no_raw) and carry no text. Not a national completeness claim; upstream history beyond the evidence inventory is unknown.",
+    "validation": {
+      "freeze_2_sealed": "Parser text 98.30%, section 99.64%; the uncoded-box rule is recorded as 'seen' (not held out) for that sealed result.",
+      "independent_holdout": "pending",
+      "caution": "Earlier tranche1 59/60 and 60/60 scores were AI-graded, not human-reviewed, and are not validation. No independent clinical validation exists."
+    },
+    "replaces": "release1 snapshot 1baa5bca2fd0091dfd8da9c82e260709483513515637df81a7c2db7765d61abc (parser spl-sections-0.1.0); selectable with GITRX_CONFIG=runtime/native-config.json while retained.",
+    "dates": "DailyMed publication dates and SPL effective dates are not FDA approval dates."
+  }
+}

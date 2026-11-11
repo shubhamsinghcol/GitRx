@@ -58,6 +58,7 @@ def tools():
       ('installation_plan','Resolve selected explicit families to pinned Git shards; omitted shards are unavailable, not negative evidence.',{'setids':{'type':'array','items':SID,'minItems':1,'maxItems':200}},['setids']),
       ('inventory_on_date','Page publication-cutoff readings for an explicit cohort or all registered families; not a market-wide historical snapshot.',{'setids':{'type':'array','items':SID,'minItems':1,'maxItems':200},'all_families':{'type':'boolean'},'on_date':STR,'limit':{'type':'integer','minimum':1,'maximum':50},'offset':OFFSET},['on_date']),
       ('token_provenance','Bounded case-sensitive token replay through conservatively paired occurrences. Stops at gaps/partial extraction/ambiguity; no authorship claims.',{'sid':SID,'version':INT,'ordinal':INT,'limit':{'type':'integer','minimum':1,'maximum':200},'offset':OFFSET},['sid','version','ordinal']),
+      ('change_records','SrLC-style change records for captured version pairs of one family (rebuild releases): without to_version, page the pairs with per-group counts; with to_version, the verbatim added/removed spans, groups, reference_only and formatting changes. Mechanical text comparison, not a clinical or FDA-approval statement.',{'sid':SID,'to_version':INT,'from_version':INT,'group':{'type':'string','enum':['BW','C','WP','AR','DI','USP','MG']},'limit':{'type':'integer','minimum':1,'maximum':200},'offset':OFFSET,'max_chars':TEXT},['sid']),
       ('describe_release','Describe this pinned release, served scope, capabilities, evidence policies and known freshness limits. Start here.',{},[]),
       ('coverage','Captured native-version coverage, gaps and unknown publication dates.',{'sid':SID},['sid']),
       ('section_history','Source-code occurrence counts across captured versions; not inferred product-section presence.',{'sid':SID,'code':STR,'max_versions':{'type':'integer','minimum':1,'maximum':1000},'offset':OFFSET},['sid','code']),
@@ -130,13 +131,16 @@ class Server:
         return {'jsonrpc':'2.0','id':ident,'result':result}
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--config',default=os.environ.get('GITRX_CONFIG'));p.add_argument('--backend',choices=['git','sqlite'])
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--config',default=os.environ.get('GITRX_CONFIG'));p.add_argument('--backend',choices=['git','sqlite','rebuild'])
     args=p.parse_args()
     if not args.config:p.error('Set --config or GITRX_CONFIG')
     from .mcp_transport import freeze_config, serve
     import tempfile
     with tempfile.TemporaryDirectory(prefix='gitrx-mcp-') as directory:
         config=freeze_config(args.config,directory)
-        with open_reader(config,args.backend) as reader:
+        try:reader=open_reader(config,args.backend)
+        except (ValueError,KeyError,OSError,sqlite3.Error) as exc:
+            print(json.dumps({'error':type(exc).__name__,'message':str(exc),'evidence_answer':False}),file=sys.stderr);sys.exit(2)
+        with reader:
             serve(Server(reader),config,args.backend,sys.stdin.buffer,sys.stdout.fileno())
 if __name__=='__main__':main()

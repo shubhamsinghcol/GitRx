@@ -2,11 +2,7 @@
 set -eu
 GITRX_PROJECT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$GITRX_PROJECT"
-GITRX_DEFAULT_CONFIG="$GITRX_PROJECT/reports/backend-foundation-20261106/local-config.json"
-if [ -f "$GITRX_PROJECT/runtime/native-config.json" ]; then
-  GITRX_DEFAULT_CONFIG="$GITRX_PROJECT/runtime/native-config.json"
-fi
-if [ -f "$GITRX_PROJECT/runtime/release-cycles/current.json" ]; then
-  GITRX_DEFAULT_CONFIG="$GITRX_PROJECT/runtime/release-cycles/current.json"
-fi
+# Default: the pinned Step E rebuild (parser spl-sections-0.2.3). No silent fallback to an older
+# release: select one explicitly, e.g. GITRX_CONFIG=runtime/native-config.json (release1, retained).
+GITRX_DEFAULT_CONFIG="$GITRX_PROJECT/runtime/native-config-rebuild-0.2.3.json"
 exec "$GITRX_PROJECT/.venv/bin/python" -B -m gitrx_backend.cli --config "${GITRX_CONFIG:-$GITRX_DEFAULT_CONFIG}" "$@"
