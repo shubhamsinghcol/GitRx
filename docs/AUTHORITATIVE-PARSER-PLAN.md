@@ -52,3 +52,26 @@ Code cleanup proceeds alongside; removed code stays recoverable at tag `codex-fi
   errors (SrLC recall is unknown and it excludes non-safety sections).
 - Out of SrLC's reach (pre-2016, generics, tables, non-safety sections) is covered
   by the same frozen code plus mechanical invariants, and disclosed as such.
+
+## Amendment 1 — metric operationalization (2026-11-11, before any grading)
+Fixed before the sealed draw and before any GitRx output is compared with SrLC.
+- Sealed draw unit: SrLC DrugNameID. A seeded random 30% of drugs (seed
+  20261111, sorted DrugNameIDs, Python `random.Random(seed).sample`) is sealed;
+  all supplements/rows of a drug fall on one side, preventing leakage.
+- Candidate families: DailyMed setids whose SPL product approvals contain the
+  SrLC application number (type + number). An entry is graded against each
+  candidate; it counts as found if any candidate satisfies the criterion
+  (per-candidate results are also reported).
+- Bracketing: a consecutive version pair whose to-version DailyMed publication
+  date lies in [SrLC approval date − 30 days, SrLC approval date + 365 days].
+- Section recall unit: one SrLC change row (drug, supplement, group). Found if a
+  bracketing pair has a substantive (non-formatting) change whose srlc_group
+  equals the row's group.
+- Text recall unit: each underlined fragment (split at "…"; whitespace/markup
+  normalized with GitRx literal-v1) with ≥3 tokens. Found if the fragment occurs
+  verbatim in the to-version text of a changed same-group section in a
+  bracketing pair AND overlaps at least one GitRx added token. Fragments <3
+  tokens and table-referring rows are reported separately, not in the 95% bar.
+- Excluded from both denominators and reported as coverage metrics: entries with
+  no candidate setid in the captured corpus, and entries with no captured version
+  published inside the bracketing window.
