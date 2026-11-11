@@ -39,7 +39,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from gitrx_core.normalize import normalize  # noqa: E402
 
-HARNESS_VERSION = "srlc-grade-0.3.1"
+HARNESS_VERSION = "srlc-grade-0.3.2"
+# Amendment 4: "either" accepts srlc_group or alt_group as same-group; "primary" accepts srlc_group only.
+GROUP_MODE = "either"
+
+
+def _accepts(group, primary, alt):
+    return group == primary or (GROUP_MODE == "either" and alt is not None and group == alt)
 WINDOW_BEFORE_DAYS = 30
 WINDOW_AFTER_DAYS = 365
 # Amendment 3 item 2: transition search range around the SrLC approval date
@@ -623,7 +629,7 @@ class DigestView:
         for c in digest["changes"]:
             if c["kind"] in ("modified", "added_section") and c.get("ordinal_to") is not None:
                 self.changed[c["ordinal_to"]] = c
-        self.to_groups = {x for sec in digest.get("to_sections", []) for x in (sec["group"], sec.get("alt"))}
+        self.to_groups = {x for sec in digest.get("to_sections", []) for x in ((sec["group"], sec.get("alt")) if GROUP_MODE == "either" else (sec["group"],))}
 
     def _added(self, sec):
         return (self.changed.get(sec["o"]) or {}).get("added", {})
@@ -658,7 +664,7 @@ class DigestView:
         return self._n["xmlrender"]
 
     def has_group_change(self, group):
-        return any(group in (c["group"], c.get("alt")) for c in self.d["changes"])
+        return any(_accepts(group, c["group"], c.get("alt")) for c in self.d["changes"])
 
     def fragment_status(self, frag, group):
         """Amendment 1 text criterion with Amendment 2/3 matching, plus diagnostics for labelling.
@@ -673,7 +679,7 @@ class DigestView:
                "verbatim_changed_same_group": False, "in_unchanged_same_group": False, "in_other_group": False,
                "in_from_same_group": False, "in_from_any": False, "in_xml_text": False}
         for sec in self.d["to_sections"]:
-            same = group in (sec["group"], sec.get("alt"))
+            same = _accepts(group, sec["group"], sec.get("alt"))
             chg = sec["o"] in self.changed
             for ch in sec["ch"]:
                 rt, rflags = self.to_render(sec, ch)
@@ -707,7 +713,7 @@ class DigestView:
                 wt, _ = self.from_render(sec, ch)
                 if find_render(rkey, wt)[0]:
                     res["in_from_any"] = True
-                    if group in (sec["group"], sec.get("alt")):
+                    if _accepts(group, sec["group"], sec.get("alt")):
                         res["in_from_same_group"] = True
         res["in_xml_text"] = find_render(rkey, self.xml_render())[0]
         return res
@@ -974,6 +980,8 @@ def _ssd_guard(*paths):
 
 
 def run_grade(args):
+    global GROUP_MODE
+    GROUP_MODE = getattr(args, "group_mode", "either") or "either"
     mode = check_split_mode(args)
     from gitrx_core import changes, section_groups, spl_parser
     parser_version = spl_parser.PARSER_VERSION
@@ -1359,7 +1367,7 @@ def run_grade(args):
             continue
         for c in v.d["changes"]:
             grp = c["group"]
-            matched = grp in g["srlc_groups"] or c.get("alt") in g["srlc_groups"]
+            matched = grp in g["srlc_groups"] or (GROUP_MODE == "either" and c.get("alt") in g["srlc_groups"])
             kind = "srlc_group" if grp in SRLC_GROUPS else "non_srlc_section"
             key = ("matched_by_srlc" if matched else ("gitrx_only_" + kind))
             go[key] += 1
@@ -1449,7 +1457,7 @@ def run_grade(args):
         "text_miss_labels": dict(miss_txt),
     }
     summary = {
-        "harness_version": HARNESS_VERSION, "split": mode, "parser_version": parser_version,
+        "harness_version": HARNESS_VERSION, "split": mode, "parser_version": parser_version, "group_mode": GROUP_MODE,
         "changes_version": changes.CHANGES_VERSION, "normalization": spl_parser.NORMALIZATION,
         "text_match_primary": "render (Amendment 3: literal-v1 + casefold + Cf removed + leading list markers stripped "
                               "+ SrLC '?' = one non-ASCII char + whitespace removed); ws = Amendment 2; strict = literal-v1",
@@ -1554,6 +1562,8 @@ def main(argv=None):
             sp.add_argument("--frozen-parser-marker", default=None)
             sp.add_argument("--out-dir", default=None)
             sp.add_argument("--cache-dir", default=None)
+            sp.add_argument("--group-mode", default="either", choices=["either", "primary"],
+                            help="Amendment 4: accept alt_group as same-group (either) or srlc_group only (primary)")
     a = ap.parse_args(argv)
     if a.cmd == "index":
         ip = a.index or os.path.join(a.srlc_root, "grading", "cache", "index.sqlite")

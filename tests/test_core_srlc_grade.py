@@ -335,3 +335,19 @@ def test_parser_accuracy_in_end_to_end(tmp_path):
     ar = next(f for f in frs if f["group"] == "AR" and f["class"] == "main")
     assert ar["parser"]["located"] and (ar["parser"]["from_version"], ar["parser"]["to_version"]) == (1, 2)
     assert (tmp_path / "fulltext-render").is_dir()
+
+
+class TestGroupMode:
+    def test_alt_group_only_in_either_mode(self):
+        from gitrx_core import srlc_grade as G
+        old = G.GROUP_MODE
+        try:
+            G.GROUP_MODE = "either"
+            assert G._accepts("DI", "WP", "DI")
+            assert G._accepts("WP", "WP", "DI")
+            G.GROUP_MODE = "primary"
+            assert not G._accepts("DI", "WP", "DI")
+            assert G._accepts("WP", "WP", "DI")
+            assert not G._accepts("DI", "WP", None)
+        finally:
+            G.GROUP_MODE = old
