@@ -192,3 +192,25 @@ group-mode primary (WP-only), strict and ws text variants, any-group text, per-g
 not-locatable coverage, end-to-end SrLC concordance (Amendment 1 window).
 Open-split reference (same frozen code): either 98.44% text / 99.70% section; primary 97.83% / 98.70%.
 Every sealed miss is listed with its descriptive label; no tuning on sealed results.
+
+## Sealed exam result — Freeze 1 (2026-11-11), run once per declared mode
+Outputs: grading/SEALED-spl-sections-0.2.2-h0.3.2-either (summary sha256 e80b56405eae6112c1422fbd6cf804e51873eb441384ee0611a87d174af33bdb) and
+…-primary (summary sha256 e4619a0a6e667132fd34e0150ddb78a623736b1a8c0bb67227fdca8e9588d08d). Sealed set: 983 DrugNameIDs; 3,365 entries, 2,626 graded.
+**Primary metric (Amendment 3, render, group-mode either): PASS.**
+- Parser text accuracy, same group: 97.62% (17,180/17,599; 95% CI 97.38–97.83).
+- Parser section accuracy: 99.08% (4,102/4,140; 95% CI 98.74–99.33).
+Reported alongside (no bar):
+- Group-mode primary (WP-only for non-PLR): text 96.48% (CI 96.19–96.74), section 97.92% (97.44–98.31).
+- Text strict 93.39%, ws 96.61%; any-group text 99.24%.
+- By group, text / section (either): AR 98.1/99.5, BW 84.7/90.2 (n 313/92), C 92.8/98.0
+  (n 290/147), DI 95.2/98.2, MG 97.7/99.3, USP 97.8/99.2, WP 98.6/99.7. BW and C are below 95%
+  on text; BW is below 95% on sections.
+- Coverage: 7,716 of 25,315 main fragments not locatable (3,344 never present in captured
+  history; 3,169 present from the first captured version; 1,203 transitions outside range).
+- Located misses (either): 285 different group, 111 pair not comparable (73 from setid
+  f6dd9b86…, 38 from 2eda833b…, extraction defects), 15 same-group but outside added tokens,
+  4 in raw XML but not parsed, 3 other-group only, 1 same-group not marked changed.
+- End-to-end SrLC concordance (Amendment 1 window): section 94.04%; text render 78.60%,
+  ws 77.77%, strict 75.44%.
+No tuning was done on these results. Any later parser change is a new frozen version and
+needs a new sealed run, reported together with this one.
