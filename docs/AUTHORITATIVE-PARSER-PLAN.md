@@ -75,3 +75,14 @@ Fixed before the sealed draw and before any GitRx output is compared with SrLC.
 - Excluded from both denominators and reported as coverage metrics: entries with
   no candidate setid in the captured corpus, and entries with no captured version
   published inside the bracketing window.
+
+## Deletion gates (must all pass before any derived/legacy data is deleted)
+- evidence-v1.sqlite VERIFY.json ok=true (met 2026-11-11: sha256 823a5bc6…ac3c6,
+  0 problems, byte-identical rebuild).
+- Hash-registered-only JSON (batches/*/inbox.json and BATCH.json, mobile-workspace
+  inbox.json, EXPANDED-SELECTION.json) either stored in full or proven derivable
+  from imported evidence tables, field by field (inbox.json carries raw
+  publication strings).
+- Every raw ZIP and source body present in the consolidated raw store on the SSD,
+  re-hashed after any move.
+- Owner approval of the exact deletion list.
