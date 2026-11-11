@@ -249,3 +249,25 @@ Runs (each exactly once): sealed --group-mode either, then primary. Same primary
 as Freeze 1. Open-split reference (same code): either 98.48% text / 99.74% section; primary
 97.87% / 98.73%; end-to-end section 94.32% (Freeze 1 94.56%; 48 lost rows all formatting-only
 pairs); precision crude 79.75% (80.54% excluding reference_only), timing-robust 86.56%.
+
+## Sealed exam result — Freeze 2 (2026-11-11), run once per declared mode; sealed set "seen" for the uncoded-box rule
+Outputs: grading/SEALED-spl-sections-0.2.3-srlc-changes-0.3.2-h0.3.2-either (summary sha256
+423e668bbe38367cf9faa78bdd2867994fcaaa4385023d202dea2a527333c235) and …-primary (summary sha256
+8162fa9914f312fcd73414e3e65c924bdbed19d0631cce6fb33f29f50ff5c825). Same sealed set and inputs as Freeze 1.
+**Primary metric (render, group-mode either): PASS.**
+- Parser text accuracy, same group: 98.30% (17,299/17,599; CI 98.09–98.48) [Freeze 1 97.62%].
+- Parser section accuracy: 99.64% (4,125/4,140; CI 99.40–99.78) [Freeze 1 99.08%].
+Reported alongside (no bar), Freeze 1 in brackets:
+- Group-mode primary: text 97.15% [96.48], section 98.48% [97.92].
+- Text strict 94.05% [93.39], ws 97.27% [96.61]; any-group text 99.84% [99.24].
+- By group, text (either): AR 98.5 [98.1], BW 90.4 [84.7], C 93.8 [92.8], DI 95.5 [95.2],
+  MG 98.4 [97.7], USP 98.5 [97.8], WP 99.1 [98.6]. BW section 91.3% [90.2]. BW and C remain
+  below 95% on text. The BW gain matches the Amendment 5 categorization (ATIVAN uncoded box;
+  JENTADUETO span defect) and is "seen", not independent.
+- Located misses (either): pair not comparable 111 → 0; different group 285 → 272; same-group
+  outside added tokens 15 → 19; raw-XML-not-parsed 4 → 4.
+- Coverage unchanged: 7,716 of 25,315 not locatable.
+- End-to-end (Amendment 1 window): section 94.00% [94.04]; text render 79.05% [78.60],
+  strict 75.85% [75.44].
+No tuning on these results. Independent confirmation of Freeze 2 requires the fresh holdout
+(SrLC entries posted after 2026-11-11).
