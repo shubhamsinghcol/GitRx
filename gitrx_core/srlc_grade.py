@@ -39,7 +39,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from gitrx_core.normalize import normalize  # noqa: E402
 
-HARNESS_VERSION = "srlc-grade-0.3.0"
+HARNESS_VERSION = "srlc-grade-0.3.1"
 WINDOW_BEFORE_DAYS = 30
 WINDOW_AFTER_DAYS = 365
 # Amendment 3 item 2: transition search range around the SrLC approval date
@@ -532,11 +532,13 @@ def _strip_xml_text(xml_bytes):
 
 def _sections_digest(doc):
     from gitrx_core.changes import channels
-    from gitrx_core.section_groups import classify
+    from gitrx_core.section_groups import classify_doc
     out = []
+    groups = classify_doc(doc)
     for sec in doc.get("sections", []):
         ch = {k: v for k, v in channels(sec).items() if v.strip()}
-        out.append({"o": sec["ordinal"], "group": classify(sec)["group"],
+        out.append({"o": sec["ordinal"], "group": groups[sec["ordinal"]]["group"],
+                    "alt": groups[sec["ordinal"]]["alt_group"],
                     "number": sec.get("section_number"), "title": sec.get("title_normalized"), "ch": ch})
     return out
 
@@ -554,7 +556,7 @@ def make_digest(a_xml, b_xml, a_sha, b_sha):
                 "to_sections": [], "from_sections": [], "xml_text_to": _strip_xml_text(b_xml)}
     ch = []
     for c in rec["changes"]:
-        ch.append({"kind": c["kind"], "group": c["srlc_group"], "ordinal_to": c.get("ordinal_to"),
+        ch.append({"kind": c["kind"], "group": c["srlc_group"], "alt": c.get("alt_srlc_group"), "ordinal_to": c.get("ordinal_to"),
                    "ordinal_from": c.get("ordinal_from"), "section_number": c.get("section_number"),
                    "section_title": c.get("section_title"), "table_changed": c.get("table_changed"),
                    "added": _channel_intervals(c)})
@@ -621,7 +623,7 @@ class DigestView:
         for c in digest["changes"]:
             if c["kind"] in ("modified", "added_section") and c.get("ordinal_to") is not None:
                 self.changed[c["ordinal_to"]] = c
-        self.to_groups = {sec["group"] for sec in digest.get("to_sections", [])}
+        self.to_groups = {x for sec in digest.get("to_sections", []) for x in (sec["group"], sec.get("alt"))}
 
     def _added(self, sec):
         return (self.changed.get(sec["o"]) or {}).get("added", {})
@@ -656,7 +658,7 @@ class DigestView:
         return self._n["xmlrender"]
 
     def has_group_change(self, group):
-        return any(c["group"] == group for c in self.d["changes"])
+        return any(group in (c["group"], c.get("alt")) for c in self.d["changes"])
 
     def fragment_status(self, frag, group):
         """Amendment 1 text criterion with Amendment 2/3 matching, plus diagnostics for labelling.
@@ -671,7 +673,7 @@ class DigestView:
                "verbatim_changed_same_group": False, "in_unchanged_same_group": False, "in_other_group": False,
                "in_from_same_group": False, "in_from_any": False, "in_xml_text": False}
         for sec in self.d["to_sections"]:
-            same = sec["group"] == group
+            same = group in (sec["group"], sec.get("alt"))
             chg = sec["o"] in self.changed
             for ch in sec["ch"]:
                 rt, rflags = self.to_render(sec, ch)
@@ -705,7 +707,7 @@ class DigestView:
                 wt, _ = self.from_render(sec, ch)
                 if find_render(rkey, wt)[0]:
                     res["in_from_any"] = True
-                    if sec["group"] == group:
+                    if group in (sec["group"], sec.get("alt")):
                         res["in_from_same_group"] = True
         res["in_xml_text"] = find_render(rkey, self.xml_render())[0]
         return res
@@ -1357,7 +1359,7 @@ def run_grade(args):
             continue
         for c in v.d["changes"]:
             grp = c["group"]
-            matched = grp in g["srlc_groups"]
+            matched = grp in g["srlc_groups"] or c.get("alt") in g["srlc_groups"]
             kind = "srlc_group" if grp in SRLC_GROUPS else "non_srlc_section"
             key = ("matched_by_srlc" if matched else ("gitrx_only_" + kind))
             go[key] += 1

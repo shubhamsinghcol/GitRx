@@ -178,3 +178,97 @@ def registry_codes(root=None):
 def unregistered_mapped_codes(root=None):
     """Codes used by CODE_GROUPS that are not in the registry (must be empty)."""
     return sorted(set(CODE_GROUPS) - registry_codes(root))
+
+
+# ---------------------------------------------------------------------------------------------
+# srlc-groups-0.2.0: document-level hierarchy classification
+#
+# classify() above is the section-local topic classifier (the 0.1.0 behaviour, unchanged). It is kept
+# as `topic_group` in classify_doc() results. classify_doc() applies the SrLC filing convention, which is
+# hierarchical rather than topical:
+#
+#   PLR label  (is_plr(doc) true):
+#     1. a section with its own dotted number x.y whose top number is in PLR_NUMBER_GROUPS takes that
+#        group regardless of title or code (5.x WP, 6.x AR, 7.x DI, 8.x USP, 17.x MG, 4.x C);
+#     2. otherwise a section whose PARENT has a group inherits it (also unnumbered/untitled children and
+#        children with a different own code), except a section whose own code is the boxed warning code;
+#     3. otherwise the topic classification (code / title / ancestor / number) decides.
+#   Non-PLR label:
+#     1. a section nested at any depth under a WARNINGS (34071-1) or PRECAUTIONS (42232-9) section, or an
+#        uncoded section titled WARNINGS/PRECAUTIONS, gets WP whatever its own topic (Pregnancy, Pediatric
+#        Use, Drug Interactions, Information for Patients ... filed under PRECAUTIONS are WP). SrLC is
+#        not consistent here (open-split evidence: it files some such subsections under their topic group), so
+#        the topic group is kept as `alt_group` (an accepted alternative) when it differs from WP;
+#     2. otherwise a section with no group of its own, or an untitled generic one, inherits its parent's
+#        group; 3. otherwise the topic classification.
+#
+# PLR detection (mechanical, from parser output): the document has a section coded 43685-7 (WARNINGS AND
+# PRECAUTIONS) or 43684-0 (USE IN SPECIFIC POPULATIONS), or any section with a Highlights excerpt, or a
+# top-level section numbered exactly 5/6/7/8 whose title is that PLR major-section title.
+# ---------------------------------------------------------------------------------------------
+GROUPS_VERSION = "srlc-groups-0.2.0"
+PLR_CODES = {"43685-7", "43684-0"}
+NONPLR_WP_CONTAINERS = {"34071-1", "42232-9"}
+_PLR_TITLE_NUM = {"5": "warnings and precautions", "6": "adverse reactions", "7": "drug interactions",
+                  "8": "use in specific populations"}
+
+
+def is_plr(doc):
+    for s in doc.get("sections", []):
+        if s.get("code") in PLR_CODES or s.get("excerpts"):
+            return True
+        if s.get("section_number") in _PLR_TITLE_NUM and _title_rest(s) == _PLR_TITLE_NUM[s["section_number"]]:
+            return True
+    return False
+
+
+def _dotted_top_group(section):
+    num = section.get("section_number")
+    if not num or "." not in num:
+        return None
+    return _number_group(section)[1] if _number_group(section) else None
+
+
+def _is_wp_container(sec):
+    if sec.get("code") in NONPLR_WP_CONTAINERS:
+        return True
+    return sec.get("code") in GENERIC_CODES and _title_rest(sec) in {"warnings", "precautions", "warning"}
+
+
+def classify_doc(doc):
+    """-> {ordinal: {"group","basis","flags","topic_group","topic_basis"}} for every section of a parsed doc."""
+    plr = is_plr(doc)
+    secs = doc.get("sections", [])
+    by = {s["ordinal"]: s for s in secs}
+    out = {}
+    for s in secs:  # document order: parents precede children
+        topic = classify(s)
+        res = {"group": topic["group"], "basis": topic["basis"], "flags": list(topic["flags"])}
+        parent = out.get(s.get("parent_ordinal"))
+        if plr:
+            dg = _dotted_top_group(s)
+            if dg and s.get("code") != "34066-1":
+                res = {"group": dg, "basis": "hierarchy:number:" + s["section_number"],
+                       "flags": [f for f in topic["flags"] if f.startswith("approx:")]}
+            elif parent and parent["group"] and s.get("code") != "34066-1" and not topic["basis"].startswith("code:34066-1"):
+                res = {"group": parent["group"], "basis": "hierarchy:parent",
+                       "flags": ["inherited_from_parent"]}
+        else:
+            anc = []
+            p = by.get(s.get("parent_ordinal"))
+            while p is not None:
+                anc.append(p)
+                p = by.get(p.get("parent_ordinal"))
+            if s.get("code") != "34066-1" and any(_is_wp_container(a) for a in anc):
+                res = {"group": "WP", "basis": "hierarchy:nonplr_warnings_precautions", "flags": [],
+                       "alt_group": topic["group"] if topic["group"] not in (None, "WP") else None}
+            elif parent and parent["group"] and (
+                    topic["group"] is None or (not s.get("title_normalized") and
+                                               (s.get("code") or "<uncoded>") in GENERIC_CODES)):
+                res = {"group": parent["group"], "basis": "hierarchy:parent", "flags": ["inherited_from_parent"]}
+        res["flags"] = sorted(set(res["flags"]))
+        res.setdefault("alt_group", None)
+        res["topic_group"] = topic["group"]
+        res["topic_basis"] = topic["basis"]
+        out[s["ordinal"]] = res
+    return out

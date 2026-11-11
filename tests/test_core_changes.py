@@ -189,7 +189,7 @@ def test_insert_delete_and_unmatched_sections():
     kinds = {c["section_title"]: c["kind"] for c in r["changes"]}
     assert kinds == {"7 DRUG INTERACTIONS": "added_section", "6 AR": "removed_section"}
     di = [c for c in r["changes"] if c["kind"] == "added_section"][0]
-    assert di["srlc_group"] == "DI" and di["added_spans"][0]["text"] == "new di text"
+    assert di["srlc_group"] == "DI" and di["added_spans"][0]["text"] == "7 DRUG INTERACTIONS\n\nnew di text"
     assert r["unmatched_from"] == [2] and r["unmatched_to"] == [2]
 
 
@@ -304,7 +304,7 @@ def test_formatting_tokens_inside_substantive_change_are_counted():
 
 def test_empty_sections_added_removed_are_formatting_not_changes():
     a = parse(sec("34084-4", "6 AR", p("x")))
-    b = parse(sec("34084-4", "6 AR", p("x")), sec("34073-7", "7 DI", ""), version=2)
+    b = parse(sec("34084-4", "6 AR", p("x")), sec("34073-7", None, ""), version=2)
     r = cmp(a, b)
     assert r["changes"] == []
     assert r["formatting_changes"][0]["type"] == "empty_added_section"
@@ -359,7 +359,7 @@ def load(name):
 
 @pytest.mark.parametrize("name,groups", [
     ("plr_nda", {"WP", "USP", "MG"}),
-    ("nonplr_anda", {"DI", "AR"}),
+    ("nonplr_anda", {"WP", "AR"}),
     ("bw_anda", {"BW", "WP", "AR"}),
 ])
 def test_real_pairs(name, groups):
@@ -387,12 +387,110 @@ def test_real_pair_plr_section_numbers_and_titles():
     by = {c["section_number"]: c for c in r["changes"] if c["section_number"]}
     assert by["8.1"]["srlc_group"] == "USP" and by["8.1"]["section_title"].endswith("Pregnancy")
     assert by["5"]["srlc_group"] == "WP"
-    assert by["17.4"]["srlc_group"] == "MG" and by["17.4"]["group_basis"] == "ancestor:34076-0"
+    assert by["17.4"]["srlc_group"] == "MG" and by["17.4"]["group_basis"] == "hierarchy:number:17.4"
 
 
 def test_real_pair_nonplr_groups_via_codes():
     r = C.compare_docs(load("nonplr_anda_a"), load("nonplr_anda_b"))
     bases = {c["section_title"]: (c["srlc_group"], c["group_basis"]) for c in r["changes"]}
-    assert bases["Drug/Laboratory Test Interactions"] == ("DI", "code:34074-5")
+    assert bases["Drug/Laboratory Test Interactions"] == ("WP", "hierarchy:nonplr_warnings_precautions")
+    assert all(c["topic_group"] == "DI" for c in r["changes"] if c["section_title"] == "Drug/Laboratory Test Interactions")
     assert bases["Gastrointestinal"][0] == "AR"
     assert any(c["kind"] == "added_section" for c in r["changes"])
+
+
+# ------------------------------------------------------------------ hierarchy groups (srlc-groups-0.2.0)
+
+def gd(d):
+    return {s["title_normalized"]: v for s, v in ((s, G.classify_doc(d)[s["ordinal"]]) for s in d["sections"])}
+
+
+def test_nonplr_precautions_and_warnings_subsections_are_wp():
+    pre = sec("42232-9", "PRECAUTIONS", p("intro"), kids=[
+        sec("42229-5", "Drug Interactions", p("d")), sec("42229-5", "Pediatric Use", p("c")),
+        sec("42229-5", "Nursing Mothers", p("n")), sec("34076-0", "Information for Patients", p("i")),
+        sec("42229-5", "Pregnancy", p("p"), kids=[sec("34077-8", "Teratogenic Effects", p("t")),
+                                                 sec(None, None, p("deep unnamed"))])])
+    war = sec("34071-1", "WARNINGS", p("w"), kids=[sec("42229-5", "Geriatric Use", p("g"))])
+    ar = sec("34084-4", "ADVERSE REACTIONS", p("a"), kids=[sec("42229-5", "Pregnancy", p("pp"))])
+    d = parse(war, pre, ar, sec("34073-7", "DRUG INTERACTIONS", p("top-level di")))
+    assert not G.is_plr(d)
+    secs = d["sections"]
+    for s in secs[:-3]:
+        r = G.classify_doc(d)[s["ordinal"]]
+        assert r["group"] == "WP", s["title_normalized"]
+    ids = {s["title_normalized"]: s["ordinal"] for s in secs}
+    di = G.classify_doc(d)[ids["Drug Interactions"]]
+    assert di["topic_group"] == "DI" and di["group"] == "WP" and di["alt_group"] == "DI"
+    assert G.classify_doc(d)[ids["Pediatric Use"]]["alt_group"] == "USP"
+    assert G.classify_doc(d)[secs[-1]["ordinal"]]["group"] == "DI"           # top-level DI stays DI
+    assert G.classify_doc(d)[secs[-2]["ordinal"]]["group"] == "AR"           # child of ADVERSE REACTIONS: ancestor
+
+
+def test_plr_number_hierarchy_beats_title_and_code():
+    d = parse(sec("34070-3", "4 CONTRAINDICATIONS", p("c")),
+              sec("43685-7", "5 WARNINGS AND PRECAUTIONS", "", kids=[
+                  sec("42228-7", "5.11 Teratogenicity and Other Harm to the Newborn", p("t"),
+                      kids=[sec(None, None, p("untitled child")), sec("34077-8", "Teratogenic Effects", p("x"))]),
+                  sec("42229-5", "5.12 Drug Interactions", p("x"))]),
+              sec("34084-4", "6 ADVERSE REACTIONS", p("a"), kids=[sec("42229-5", "6.1 Pregnancy outcomes", p("b"))]),
+              sec("34073-7", "7 DRUG INTERACTIONS", p("d"), kids=[sec("42229-5", "7.1 Pediatric Use", p("e"))]),
+              sec("43684-0", "8 USE IN SPECIFIC POPULATIONS", "", kids=[sec("42229-5", "8.1 Warnings", p("f"))]),
+              sec("88436-1", "17 PATIENT COUNSELING INFORMATION", p("g"), kids=[sec("42229-5", "17.1 Bleeding", p("h"))]))
+    assert G.is_plr(d)
+    g = gd(d)
+    for t, grp in [("5.11 Teratogenicity and Other Harm to the Newborn", "WP"), ("5.12 Drug Interactions", "WP"),
+                   ("6.1 Pregnancy outcomes", "AR"), ("7.1 Pediatric Use", "DI"), ("8.1 Warnings", "USP"),
+                   ("17.1 Bleeding", "MG"), ("4 CONTRAINDICATIONS", "C"), ("Teratogenic Effects", "WP")]:
+        assert g[t]["group"] == grp, t
+    assert g["5.11 Teratogenicity and Other Harm to the Newborn"]["topic_group"] == "USP"
+    # unnamed child inherits the parent's group
+    unnamed = [s for s in d["sections"] if s["title_normalized"] is None][0]
+    r = G.classify_doc(d)[unnamed["ordinal"]]
+    assert r["group"] == "WP" and r["basis"] == "hierarchy:parent"
+
+
+def test_boxed_warning_and_plr_detection():
+    d = parse(sec("34066-1", "WARNING: X", p("a"), kids=[sec(None, None, p("b"))]))
+    assert not G.is_plr(d)
+    assert [v["group"] for v in G.classify_doc(d).values()] == ["BW", "BW"]
+    assert G.is_plr(parse(sec(None, "5 WARNINGS AND PRECAUTIONS", p("x"))))
+
+
+def test_title_added_and_title_change_are_reported_as_added_text():
+    a = parse(sec("43685-7", "5 WARNINGS AND PRECAUTIONS", "", kids=[sec("42229-5", "5.1 Bleeding", p("same body text"))]))
+    b = parse(sec("43685-7", "5 WARNINGS AND PRECAUTIONS", "", kids=[
+        sec("42229-5", "5.1 Bleeding", p("same body text")),
+        sec("42229-5", "5.2 Endocrine Disorders: Pseudoaldosteronism", p("new body"))]), version=2)
+    r = cmp(a, b)
+    c = [x for x in r["changes"] if x["kind"] == "added_section"][0]
+    assert c["added_spans"][0]["text"].startswith("5.2 Endocrine Disorders: Pseudoaldosteronism")
+    assert c["srlc_group"] == "WP"
+    # title-only (container) section added
+    b2 = parse(sec("43685-7", "5 WARNINGS AND PRECAUTIONS", "", kids=[
+        sec("42229-5", "5.1 Bleeding", p("same body text")), sec("42229-5", "5.2 Effects of X on Leucovorin", "")]),
+        version=2)
+    c2 = [x for x in cmp(a, b2)["changes"] if x["kind"] == "added_section"][0]
+    assert c2["added_spans"][0]["text"] == "5.2 Effects of X on Leucovorin"
+    # reworded title with equal body: substantive, title tokens are added
+    b3 = parse(sec("43685-7", "5 WARNINGS AND PRECAUTIONS", "", kids=[
+        sec("42229-5", "5.1 Hemorrhage and Bleeding", p("same body text"), )]), version=2)
+    r3 = cmp(a, b3)
+    assert r3["changes"] and "Hemorrhage" in r3["changes"][0]["added_spans"][0]["text"]
+    chan = C.channels(b3["sections"][1])["text"]
+    for s in r3["changes"][0]["added_spans"]:
+        assert chan[s["char_start"]:s["char_end"]] == s["text"]
+    # number-only or case-only title change with equal body stays formatting
+    b4 = parse(sec("43685-7", "5 WARNINGS AND PRECAUTIONS", "", kids=[
+        sec("42229-5", "5.2 BLEEDING", p("same body text"))]), version=2)
+    r4 = cmp(a, b4)
+    assert r4["changes"] == [] and r4["formatting_changes"][0]["type"] == "heading_only"
+
+
+def test_title_unchanged_offsets_after_body_edit_with_renumber():
+    a = parse(sec("42229-5", "5.1 Bleeding", p("one two three")))
+    b = parse(sec("42229-5", "5.2 Bleeding", p("one two FOUR three")), version=2)
+    c = cmp(a, b)["changes"][0]
+    assert [s["text"] for s in c["added_spans"]] == ["FOUR"]
+    chan = C.channels(b["sections"][0])["text"]
+    assert chan[c["added_spans"][0]["char_start"]:c["added_spans"][0]["char_end"]] == "FOUR"

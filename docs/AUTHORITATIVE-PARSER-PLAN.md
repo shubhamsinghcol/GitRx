@@ -152,3 +152,22 @@ Changes, fixed before re-grading:
 3. End-to-end SrLC concordance (Amendment 1 window, with Amendment 2/3 matching) and the
    strict literal-v1 variant stay reported for open and sealed runs, without the bar.
 Split, 3-token rule and units are unchanged. The sealed set is still untouched.
+
+## Amendment 4 — SrLC group conventions (2026-11-11, open split only; sealed set untouched)
+Diagnosis (80 sampled open-split group misses): 67 were old-format (non-PLR) labels, where
+SrLC files text from subsections under PRECAUTIONS/WARNINGS (Drug Interactions, Pediatric
+Use, Nursing Mothers, Pregnancy…) under WP while GitRx used the subsection topic; 12 were
+SrLC placements differing from the label; 1 was a GitRx PLR misclassification (5.11 → USP).
+Changes (srlc-groups-0.2.0, srlc-changes-0.2.1, harness srlc-grade-0.3.1; parser unchanged 0.2.1):
+- PLR: numbered x.y sections take the group of their major section (4 C, 5 WP, 6 AR, 7 DI,
+  8 USP, 17 MG); unnamed/unnumbered children inherit the parent's group.
+- Non-PLR: sections nested under WARNINGS/PRECAUTIONS get srlc_group WP, and keep their topic
+  group as alt_group. SrLC is itself inconsistent here (it files some such subsections under
+  the topic group), so the grader accepts either srlc_group or alt_group as "same group".
+  The WP-only variant (no alternative accepted) is reported alongside: open-split text
+  97.6%, section 98.5% (run …srlc-changes-0.2.0-h0.3.0).
+- Section titles are part of the text channel, so added or reworded headings count as added text.
+- Harness note (Amendment 3): SrLC "?" also matches a literal "?" in the label.
+Open split, final (…srlc-changes-0.2.1-h0.3.1): parser text accuracy same-group 98.2%
+(any-group 99.6%; strict 94.1%; ws 97.1%); section accuracy 99.5%; lowest group DI text 95.4%.
+End-to-end (Amendment 1 window): section 94.4%, text render 77.8% (strict 74.8%).

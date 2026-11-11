@@ -16,6 +16,15 @@ After the passes, matched pairs whose B order is not on a longest increasing sub
 `reordered`; unmatched sections whose text is mostly contained in >= 2 unmatched sections on the other
 side are reported in `splits_merges` (they stay added/removed sections).
 
+HEADINGS (0.2.0): the "text" channel starts with the section's normalized title (when it has one), then a
+blank line, then the narrative blocks, so a new or reworded section/subsection title is reported as added
+text. A heading that differs only in number or case (same _title_key) is not a text change: diffing then
+starts after the title on both sides (offsets stay relative to the full channel text) and, with the body
+equal, the pair is `heading_only` formatting as before. Sections that have only a title (no narrative)
+are real added/removed sections when unmatched. Group assignment is hierarchical (section_groups.classify_doc);
+each change carries `topic_group`, the section-local topic classification, alongside `srlc_group`, and
+`alt_srlc_group` (non-PLR WARNINGS/PRECAUTIONS subsections: the topic group SrLC sometimes uses instead of WP).
+
 TEXT DIFF: each section has three channels: "text" (narrative blocks, excluding tables), "table"
 (captions + cell text, top-level tables, rows on lines, cells separated by " | ") and "excerpt".
 A channel is tokenized with regex \\S+ keeping character offsets, so every reported span is an exact
@@ -39,10 +48,10 @@ import json
 import re
 
 from .normalize import normalize
-from .section_groups import classify
+from .section_groups import classify_doc
 from .spl_parser import _title_key, split_section_number
 
-CHANGES_VERSION = "srlc-changes-0.1.0"
+CHANGES_VERSION = "srlc-changes-0.2.1"
 CHANNELS = ("text", "table", "excerpt")
 _TOKEN = re.compile(r"\S+")
 MOVE_MIN_TOKENS = 4
@@ -76,9 +85,19 @@ def _table_text(tables):
     return "\n".join(lines)
 
 
+def body_text(sec):
+    return "\n\n".join(b["text"] for b in sec["narrative"]["blocks"] if b["kind"] not in _NON_TEXT)
+
+
+def title_prefix(sec):
+    t = (sec.get("title_normalized") or "").strip()
+    return t + "\n\n" if t else ""
+
+
 def channels(sec):
     n = sec["narrative"]
-    text = "\n\n".join(b["text"] for b in n["blocks"] if b["kind"] not in _NON_TEXT)
+    body = body_text(sec)
+    text = title_prefix(sec) + body if body.strip() else (sec.get("title_normalized") or "").strip() + body
     table = _table_text(n["tables"])
     ex_parts = []
     for ex in sec.get("excerpts", []):
@@ -94,6 +113,8 @@ class View:
         self.sec = sec
         self.o = sec["ordinal"]
         self.ch = channels(sec)
+        self.skip = len(title_prefix(sec))  # chars of the text channel taken by the title
+        self.body = self.ch["text"][self.skip:]
         t = sec.get("title_normalized") or ""
         self.number, rest = split_section_number(t) if t else (None, "")
         self.title_key = _title_key(rest)
@@ -104,8 +125,11 @@ class View:
     def has_text(self):
         return any(v.strip() for v in self.ch.values())
 
+    def has_body(self):
+        return bool(self.body.strip() or self.ch["table"].strip() or self.ch["excerpt"].strip())
+
     def all_text(self):
-        return "\n".join(v for v in self.ch.values() if v)
+        return "\n".join(v for v in [self.body, self.ch["table"], self.ch["excerpt"]] if v)
 
     def shingles(self):
         if self._sh is None:
@@ -283,12 +307,13 @@ def _context(text, sents, s, e):
     return text[hit[0][0]:hit[-1][1]]
 
 
-def diff_channel(a_text, b_text):
+def diff_channel(a_text, b_text, a_skip=0, b_skip=0):
     """Return dict(added, removed, equal_raw_diffs, kind) for one channel.
     kind: 'same' | 'whitespace_only' | 'normalization_only' | 'substantive'."""
-    if a_text == b_text:
+    if a_text[a_skip:] == b_text[b_skip:]:
         return {"kind": "same", "added": [], "removed": [], "fmt_tokens": 0}
-    ta, tb = tokens(a_text), tokens(b_text)
+    ta = [t for t in tokens(a_text) if t[0] >= a_skip]
+    tb = [t for t in tokens(b_text) if t[0] >= b_skip]
     ka, kb = [normalize(t[2]) for t in ta], [normalize(t[2]) for t in tb]
     if ka == kb:
         raw_equal = [t[2] for t in ta] == [t[2] for t in tb]
@@ -304,7 +329,7 @@ def diff_channel(a_text, b_text):
     mb = kb[pre:len(kb) - suf]
     ops = difflib.SequenceMatcher(None, ma, mb, autojunk=False).get_opcodes() if (ma and mb) else \
         [("delete" if ma else "insert", 0, len(ma), 0, len(mb))]
-    sa, sb = sentence_spans(a_text), sentence_spans(b_text)
+    sa, sb = sentence_spans(a_text), sentence_spans(b_text)  # context sentences come from the full text
     added, removed, fmt = [], [], 0
     for tag, i1, i2, j1, j2 in ops:
         i1 += pre
@@ -333,9 +358,10 @@ def _span(ch, s):
 
 # ------------------------------------------------------------------ record
 
-def _sec_info(v):
-    g = classify(v.sec)
-    return {"srlc_group": g["group"], "group_basis": g["basis"], "group_flags": g["flags"]}
+def _sec_info(v, groups):
+    g = groups[v.o]
+    return {"srlc_group": g["group"], "group_basis": g["basis"], "group_flags": g["flags"],
+            "topic_group": g["topic_group"], "alt_srlc_group": g["alt_group"]}
 
 
 def _title(v):
@@ -376,13 +402,16 @@ def compare_docs(a, b, a_artifact_sha256=None, b_artifact_sha256=None):
     rec["unmatched_from"] = [v.o for v in ua]
     rec["unmatched_to"] = [v.o for v in ub]
 
+    groups_a, groups_b = classify_doc(a), classify_doc(b)
+    groups = groups_b
     changes, fmts = [], []
     for p in pairs:
         va, vb = ia[p["a"]], ib[p["b"]]
         heading_changed = (va.number != vb.number) or (va.title_key != vb.title_key)
         per, any_sub, table_changed, fmt_tok, fmt_kinds = {}, False, False, 0, []
         for ch in CHANNELS:
-            d = diff_channel(va.ch[ch], vb.ch[ch])
+            same_title = ch == "text" and va.title_key == vb.title_key
+            d = diff_channel(va.ch[ch], vb.ch[ch], va.skip if same_title else 0, vb.skip if same_title else 0)
             per[ch] = d
             if d["kind"] == "substantive":
                 any_sub = True
@@ -394,12 +423,12 @@ def compare_docs(a, b, a_artifact_sha256=None, b_artifact_sha256=None):
         base = {"section_number": vb.sec.get("section_number"), "section_title": _title(vb),
                 "section_key": vb.sec["section_key"], "ordinal_to": vb.o, "ordinal_from": va.o,
                 "alignment_method": p["method"], "alignment_confidence": p["confidence"],
-                "section_kind": vb.sec["kind"], **_sec_info(vb)}
+                "section_kind": vb.sec["kind"], **_sec_info(vb, groups)}
         if heading_changed:
             base["from_section_number"] = va.sec.get("section_number")
             base["from_section_title"] = _title(va)
             base["from_section_key"] = va.sec["section_key"]
-        ga = classify(va.sec)
+        ga = groups_a[va.o]
         if ga["group"] != base["srlc_group"]:
             base["from_srlc_group"] = ga["group"]
         if any_sub:
@@ -413,7 +442,7 @@ def compare_docs(a, b, a_artifact_sha256=None, b_artifact_sha256=None):
                          ("+".join(fmt_kinds) or "token_form"), "formatting_token_diffs": fmt_tok,
                          "heading_changed": heading_changed})
     for v, kind in [(x, "added_section") for x in ub] + [(x, "removed_section") for x in ua]:
-        info = _sec_info(v)
+        info = _sec_info(v, groups_b if kind == "added_section" else groups_a)
         base = {"section_number": v.sec.get("section_number"), "section_title": _title(v),
                 "section_key": v.sec["section_key"], "alignment_method": "unmatched", "alignment_confidence": 1.0,
                 "section_kind": v.sec["kind"], **info}
