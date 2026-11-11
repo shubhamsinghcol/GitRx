@@ -16,7 +16,7 @@ from lxml import etree
 
 from .normalize import WHITE_SPACE, normalize
 
-PARSER_VERSION = "spl-sections-0.2.2"
+PARSER_VERSION = "spl-sections-0.2.3"
 NORMALIZATION = "literal-v1"
 HL7 = "urn:hl7-org:v3"
 NS = {"s": HL7}
@@ -48,10 +48,19 @@ CHANGES_FROM_0_2_1 = (
     "Cells that carry a span attribute gain effective_rowspan/effective_colspan.",
 )
 
+CHANGES_FROM_0_2_2 = (
+    "0.2.3: table span attributes follow the HTML rules for parsing non-negative integers: leading ASCII "
+    "whitespace skipped, leading digits parsed (\"100%\" -> 100, \"1.5\" -> 1, \"2'\" -> 2), no leading digits "
+    "(empty, \"-1\", \"NaN\", non-ASCII digits) -> attribute ignored, default 1; rowspan 0 -> to the end of the row "
+    "group; colspan 0 -> 1; rowspan clamped to 65534 and colspan to 1000. No span value is an extraction "
+    "defect any more; a value that was not a clean integer within range is recorded as an info diagnostic "
+    "nonstandard_table_span (raw value kept) and as cell attribute span_raw.",
+)
+
 BLOCKS = {"paragraph", "list", "item", "table", "footnote", "caption"}
 KNOWN_NARRATIVE = BLOCKS | {"text", "content", "linkHtml", "br", "sub", "sup", "footnoteRef",
     "renderMultiMedia", "thead", "tbody", "tfoot", "tr", "th", "td", "col", "colgroup"}
-DEFECT_CODES = {"invalid_table_span", "unknown_tag", "unresolved_ref", "table_has_no_rows",
+DEFECT_CODES = {"unknown_tag", "unresolved_ref", "table_has_no_rows",
                 "section_outside_body", "xml_error", "document_identity_missing"}
 DERIVED_KINDS = {"table_flat"}
 SIDE_KINDS = {"table_cell", "table_caption"}  # not in own_text (table_flat is)
@@ -149,17 +158,25 @@ def _inline_content(node, acc):
     return result
 
 
-_SPAN_RE = re.compile(r"[0-9]+")
+_SPAN_RE = re.compile(r"[ \t\n\f\r]*(\+?)([0-9]+)")
 _SPAN_MAX = {"rowspan": 65534, "colspan": 1000}
 
 
 def parse_span(attr, value):
-    """Integer span, or None when the attribute value is a defect. ASCII whitespace around digits is ignored."""
-    v = value.strip(" \t\n\f\r")
-    if not _SPAN_RE.fullmatch(v):
-        return None
-    n = int(v)
-    return n if n <= _SPAN_MAX[attr] else None
+    """HTML rules for parsing non-negative integers, applied to a rowspan/colspan value.
+
+    Returns (n, clean): n is the effective integer (0 only for rowspan, meaning "to the end of the row group";
+    colspan 0 -> 1; no leading digits -> 1; clamped to the HTML maximum); clean is False when the raw value was
+    not exactly an ASCII integer (optionally space-padded) within range, i.e. HTML repaired it."""
+    m = _SPAN_RE.match(value)
+    if not m:
+        return 1, False
+    n = int(m.group(2))
+    clean = m.end() == len(value.rstrip(" \t\n\f\r")) and not m.group(1) and n <= _SPAN_MAX[attr]
+    n = min(n, _SPAN_MAX[attr])
+    if attr == "colspan" and n == 0:
+        n = 1
+    return n, clean
 
 
 def escaped_cell(text):
@@ -236,11 +253,11 @@ class Narrative:
                     value = cell.get(attr)
                     if value is None:
                         continue
-                    n = parse_span(attr, value)
-                    if n is None:
-                        item["diagnostics"].append({"code": "invalid_table_span", "attribute": attr, "value": value})
-                    elif attr == "colspan":
-                        cell_record["effective_colspan"] = max(n, 1)
+                    n, clean = parse_span(attr, value)
+                    if not clean:
+                        item["diagnostics"].append({"code": "nonstandard_table_span", "attribute": attr, "value": value})
+                    if attr == "colspan":
+                        cell_record["effective_colspan"] = n
                     elif n:
                         cell_record["effective_rowspan"] = n
                     else:

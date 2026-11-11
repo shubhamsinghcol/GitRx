@@ -98,7 +98,6 @@ def test_non_loinc_code_system_is_uncoded():
 
 
 @pytest.mark.parametrize("text,code", [
-    ('<table><tbody><tr><td rowspan="x">a</td></tr></tbody></table>', "invalid_table_span"),
     ("<table><tbody></tbody></table>", "table_has_no_rows"),
     ("<paragraph>a</paragraph><weird>b</weird>", "unknown_tag"),
     ('<paragraph>a<footnoteRef IDREF="nope"/></paragraph>', "unresolved_ref"),
@@ -112,7 +111,7 @@ def test_extraction_defects(text, code):
 
 
 def test_defect_outranks_identification():
-    body = structured(sec(None, "x", "<paragraph>t</paragraph>"), sec("34067-9", "T", '<table><tbody><tr><td colspan="-1">a</td></tr></tbody></table>'))
+    body = structured(sec(None, "x", "<paragraph>t</paragraph>"), sec("34067-9", "T", "<table><tbody></tbody></table>"))
     assert parsed(doc(body))["status"] == "extraction_defect"
 
 
@@ -329,7 +328,7 @@ def test_determinism_across_processes_and_hash_seeds():
 
 # ---------------------------------------------------------------- real fixtures
 
-MANIFEST = json.loads((FIX / "real_manifest.json").read_text())
+MANIFEST = json.loads((FIX / "real_manifest_0.2.3.json").read_text())
 
 
 @pytest.mark.parametrize("name", sorted(MANIFEST))
@@ -345,8 +344,11 @@ def test_real_fixture_golden(name):
 
 
 def test_real_status_coverage():
+    # spl-sections-0.2.3: all 113 real extraction_defect versions of 0.2.2 were span attributes that HTML repairs,
+    # so no real fixture is a defect any more; synthetic tests (test_extraction_defects) cover the defect path.
     assert {m["status"] for m in MANIFEST.values()} == {"complete", "complete_with_source_gaps",
-        "identification_incomplete", "extraction_defect", "no_label_body"}
+        "identification_incomplete", "no_label_body"}
+    assert MANIFEST["real_e999cb0a_v1.xml"]["status"] == "complete"  # extraction_defect (invalid span) in 0.2.2
 
 
 # 0.1.0 (frozen) dropped renderMultiMedia captions inside table cells; 0.2.1 keeps them.
@@ -522,8 +524,8 @@ def test_invariants_do_not_fire_on_clean_inputs():
 
 # ---------------------------------------------------------------- 0.2.1 regressions (full-corpus sweep)
 
-def test_version_is_022():
-    assert P.PARSER_VERSION == "spl-sections-0.2.2"
+def test_version_is_023():
+    assert P.PARSER_VERSION == "spl-sections-0.2.3"
 
 
 def test_media_caption_inside_table_cell_is_conserved():
@@ -577,13 +579,23 @@ def test_colspan_zero_is_valid_and_treated_as_one():
     assert [c.get("effective_colspan") for c in cells] == [1, 3, 2]
 
 
-@pytest.mark.parametrize("attr,value", [("rowspan", "-1"), ("colspan", "-2"), ("colspan", "NaN"), ("colspan", "100%"),
-                                        ("rowspan", ""), ("colspan", "1.5"), ("rowspan", "65535"), ("colspan", "1001"),
-                                        ("colspan", "\u0663"), ("rowspan", "a")])
-def test_invalid_spans_remain_defects(attr, value):
+@pytest.mark.parametrize("attr,value,eff", [
+    ("rowspan", "-1", 1), ("colspan", "-2", 1), ("colspan", "NaN", 1), ("colspan", "100%", 100),
+    ("rowspan", "", 1), ("colspan", "1.5", 1), ("rowspan", "65535", 65534), ("colspan", "1001", 1000),
+    ("colspan", "\u0663", 1), ("rowspan", "a", 1), ("rowspan", "2'", 2), ("colspan", "  7px", 7),
+    ("rowspan", "99999999999999999999", 65534), ("colspan", "+3", 3)])
+def test_html_span_repairs_are_diagnostics_not_defects(attr, value, eff):
     d, t, cells = _cells(f'<table><tbody><tr><td {attr}="{value}">a</td></tr></tbody></table>')
-    assert d["status"] == "extraction_defect"
-    assert [x["code"] for x in t["diagnostics"]] == ["invalid_table_span"]
+    assert d["status"] == "complete"
+    assert [(x["code"], x["value"]) for x in t["diagnostics"]] == [("nonstandard_table_span", value)]
+    assert cells[0]["attributes"][attr] == value
+    assert cells[0]["effective_" + attr] == eff
+    assert all(x["severity"] == "info" for x in d["diagnostics"] if x["code"] == "nonstandard_table_span")
+
+
+def test_clean_spans_leave_no_diagnostic():
+    d, t, cells = _cells('<table><tbody><tr><td rowspan=" 2 " colspan="3">a</td></tr><tr><td>b</td></tr></tbody></table>')
+    assert t["diagnostics"] == [] and cells[0]["effective_rowspan"] == 2 and cells[0]["effective_colspan"] == 3
 
 
 def test_span_limits_accepted():

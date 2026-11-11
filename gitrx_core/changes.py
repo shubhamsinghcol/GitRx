@@ -36,7 +36,29 @@ and one added span). Adjacent opcodes are not merged beyond what SequenceMatcher
 Moved text: a removed span of >= 4 tokens whose exact token sequence occurs inside any added span of
 the record is also listed in moved_spans (it stays in added/removed too; nothing is hidden).
 
-NOISE: if a channel differs byte-wise but its normalized token sequence is identical, that is
+NOISE (0.3.0, spacing rule and sentence-final cross-reference fix in 0.3.1): the substantive/formatting decision and the added/removed spans are computed on canonical
+token keys. A token key is normalize(token) after deleting "noise" characters; a token whose key is empty
+is dropped from both sequences, so noise never forms an added/removed span of its own (spans still run over
+the verbatim text, offsets unchanged, and may contain interior noise). Noise, by channel:
+  all channels   ®/™/©/℠; list-bullet glyphs; footnote reference markers ("[FOOTNOTE:id]" tokens are dropped) and media ids ("[MEDIA:id]" -> "[MEDIA:]", so presence still counts);
+  text, excerpt  cross-reference numbers: "(5.1)", "( 5.1 )", "(5.1, 7)" (parenthesized section-number lists
+                 with a dotted number; bare "(4)" only in excerpts), and inside "[see ...]" / "(see ...)"
+                 spans "(4)" and dotted numbers; leading list numbering/lettering ("1.", "a)", "(2)") at line
+                 start; revision/date lines ("Revised: 06/2020", "Rev. 05/20", a date-only line) and
+                 repackager revision codes (6+ digits "/" 2-3 digits).
+  all channels   spacing: key sequences that differ only in where token boundaries fall ("Data]." / "Data] .",
+                 "4.2Colitis" / "4.2 Colitis", "5 mg" / "5mg"), unless a differing boundary touches a digit
+                 next to a non-letter ("1 0" / "10", "5. 5" / "5.5" stay substantive).
+Numbers that are not cross-references (doses, percentages, ages, counts, table cells) are never noise, nor
+is any word: a brand<->generic swap or a "see ... Contraindications" -> "see ... Warnings" edit stays
+substantive. 0.3.2: cross-reference noise (dotted "(5.1)" refs, numbers in [see ...] / (see ...), bare "(4)" in excerpts) is
+NOT formatting: when a channel pair differs only by such tokens (after all other noise) it stays a change, its
+spans computed without the other noise, and the change carries reference_only=true (true only when every
+substantive channel of the change is reference-only; mixed changes are false). Added/removed spans of every
+change keep cross-reference tokens as ordinary tokens.
+A channel pair that differs only by noise is `noise_only` formatting (listed in
+formatting_changes, never in changes). Earlier: if a channel differs byte-wise but its normalized token
+sequence is identical, that is
 `formatting` (whitespace_only when the raw tokens are equal, otherwise normalization_only); heading-only
 changes (number/title differ, text identical) and empty added/removed sections are formatting too. They
 are listed in `formatting_changes`, never in `changes`. Inside modified sections, equal-aligned tokens
@@ -51,7 +73,7 @@ from .normalize import normalize
 from .section_groups import classify_doc
 from .spl_parser import _title_key, split_section_number
 
-CHANGES_VERSION = "srlc-changes-0.2.2"  # 0.2.2: table cells joined by a tab, not " | " (no stray "|" token between cells)
+CHANGES_VERSION = "srlc-changes-0.3.2"  # 0.3.2: cross-reference-only edits are kept as changes flagged reference_only; 0.3.1: + spacing-only rule, sentence-final xref fix; 0.3.0: formatting-noise canonicalization (see NOISE); 0.2.2: tab cell separator
 CHANNELS = ("text", "table", "excerpt")
 _TOKEN = re.compile(r"\S+")
 MOVE_MIN_TOKENS = 4
@@ -307,9 +329,89 @@ def _context(text, sents, s, e):
     return text[hit[0][0]:hit[-1][1]]
 
 
-def diff_channel(a_text, b_text, a_skip=0, b_skip=0):
+_MONTH = r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)"
+_DATE = (r"(?:" + _MONTH + r"\.?\s*\d{0,2},?\s*\d{4}|\d{1,2}/\d{1,2}/\d{2,4}|\d{1,2}/\d{2,4}|\d{1,2}-\d{4}"
+         r"|\d{4}-\d{2}(?:-\d{2})?|\d{4})")
+_NUM = r"\d{1,2}(?:\.\d{1,2}){0,3}"
+_NOISE_ALL = (re.compile(r"[\u00ae\u2122\u00a9\u2120\u2022\u25e6\u25aa\u25ab\u25cf\u25a0\u25a1\u25cb\u00b7\u2023\u2043\u2219]"),
+              re.compile(r"(?<=\[FOOTNOTE:)[^\]\s]+(?=\])"), re.compile(r"(?<=\[MEDIA:)[^\]\s]+(?=\])"))
+_FOOTNOTE_TOKEN = re.compile(r"\[FOOTNOTE:[^\]\s]*\]")
+_SEE_SPAN = re.compile(r"[\[(]\s*see\b[^\]\[]*[\])]", re.I)
+_SEE_INNER = re.compile(r"\(\s*" + _NUM + r"(?:\s*[,;]\s*" + _NUM + r")*\s*\)|(?<![\w.%])\d{1,2}(?:\.\d{1,2}){1,3}(?![\w%])")
+_XREF_DOTTED = re.compile(r"\(\s*(?=[^)]*\d\.\d)" + _NUM + r"(?:\s*[,;]\s*" + _NUM + r")*\s*\)")
+_XREF_BARE = re.compile(r"\(\s*" + _NUM + r"(?:\s*[,;]\s*" + _NUM + r")*\s*\)")
+_LIST_MARK = re.compile(r"(?m)^[ \t]*(?:\(?(?:\d{1,2}|[a-z]|[ivx]{1,4})\)|(?:\d{1,2}|[a-z]|[ivx]{1,4})[.)](?=[ \t]))")
+_REVISION = re.compile(r"\b(?:Last\s+)?(?:Revised|Rev\.?|Revision(?:\s+Date)?|Issued|Updated|Date\s+of\s+(?:Revision|Issue))\s*[:.]?\s*"
+                       + _DATE, re.I)
+_DATE_LINE = re.compile(r"(?m)^[ \t]*\d{1,2}/\d{4}[ \t]*$")
+_REVCODE = re.compile(r"\b\d{6,}/\d{2,3}\b")
+_PROSE_CHANNELS = ("text", "excerpt")
+_AFTER_VALUE = re.compile(r"[\d%]\s*$")
+
+
+def _spacing_only(ka, kb):
+    """True when two key sequences differ only in where token boundaries fall (the concatenations are equal) and
+    no differing boundary touches a digit unless the other side is a letter ("5 mg"/"5mg", "Data]."/"Data] ."
+    are spacing; "1 0"/"10" and "5. 5"/"5.5" are not)."""
+    ja, jb = "".join(ka), "".join(kb)
+    if ja != jb:
+        return False
+
+    def bounds(keys):
+        out, n = set(), 0
+        for k in keys[:-1]:
+            n += len(k)
+            out.add(n)
+        return out
+    for i in bounds(ka) ^ bounds(kb):
+        left, right = ja[i - 1], ja[i]
+        if (left.isdigit() and not right.isalpha()) or (right.isdigit() and not left.isalpha()):
+            return False
+    return True
+
+
+def _noise_mask(text, channel, xref=True):
+    """bytearray: 1 for characters that are formatting noise in this channel (see NOISE)."""
+    mask = bytearray(len(text))
+
+    def mark(m, lo=0):
+        mask[m.start() + lo:m.end()] = b"\x01" * (m.end() - m.start() - lo)
+
+    for rx in _NOISE_ALL:
+        for m in rx.finditer(text):
+            mark(m)
+    if channel in _PROSE_CHANNELS:
+        for sp in (_SEE_SPAN.finditer(text) if xref else ()):
+            for m in _SEE_INNER.finditer(sp.group()):
+                mask[sp.start() + m.start():sp.start() + m.end()] = b"\x01" * (m.end() - m.start())
+        for rx in (((_XREF_DOTTED, _XREF_BARE) if channel == "excerpt" else (_XREF_DOTTED,)) if xref else ()):
+            for m in rx.finditer(text):
+                if _AFTER_VALUE.search(text, max(0, m.start() - 3), m.start()):
+                    continue  # "2.3 (1.5)", "5% (12)": a value, not a cross-reference
+                mark(m)
+        for rx in (_LIST_MARK, _REVISION, _DATE_LINE, _REVCODE):
+            for m in rx.finditer(text):
+                mark(m)
+    return mask
+
+
+def canonical_tokens(text, channel, toks, xref=True):
+    """[(start, end, raw, key)] for the tokens of `text` whose canonical key is non-empty (see NOISE)."""
+    mask = _noise_mask(text, channel, xref)
+    out = []
+    for st, en, raw in toks:
+        if _FOOTNOTE_TOKEN.fullmatch(raw):
+            continue  # a bare footnote reference marker carries no text
+        seg = mask[st:en]
+        key = normalize("".join(c for c, m in zip(raw, seg) if not m)) if any(seg) else normalize(raw)
+        if key:
+            out.append((st, en, raw, key))
+    return out
+
+
+def diff_channel(a_text, b_text, a_skip=0, b_skip=0, channel="text"):
     """Return dict(added, removed, equal_raw_diffs, kind) for one channel.
-    kind: 'same' | 'whitespace_only' | 'normalization_only' | 'substantive'."""
+    kind: 'same' | 'whitespace_only' | 'normalization_only' | 'noise_only' | 'substantive'."""
     if a_text[a_skip:] == b_text[b_skip:]:
         return {"kind": "same", "added": [], "removed": [], "fmt_tokens": 0}
     ta = [t for t in tokens(a_text) if t[0] >= a_skip]
@@ -319,6 +421,19 @@ def diff_channel(a_text, b_text, a_skip=0, b_skip=0):
         raw_equal = [t[2] for t in ta] == [t[2] for t in tb]
         return {"kind": "whitespace_only" if raw_equal else "normalization_only", "added": [], "removed": [],
                 "fmt_tokens": sum(1 for x, y in zip(ta, tb) if x[2] != y[2])}
+    # formatting noise without cross-references decides formatting and drives the spans; a pair that is
+    # substantive only through cross-reference tokens stays a change, flagged reference_only
+    ca = canonical_tokens(a_text, channel, ta, False)
+    cb = canonical_tokens(b_text, channel, tb, False)
+    ka, kb = [t[3] for t in ca], [t[3] for t in cb]
+    ta, tb = [t[:3] for t in ca], [t[:3] for t in cb]
+    if ka == kb or _spacing_only(ka, kb):
+        return {"kind": "noise_only", "added": [], "removed": [], "fmt_tokens": sum(1 for x, y in zip(ta, tb) if x[2] != y[2])}
+    xa = [t[3] for t in canonical_tokens(a_text, channel, [t for t in tokens(a_text) if t[0] >= a_skip])]
+    xb = [t[3] for t in canonical_tokens(b_text, channel, [t for t in tokens(b_text) if t[0] >= b_skip])]
+    ref_only = xa == xb or _spacing_only(xa, xb)
+    if ref_only and "".join(ka) == "".join(kb):  # cross-reference respaced ("( 5.1)" / "(5.1)"): spacing only
+        return {"kind": "noise_only", "added": [], "removed": [], "fmt_tokens": sum(1 for x, y in zip(ta, tb) if x[2] != y[2])}
     pre = 0
     while pre < len(ka) and pre < len(kb) and ka[pre] == kb[pre]:
         pre += 1
@@ -349,7 +464,7 @@ def diff_channel(a_text, b_text, a_skip=0, b_skip=0):
                           "context": _context(b_text, sb, s, e)})
     fmt += sum(1 for k in range(pre) if ta[k][2] != tb[k][2])
     fmt += sum(1 for k in range(1, suf + 1) if ta[-k][2] != tb[-k][2])
-    return {"kind": "substantive", "added": added, "removed": removed, "fmt_tokens": fmt}
+    return {"kind": "substantive", "added": added, "removed": removed, "fmt_tokens": fmt, "reference_only": ref_only}
 
 
 def _span(ch, s):
@@ -408,13 +523,14 @@ def compare_docs(a, b, a_artifact_sha256=None, b_artifact_sha256=None):
     for p in pairs:
         va, vb = ia[p["a"]], ib[p["b"]]
         heading_changed = (va.number != vb.number) or (va.title_key != vb.title_key)
-        per, any_sub, table_changed, fmt_tok, fmt_kinds = {}, False, False, 0, []
+        per, any_sub, table_changed, fmt_tok, fmt_kinds, ref_flags = {}, False, False, 0, [], []
         for ch in CHANNELS:
             same_title = ch == "text" and va.title_key == vb.title_key
-            d = diff_channel(va.ch[ch], vb.ch[ch], va.skip if same_title else 0, vb.skip if same_title else 0)
+            d = diff_channel(va.ch[ch], vb.ch[ch], va.skip if same_title else 0, vb.skip if same_title else 0, ch)
             per[ch] = d
             if d["kind"] == "substantive":
                 any_sub = True
+                ref_flags.append(d["reference_only"])
                 if ch == "table":
                     table_changed = True
             elif d["kind"] != "same":
@@ -436,7 +552,7 @@ def compare_docs(a, b, a_artifact_sha256=None, b_artifact_sha256=None):
             removed = [_span(ch, s) for ch in CHANNELS for s in per[ch]["removed"]]
             changes.append({**base, "kind": "modified", "added_spans": added, "removed_spans": removed,
                             "moved_spans": [], "table_changed": table_changed,
-                            "formatting_token_diffs": fmt_tok})
+                            "formatting_token_diffs": fmt_tok, "reference_only": all(ref_flags)})
         elif fmt_kinds or heading_changed or fmt_tok:
             fmts.append({**base, "type": "heading_only" if heading_changed and not fmt_kinds else
                          ("+".join(fmt_kinds) or "token_form"), "formatting_token_diffs": fmt_tok,
@@ -456,7 +572,8 @@ def compare_docs(a, b, a_artifact_sha256=None, b_artifact_sha256=None):
         removed = spans if kind == "removed_section" else []
         changes.append({**base, "kind": kind, "added_spans": added, "removed_spans": removed, "moved_spans": [],
                         "ordinal_" + ("to" if kind == "added_section" else "from"): v.o,
-                        "table_changed": bool(v.ch["table"].strip()), "formatting_token_diffs": 0})
+                        "table_changed": bool(v.ch["table"].strip()), "formatting_token_diffs": 0,
+                        "reference_only": False})
 
     # moved text: removed spans (>= MOVE_MIN_TOKENS) found verbatim (token-wise) inside any added span
     added_idx = []

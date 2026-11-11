@@ -19,6 +19,7 @@ plan; `approx:` flags mark code assignments that are a judgement call about whic
 belongs to (for example 34074-5 drug/laboratory test interactions -> DI).
 """
 import json
+import re
 from pathlib import Path
 
 from .normalize import normalize
@@ -202,11 +203,29 @@ def unregistered_mapped_codes(root=None):
 #     2. otherwise a section with no group of its own, or an untitled generic one, inherits its parent's
 #        group; 3. otherwise the topic classification.
 #
+# srlc-groups-0.3.0 adds the UNCODED BOX rule (applied last, to every document): a top-level section with a
+# generic or missing code (42229-5 / uncoded), located before the first major section of the label, without
+# a 34066-1 code, is BW when its leading text is an upper-case boxed-warning heading:
+#   box_title  its title starts with WARNING or BOXED WARNING (upper case, not followed by a letter, so
+#              "WARNINGS", "Warning", "SEE BOXED WARNING", "WARNING AND PRECAUTIONS", "WARNING SIGNALS" and
+#              "WARNING TO WOMEN ..." do not match; a bare "WARNING" does);
+#   box_lead   it has no title and its first narrative text (media markers skipped) starts that way;
+#   box_table  (titled or untitled) one of its top-level tables (the usual bordered box) has a first non-empty cell that starts
+#              that way.
+# "Before the first major section" = ordinal below the first top-level section that has a non-generic
+# code other than 48780-1 (SPL product data elements) and 34066-1, or a generic code with a title naming a
+# standard major section (INDICATIONS, DESCRIPTION, CLINICAL PHARMACOLOGY, DOSAGE, CONTRAINDICATIONS,
+# WARNINGS, PRECAUTIONS, ADVERSE REACTIONS, HOW SUPPLIED ...). Recent Major Changes (43683-2), Highlights and
+# other coded sections are never touched. The decision is flagged inferred:uncoded_box and its basis names the
+# signal (uncoded_box:title|lead|table). Not applied when the document has any 34066-1 section (the box is then
+# coded; WARNING-led uncoded sections are headers, empty containers or Highlights copies) nor to sections
+# titled HIGHLIGHTS ... (the Highlights block holds a copy of the box plus everything else).
+#
 # PLR detection (mechanical, from parser output): the document has a section coded 43685-7 (WARNINGS AND
 # PRECAUTIONS) or 43684-0 (USE IN SPECIFIC POPULATIONS), or any section with a Highlights excerpt, or a
 # top-level section numbered exactly 5/6/7/8 whose title is that PLR major-section title.
 # ---------------------------------------------------------------------------------------------
-GROUPS_VERSION = "srlc-groups-0.2.0"
+GROUPS_VERSION = "srlc-groups-0.3.0"
 PLR_CODES = {"43685-7", "43684-0"}
 NONPLR_WP_CONTAINERS = {"34071-1", "42232-9"}
 _PLR_TITLE_NUM = {"5": "warnings and precautions", "6": "adverse reactions", "7": "drug interactions",
@@ -239,6 +258,7 @@ def classify_doc(doc):
     """-> {ordinal: {"group","basis","flags","topic_group","topic_basis"}} for every section of a parsed doc."""
     plr = is_plr(doc)
     secs = doc.get("sections", [])
+    boxes = uncoded_box_sections(doc)
     by = {s["ordinal"]: s for s in secs}
     out = {}
     for s in secs:  # document order: parents precede children
@@ -266,9 +286,82 @@ def classify_doc(doc):
                     topic["group"] is None or (not s.get("title_normalized") and
                                                (s.get("code") or "<uncoded>") in GENERIC_CODES)):
                 res = {"group": parent["group"], "basis": "hierarchy:parent", "flags": ["inherited_from_parent"]}
+        if s["ordinal"] in boxes:
+            res = {"group": "BW", "basis": "uncoded_box:" + boxes[s["ordinal"]], "flags": ["inferred:uncoded_box"],
+                   "alt_group": None}
         res["flags"] = sorted(set(res["flags"]))
         res.setdefault("alt_group", None)
         res["topic_group"] = topic["group"]
         res["topic_basis"] = topic["basis"]
         out[s["ordinal"]] = res
+    return out
+
+
+# ---------------------------------------------------------------------------------------------
+# srlc-groups-0.3.0: uncoded boxed warning rule
+# ---------------------------------------------------------------------------------------------
+_BOX_HEAD = re.compile(r"^(?:BOXED WARNING|WARNING)(?![A-Za-z])(?!\s*(?:AND|&)\s*PRECAUTION)(?!\s+(?:SIGN|SYMPTOM|LABEL|TO\b))")
+_NEUTRAL_CODES = {"48780-1", "34066-1"}
+_MAJOR_TITLES = ("indications", "description", "clinical pharmacology", "dosage", "contraindications", "warnings",
+                 "precautions", "adverse reactions", "how supplied", "overdosage", "drug abuse and dependence",
+                 "use in specific populations", "warnings and precautions", "drug interactions")
+_NON_TEXT_KINDS = {"table_flat", "table_cell", "table_caption"}
+_MEDIA_MARK = re.compile(r"\[(?:MEDIA|FOOTNOTE|NESTED-TABLE)[^\]]*\]")
+
+
+def _box_text(text):
+    return _MEDIA_MARK.sub(" ", text or "").replace("\u2022", " ").strip(" \t\n\r\u00a0*-")
+
+
+def _is_box_head(text):
+    t = normalize(_box_text(text))
+    return bool(_BOX_HEAD.match(t))
+
+
+def _is_major(sec):
+    code = sec.get("code") or "<uncoded>"
+    if code not in GENERIC_CODES:
+        return code not in _NEUTRAL_CODES
+    key = _title_rest(sec)
+    return any(key == m or key.startswith(m + " ") for m in _MAJOR_TITLES) if key else False
+
+
+def _uncoded_box_signal(sec):
+    """'title' | 'lead' | 'table' | None for a generic-coded top-level section (position checked by the caller)."""
+    title = sec.get("title_normalized") or ""
+    if title.strip():
+        if _is_box_head(title):
+            return "title"
+    else:
+        for b in sec["narrative"]["blocks"]:
+            if b["kind"] in _NON_TEXT_KINDS or not _box_text(b["text"]).strip():
+                continue
+            if _is_box_head(b["text"]):
+                return "lead"
+            break
+    tables = sec["narrative"]["tables"]
+    paths = [t["source_xpath"] for t in tables]
+    for t in tables:
+        if any(t["source_xpath"].startswith(q + "/") for q in paths):
+            continue  # nested table
+        first = next((c["text"] for r in t["rows"] for c in r["cells"] if _box_text(c["text"]).strip()), None)
+        if first is not None and _is_box_head(first):
+            return "table"
+    return None
+
+
+def uncoded_box_sections(doc):
+    """{ordinal: signal} for the top-level uncoded boxed-warning sections of a parsed doc (see the 0.3.0 note)."""
+    out = {}
+    if any(s.get("code") == "34066-1" for s in doc.get("sections", [])):
+        return out  # the box is coded: any WARNING-led uncoded section is a header, container or highlights copy
+    for s in doc.get("sections", []):
+        if s.get("parent_ordinal") is None and _is_major(s):
+            break
+        if s.get("parent_ordinal") is not None or _title_rest(s).startswith("highlights"):
+            continue
+        if (s.get("code") or "<uncoded>") in GENERIC_CODES or s.get("code_state") == "uncoded":
+            sig = _uncoded_box_signal(s)
+            if sig:
+                out[s["ordinal"]] = sig
     return out

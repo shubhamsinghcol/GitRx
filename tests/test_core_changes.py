@@ -358,9 +358,9 @@ def load(name):
 
 
 @pytest.mark.parametrize("name,groups", [
-    ("plr_nda", {"WP", "USP", "MG"}),
+    ("plr_nda", {"USP", "MG"}),  # 0.3.0: the section 5 change (bullet glyphs only) is formatting
     ("nonplr_anda", {"WP", "AR"}),
-    ("bw_anda", {"BW", "WP", "AR"}),
+    ("bw_anda", {"AR"}),  # 0.3.0: the BW (list numbering) and WP (sup/sub spacing) edits are formatting
 ])
 def test_real_pairs(name, groups):
     a, b = load(f"{name}_a"), load(f"{name}_b")
@@ -382,11 +382,20 @@ def test_real_pairs(name, groups):
     assert C.compare_docs(a, a)["changes"] == []
 
 
+def test_real_pair_bw_anda_noise_edits_are_formatting_not_changes():
+    r = C.compare_docs(load("bw_anda_a"), load("bw_anda_b"))
+    noise = {(c["srlc_group"], c["type"]) for c in r["formatting_changes"]}
+    assert {("BW", "text:noise_only"), ("WP", "text:noise_only")} <= noise
+    assert "BW" not in {c["srlc_group"] for c in r["changes"]}
+
+
 def test_real_pair_plr_section_numbers_and_titles():
     r = C.compare_docs(load("plr_nda_a"), load("plr_nda_b"))
     by = {c["section_number"]: c for c in r["changes"] if c["section_number"]}
     assert by["8.1"]["srlc_group"] == "USP" and by["8.1"]["section_title"].endswith("Pregnancy")
-    assert by["5"]["srlc_group"] == "WP"
+    assert "5" not in by  # bullet-glyph-only excerpt edit: formatting since srlc-changes-0.3.0
+    fm = [c for c in r["formatting_changes"] if c["section_number"] == "5"]
+    assert fm and fm[0]["srlc_group"] == "WP" and fm[0]["type"] == "excerpt:noise_only"
     assert by["17.4"]["srlc_group"] == "MG" and by["17.4"]["group_basis"] == "hierarchy:number:17.4"
 
 
@@ -494,3 +503,179 @@ def test_title_unchanged_offsets_after_body_edit_with_renumber():
     assert [s["text"] for s in c["added_spans"]] == ["FOUR"]
     chan = C.channels(b["sections"][0])["text"]
     assert chan[c["added_spans"][0]["char_start"]:c["added_spans"][0]["char_end"]] == "FOUR"
+
+
+# ------------------------------------------------------------------ uncoded boxed warnings (srlc-groups-0.3.0)
+
+BOX = '<table width="100%"><tbody><tr><td>WARNING: RISKS FROM CONCOMITANT USE WITH OPIOIDS; ABUSE, MISUSE</td></tr></tbody></table>'
+
+
+def gb(d):
+    g = G.classify_doc(d)
+    return [(s["ordinal"], s["code"], s["title_normalized"], g[s["ordinal"]]["group"], g[s["ordinal"]]["basis"])
+            for s in d["sections"]]
+
+
+def test_uncoded_box_table_before_major_section_is_bw():
+    d = parse(sec("42229-5", "", p("Ativan (lorazepam) Tablets"), table=BOX),
+              sec("34089-3", "DESCRIPTION", p("d")), sec("34067-9", "INDICATIONS AND USAGE", p("i")))
+    rows = gb(d)
+    assert rows[0][3:] == ("BW", "uncoded_box:table")
+    assert rows[1][3] is None and rows[2][3] is None
+    assert G.classify_doc(d)[d["sections"][0]["ordinal"]]["flags"] == ["inferred:uncoded_box"]
+    assert G.uncoded_box_sections(d) == {d["sections"][0]["ordinal"]: "table"}
+
+
+def test_uncoded_box_title_and_lead_variants():
+    d = parse(sec("42229-5", "WARNING: SUICIDALITY AND ANTIDEPRESSANT DRUGS", p("x")),
+              sec(None, None, p("WARNING: SEVERE ALLERGIC REACTIONS", "more")),
+              sec("42229-5", "WARNING", p("x")),
+              sec("34067-9", "INDICATIONS AND USAGE", p("i")))
+    assert [r[3:] for r in gb(d)[:3]] == [("BW", "uncoded_box:title"), ("BW", "uncoded_box:lead"),
+                                         ("BW", "uncoded_box:title")]
+
+
+def test_cross_references_and_major_sections_are_not_uncoded_boxes():
+    d = parse(sec("42229-5", "", p("SEE BOXED WARNING AT THE START OF THE LABEL")),
+              sec("42229-5", "WARNINGS", p("w")),
+              sec("42229-5", "Warning", p("w")),
+              sec("42229-5", "WARNING AND PRECAUTIONS", p("w")),
+              sec("42229-5", "WARNING SIGNALS", p("w")),
+              sec("42229-5", "", p("x"), table='<table><tbody><tr><td>SEE BOXED WARNING</td></tr></tbody></table>'),
+              sec("42229-5", "", p("x"), table='<table><tbody><tr><td>Warning: lower case is not a box</td></tr></tbody></table>'),
+              sec("34067-9", "INDICATIONS AND USAGE", p("i")))
+    assert G.uncoded_box_sections(d) == {}
+    assert all(r[3] != "BW" for r in gb(d))
+
+
+def test_uncoded_box_needs_position_before_first_major_and_no_code():
+    after = parse(sec("34067-9", "INDICATIONS AND USAGE", p("i")), sec("42229-5", "", p("x"), table=BOX))
+    assert G.uncoded_box_sections(after) == {}
+    # uncoded section titled like a major section ends the front matter
+    after2 = parse(sec("42229-5", "DESCRIPTION", p("d")), sec("42229-5", "WARNING: X", p("x")))
+    assert G.uncoded_box_sections(after2) == {}
+    # recent major changes (43683-2) and other coded sections are never boxes; nested sections are skipped
+    coded = parse(sec("43683-2", "RECENT MAJOR CHANGES", p("WARNING: X")), sec("42229-5", "", p("x"), table=BOX))
+    assert G.uncoded_box_sections(coded) == {}
+    nested = parse(sec("48780-1", None, "", kids=[sec("42229-5", "WARNING: X", p("x"))]),
+                   sec("34067-9", "INDICATIONS AND USAGE", p("i")))
+    assert G.uncoded_box_sections(nested) == {}
+    # a coded box anywhere in the label: WARNING-led uncoded sections (headers, highlights) are not boxes
+    both = parse(sec("42229-5", "", p("x"), table=BOX), sec("34066-1", "WARNING: X", p("x")),
+                 sec("34067-9", "INDICATIONS AND USAGE", p("i")))
+    assert G.uncoded_box_sections(both) == {}
+    hl = parse(sec("42229-5", "HIGHLIGHTS OF PRESCRIBING INFORMATION", p("h"), table=BOX),
+               sec("34067-9", "INDICATIONS AND USAGE", p("i")))
+    assert G.uncoded_box_sections(hl) == {}
+    # a properly coded box is untouched
+    d = parse(sec("34066-1", "WARNING: X", p("x")), sec("34067-9", "INDICATIONS AND USAGE", p("i")))
+    assert gb(d)[0][3:] == ("BW", "code:34066-1")
+
+
+def test_uncoded_box_change_record_is_bw_and_formatting_noise_helper():
+    a = parse(sec("34066-1", "WARNING: RISKS", p("old text")), sec("34067-9", "INDICATIONS AND USAGE", p("i")))
+    b = parse(sec("42229-5", "", p("Ativan"), table=BOX), sec("34067-9", "INDICATIONS AND USAGE", p("i")), version=2)
+    r = cmp(a, b)
+    assert {"BW"} <= {c["srlc_group"] for c in r["changes"]}
+
+
+# ------------------------------------------------------------------ formatting noise (srlc-changes-0.3.0)
+
+def one(text_a, text_b, ch="text"):
+    return C.diff_channel(text_a, text_b, 0, 0, ch)
+
+
+@pytest.mark.parametrize("a,b", [
+    ("Avoid use [see Warnings and Precautions (5.1)].", "Avoid use [see Warnings and Precautions ( 5.1) ]."),
+    ("Hepatotoxicity (5.1) occurs.", "Hepatotoxicity ( 5.1) occurs."),
+    ("SPORANOX ® capsules", "SPORANOX® capsules"), ("Drug™ daily", "Drug daily"), ("© 2020 Acme", "2020 Acme"),
+    ("• Alpha\n• Beta", "Alpha\nBeta"), ("1. Alpha\n2. Beta", "Alpha\nBeta"), ("a) Alpha\nb) Beta", "Alpha\nBeta"),
+    ("Alpha [FOOTNOTE:abc] beta", "Alpha [FOOTNOTE:xyz] beta"), ("Alpha beta", "Alpha [FOOTNOTE:xyz] beta"),
+    ("Body.\nRevised: 06/2020", "Body.\nRevised: 11/2021"), ("Body.", "Body.\nRevised: June 2020"),
+    ("Body.\nRep by X\n10008909/09", "Body.\nRep by X\n10008909/10"), ("Body.\n06/2020", "Body.\n11/2021"),
+])
+def test_noise_only_changes_are_formatting(a, b):
+    d = one(a, b)
+    assert d["kind"] == "noise_only" and d["added"] == [] and d["removed"] == []
+
+
+@pytest.mark.parametrize("a,b,add,rem", [
+    ("Take 5 mg daily.", "Take 10 mg daily.", ["10"], ["5"]),
+    ("Rate was 5.1% overall.", "Rate was 5.2% overall.", ["5.2%"], ["5.1%"]),
+    ("Patients aged 65 (12) years", "Patients aged 65 (13) years", ["(13)"], ["(12)"]),
+    ("Mean 2.3 (1.5) units", "Mean 2.3 (1.6) units", ["(1.6)"], ["(1.5)"]),
+    ("Use [see Contraindications (4)].", "Use [see Warnings and Precautions (5.1)].", ["Warnings and Precautions (5.1)]."],
+     ["Contraindications (4)]."]),
+    ("Brandex tablets", "generic tablets", ["generic"], ["Brandex"]),
+    ("Take 5 mg (see Table 3)", "Take 5 mg (see Table 4)", ["4)"], ["3)"]),
+])
+def test_clinical_numbers_and_words_stay_substantive(a, b, add, rem):
+    d = one(a, b)
+    assert d["kind"] == "substantive"
+    assert [x["text"] for x in d["added"]] == add and [x["text"] for x in d["removed"]] == rem
+
+
+def test_table_numbers_in_parentheses_are_never_noise_and_bare_xref_only_in_excerpt():
+    assert one("Cell\t(0.5)\tx", "Cell\t(0.6)\tx", "table")["kind"] == "substantive"
+    assert one("Bleeding (5.1)", "Bleeding (5.4)", "excerpt")["reference_only"] is True
+    assert one("Bleeding (4)", "Bleeding (5)", "excerpt")["reference_only"] is True
+    d = one("Bleeding (4)", "Bleeding (5)", "text")
+    assert d["kind"] == "substantive" and d["reference_only"] is False
+
+
+def test_noise_tokens_are_excluded_from_added_spans_and_text_stays_verbatim():
+    a = "Avoid use ( 5.1) of the drug ®"
+    b = "Avoid use (5.1, 5.2) of the new drug® now [FOOTNOTE:f1]"
+    d = one(a, b)
+    assert d["kind"] == "substantive"
+    assert [x["text"] for x in d["added"]] == ["(5.1, 5.2)", "new", "now"] and d["reference_only"] is False
+    assert [x["text"] for x in d["removed"]] == ["( 5.1)"]
+    for x in d["added"]:
+        assert b[x["char_start"]:x["char_end"]] == x["text"]
+
+
+def test_noise_only_section_change_is_listed_as_formatting_not_change():
+    a = parse(sec("34084-4", "ADVERSE REACTIONS", p("Rash [see Warnings and Precautions (5.1)].  Revised: 06/2020")))
+    b = parse(sec("34084-4", "ADVERSE REACTIONS", p("Rash [see Warnings and Precautions (5.3)].  Revised: 09/2021")), version=2)
+    r = cmp(a, b)
+    assert len(r["changes"]) == 1 and r["changes"][0]["reference_only"] is True   # xref renumbering only
+    assert [s["text"] for s in r["changes"][0]["added_spans"]] == ["(5.3)]."]
+    assert r["changes_version"] == "srlc-changes-0.3.2"
+    pure = parse(sec("34084-4", "ADVERSE REACTIONS", p("Rash [see Warnings and Precautions (5.1)].  Revised: 09/2021")), version=2)
+    r1 = cmp(a, pure)
+    assert r1["changes"] == [] and r1["formatting_changes"][0]["type"] == "text:noise_only"
+    c = parse(sec("34084-4", "ADVERSE REACTIONS", p("Rash 10 mg [see Warnings and Precautions (5.3)].  Revised: 09/2021")), version=2)
+    r2 = cmp(a, c)
+    assert [s["text"] for s in r2["changes"][0]["added_spans"]] == ["10 mg"] or "10" in r2["changes"][0]["added_spans"][0]["text"]
+
+
+@pytest.mark.parametrize("a,b", [
+    ("See [see Human Data].  Next", "See [see Human Data] .  Next"),
+    ("Rash [see Warnings (5.3)]. Next", "Rash [see Warnings (5.3)] . Next"),
+    ("Section 4.2Colitis/Enteritis", "Section 4.2 Colitis/Enteritis"), ("Take 5 mg", "Take 5mg"),
+    ("Mg. sentence. (7.1) end", "Mg. sentence. ( 7.1) end"),
+])
+def test_spacing_only_and_sentence_final_xref_are_noise(a, b):
+    assert one(a, b)["kind"] == "noise_only"
+
+
+@pytest.mark.parametrize("a,b", [("Take 1 0 tablets", "Take 10 tablets"), ("Dose 5. 5 tablets", "Dose 5.5 tablets"),
+                                 ("Rate 5% (12) overall", "Rate 5% (13) overall")])
+def test_spacing_rule_never_merges_numbers(a, b):
+    assert one(a, b)["kind"] == "substantive"
+
+
+def test_reference_only_classification_and_mixed_case():
+    d = one("Avoid [see Warnings and Precautions (5.1)].", "Avoid [see Warnings and Precautions (5.2)].")
+    assert d["kind"] == "substantive" and d["reference_only"] is True
+    assert [x["text"] for x in d["added"]] == ["(5.2)]."]
+    m = one("Avoid [see Warnings and Precautions (5.1)].", "Avoid use [see Warnings and Precautions (5.2)].")
+    assert m["kind"] == "substantive" and m["reference_only"] is False
+    dose = one("Take 5 mg (5.1)", "Take 10 mg (5.1)")
+    assert dose["reference_only"] is False and [x["text"] for x in dose["added"]] == ["10"]
+    # other noise next to a cross-reference edit is still ignored in the spans
+    both = one("Avoid ® (5.1) now", "Avoid (5.2) now")
+    assert both["reference_only"] is True and [x["text"] for x in both["added"]] == ["(5.2)"]
+    a = parse(sec("34084-4", "AR", p("Rash [see Warnings and Precautions (5.1)]. Dose 5 mg")))
+    b = parse(sec("34084-4", "AR", p("Rash [see Warnings and Precautions (5.2)]. Dose 10 mg")), version=2)
+    assert cmp(a, b)["changes"][0]["reference_only"] is False
