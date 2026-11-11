@@ -214,3 +214,13 @@ Reported alongside (no bar):
   ws 77.77%, strict 75.44%.
 No tuning was done on these results. Any later parser change is a new frozen version and
 needs a new sealed run, reported together with this one.
+
+## Amendment 5 — sealed miss categorization and holdout independence (2026-11-11)
+Open-split study (frozen Freeze 1 code): BW classification audit 296/296 box sections BW, 0
+failure patterns; the 14 open BW parser misses are all SrLC filing choices (BW rows for labels
+without a box; BW text that the label places in 5.x/17; text referenced from the box). A
+drug-cluster bootstrap of open BW (200,000 resamples) never reached the sealed 15.3% miss rate.
+Owner decision: the sealed BW misses are categorized descriptively, as the plan requires for
+every miss. Consequence: any change motivated by sealed misses makes the Freeze 1 sealed set
+non-independent for that change. Such changes are validated on a fresh, later holdout (e.g.
+SrLC entries posted after 2026-11-11) and the sealed set is reported as "seen" for them.
