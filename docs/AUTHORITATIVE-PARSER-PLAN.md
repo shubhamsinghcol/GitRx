@@ -123,3 +123,32 @@ Correction (same day, after the Amendment 2 re-grade): the "55%" figure above ca
 looser comparison (letters and digits only, case-folded), not from whitespace removal alone.
 Whitespace-free matching raised open-split text recall from 73.6% to 75.7% (strict unchanged
 at 73.6%); section recall unchanged at 94.2%. Run: grading/open-spl-sections-0.2.1-h0.2.0.
+
+## Amendment 3 — separate parser accuracy from SrLC/DailyMed timing (2026-11-11, open split only)
+Open-split diagnostics (harness 0.2.0, seeded samples of 200/60):
+- Of text misses already present before the pair, the text's first appearance in captured
+  history was: 30% in the first captured version (history starts too late or a new setid),
+  19% 31–180 d before SrLC approval, 17% 181–365 d before, 35% >1 year before. Labels can
+  change before approval (Changes Being Effected supplements), so a −30 d window misses them.
+  Of found fragments, 92% first appear within [−30, +365] d.
+- Of fragments absent from every captured version, ~40% differ only in rendering
+  (leading bullet characters, "?" for non-ASCII such as "≥", case, invisible format
+  characters); the rest are absent in wording (often 2026 approvals not yet on DailyMed).
+These are not parser behaviors, so the bar is moved to a metric that isolates the parser.
+Changes, fixed before re-grading:
+1. Rendering normalization (applied to fragment and label text, on top of Amendment 2):
+   Unicode case-folding; removal of Unicode format characters (category Cf); removal of
+   leading list markers (•, ◦, ▪, -, *, o followed by space) at fragment start; a "?" in an
+   SrLC fragment matches any single non-ASCII label character. Wording, punctuation and
+   numbers stay strict.
+2. Parser accuracy metric (carries the ≥95% bar on the sealed set): for each ≥3-token
+   fragment, find in captured history of each candidate setid the transition pair (fragment
+   absent in a captured version, present in the next captured version) whose to-version date
+   is nearest the SrLC approval within [approval − 730 d, approval + 365 d]. Fragments with
+   no such transition are "not locatable" (reported as coverage). Text accuracy = located
+   fragments reported by GitRx inside added tokens of a substantive change in that pair
+   (same SrLC group; any-group also reported). Section accuracy = rows with ≥1 located
+   fragment whose transition pair has a substantive same-group change.
+3. End-to-end SrLC concordance (Amendment 1 window, with Amendment 2/3 matching) and the
+   strict literal-v1 variant stay reported for open and sealed runs, without the bar.
+Split, 3-token rule and units are unchanged. The sealed set is still untouched.
