@@ -224,3 +224,28 @@ Owner decision: the sealed BW misses are categorized descriptively, as the plan 
 every miss. Consequence: any change motivated by sealed misses makes the Freeze 1 sealed set
 non-independent for that change. Such changes are validated on a fresh, later holdout (e.g.
 SrLC entries posted after 2026-11-11) and the sealed set is reported as "seen" for them.
+
+## Freeze 2 — sealed rerun (2026-11-11), declared before any Freeze 2 sealed result
+Frozen at commit 34ff8d0e2aacdb025ac5ee2ce80480b21a7f7a44: parser spl-sections-0.2.3, changes srlc-changes-0.3.2,
+groups srlc-groups-0.3.0, harness srlc-grade-0.3.2 (unchanged). Inputs identical to Freeze 1
+(gradebook 863aea67…896db4, split 45725c78…4750a9, sealed 354025929110…d894, index a5739f4d…3243e7).
+Code sha256:
+- spl_parser.py 2bffee02825edf82e97a6373a45e8fdab40c7d3f39f8ed95edcdeccde6468853
+- normalize.py 4a613040e6f1660d917f955ebea194b6084765a121e28e5caef3d45be886d12b
+- section_groups.py f1a2684d4d1aead3d2c42ff8b89b90495513cb1877ae9dd0af2381774a538b80
+- changes.py 9b0bc06db5adaffd38d5a1099db50a4fd4ddfddca4d9fb3a1cf1fbac02e11c95
+- srlc_grade.py 26c40e528240bea241bedb75d82c15a7e587a293a483a5294e09bed9becb88e9
+- srlc.py 99702e2aee1d9bbdca59c20a2445872d82a7441965b1e36ee9923bc9e10179b9
+- srlc_split.py b8509beb71895874a14702a83184f8bd348426ff7bedb70874f1729e12343a79
+Changes since Freeze 1: HTML-spec table span parsing; uncoded boxed warnings → BW
+(inferred:uncoded_box); formatting-noise canonicalization; cross-reference-only edits kept as
+changes flagged reference_only (owner decision).
+Independence (Amendment 5): the uncoded-box rule was motivated by a categorized sealed miss
+(ATIVAN 89057c93); the sealed set is "seen" for that rule and Freeze 2 sealed results are
+reported as seen, alongside Freeze 1. The span and noise fixes were motivated by open-split
+sweeps and open precision only. Independent confirmation: fresh holdout of SrLC entries posted
+after 2026-11-11.
+Runs (each exactly once): sealed --group-mode either, then primary. Same primary metric and bar
+as Freeze 1. Open-split reference (same code): either 98.48% text / 99.74% section; primary
+97.87% / 98.73%; end-to-end section 94.32% (Freeze 1 94.56%; 48 lost rows all formatting-only
+pairs); precision crude 79.75% (80.54% excluding reference_only), timing-robust 86.56%.
