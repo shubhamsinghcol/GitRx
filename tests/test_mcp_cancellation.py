@@ -177,3 +177,13 @@ def test_cancellation_cleans_actual_git_process_group(release,tmp_path):
         else:raise AssertionError('Git child group remained alive')
     finally:c.close()
     assert c.process.exitcode==0
+
+
+def test_freeze_config_keeps_data_root_placeholder(tmp_path):
+    import json
+    from gitrx_backend.mcp_transport import freeze_config
+    src = tmp_path / 'cfg.json'
+    src.write_text(json.dumps({'rebuild_root': '${GITRX_DATA_ROOT}/rebuild/x', 'names_index': 'rel/names.sqlite'}))
+    out = json.loads((tmp_path / 'frozen').mkdir() or open(freeze_config(src, tmp_path / 'frozen')).read())
+    assert out['rebuild_root'] == '${GITRX_DATA_ROOT}/rebuild/x'
+    assert out['names_index'] == str((tmp_path / 'rel/names.sqlite').resolve())
