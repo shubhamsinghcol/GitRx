@@ -51,3 +51,11 @@ to the versions row. Results are in `VERIFY-EXPORT.json`. This checks export fid
 Label text is DailyMed/NLM content, not relicensed by GitRx (see `LICENSING.md`); GitRx framing and metadata are
 CC BY 4.0. Parsed text is not clinically validated. Missing text in a version can reflect partial extraction.
 Text containing unpaired surrogates is stored with UTF-8 surrogatepass encoding to stay byte-faithful.
+
+## Module versions
+
+The published export `gitrx-git-export-1__spl-sections-0.2.4` was built by
+`gitrx_core/git_export.py` sha256 `6406b59c...512123a` (commit 26d7281), which is the hash
+recorded in its MANIFEST.json. A later commit changes only how the `git fast-import` pipe
+is closed (Python 3.11 compatibility; no change to anything written). To reproduce the
+recorded module hash exactly, check out commit 26d7281.

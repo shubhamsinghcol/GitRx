@@ -346,8 +346,7 @@ def build_repo(release, prefixes, repo_path, gc=True, log=None, min_free=MIN_FRE
             if log and i % 5000 == 0:
                 log('  %s %d/%d' % (repo_path.name, i, len(rows)))
         stream.write(b'done\n')
-        stream.close()
-        _, err = proc.communicate()
+        _, err = proc.communicate()  # flushes and closes stdin (closing it first breaks Python 3.11)
         if proc.returncode:
             raise ExportError('git fast-import failed: ' + err.decode()[:300])
     except BaseException:
