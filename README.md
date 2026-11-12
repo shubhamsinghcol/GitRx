@@ -1,5 +1,7 @@
 # GitRx: SrLC, fixed and expanded, in Git
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24161295.svg)](https://doi.org/10.5281/zenodo.24161295)
+
 FDA's [Drug Safety-related Labeling Changes (SrLC)](https://www.accessdata.fda.gov/scripts/cder/safetylabelingchanges/)
 database tells you how a drug's safety labeling changed, but only for about 3,300 brand-name
 drugs, only from 2016, and only in safety sections. It also has errors: text filed under the
@@ -17,9 +19,9 @@ GitRx rebuilds that record directly from the label documents themselves, for eve
   and run `git log`, `git diff` and `git grep` across the whole collection, or query the same data
   from the command line, SQLite or an AI assistant over MCP.
 
-**Status:** first public release (parser `spl-sections-0.2.4`, November 2026). Code is here; the
-data and the Git export are being uploaded to Hugging Face, with a Zenodo DOI. Links will appear
-here when the upload finishes.
+**Status:** first public release (parser `spl-sections-0.2.4`, November 2026). Code is here (archived on
+Zenodo). The data and the Git export are being uploaded to Hugging Face; the link will appear here
+when the upload finishes.
 
 [Start here](docs/START-HERE.md) · [Verify the accuracy yourself](VERIFY.md) ·
 [Limitations](LIMITATIONS.md) · [Flaws in DailyMed and SrLC](docs/SOURCE-DATA-ISSUES.md)
@@ -74,7 +76,7 @@ More commands and worked examples: [docs/CORE-WORKFLOW.md](docs/CORE-WORKFLOW.md
 
 Code: Apache 2.0. GitRx-created data and docs: CC BY 4.0. DailyMed and FDA content is not
 relicensed. Courtesy of the U.S. National Library of Medicine. See [LICENSING.md](LICENSING.md);
-cite with [CITATION.cff](CITATION.cff).
+cite as DOI [10.5281/zenodo.24161295](https://doi.org/10.5281/zenodo.24161295) ([CITATION.cff](CITATION.cff)).
 
 Created by Shubham Singh ([ORCID 0000-0002-0091-7391](https://orcid.org/0000-0002-0091-7391)).
 Code written with AI coding assistants, OpenAI Codex and Anthropic Claude. The accuracy results

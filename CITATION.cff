@@ -8,6 +8,14 @@ authors:
     orcid: "https://orcid.org/0000-0002-0091-7391"
 license: Apache-2.0
 version: "0.2.4"
+doi: "10.5281/zenodo.24161295"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24161295"
+    description: "All versions (concept DOI)"
+  - type: doi
+    value: "10.5281/zenodo.24161296"
+    description: "Version 0.2.4"
 date-released: "2026-11-12"
 keywords:
   - drug labeling

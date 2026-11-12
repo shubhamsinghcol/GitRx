@@ -11,7 +11,7 @@ GitRx has two kinds of material under two licenses, plus third-party source cont
 
 The CC BY 4.0 license applies only to what GitRx created (structure, annotations, derived records, analyses, documentation). It does not grant rights in manufacturer label text or other third-party content that appears inside those records.
 
-Suggested attribution: "GitRx (Shubham Singh, 2026), licensed under CC BY 4.0", with the DOI once published.
+Suggested attribution: "GitRx (Shubham Singh, 2026), licensed under CC BY 4.0, doi:10.5281/zenodo.24161295".
 
 ## Source attribution and disclaimers (required wherever GitRx data is redistributed)
 
