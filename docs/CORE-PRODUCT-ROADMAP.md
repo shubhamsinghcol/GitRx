@@ -1,5 +1,7 @@
 # Core product roadmap
 
+> **Status update 2026-11-11.** The sections below were written on 2026-11-08 and are kept for the owner constraints. Since then: the Step E deterministic rebuild (158,955 families / 488,016 versions) is the default release; the old 7,239-family release and the finite backfill machinery were retired ([cleanup](CLEANUP-2026-11-11.md)); the web front end was dropped (CLI and MCP only); recurring DailyMed/SrLC collection jobs exist as owner-installed LaunchAgents ([ops/UPDATES.md](../ops/UPDATES.md)). The "Remaining priorities" list below is therefore historical; the current priority is the authoritative parser ([plan](AUTHORITATIVE-PARSER-PLAN.md)), gap repair ([Step F](STEP-F-GAP-REPAIR.md)) and publication of the evidence buckets (planned, not yet published).
+
 Consolidated November 8, 2026 (America/Chicago). This is the current priority list.
 The [full preceding roadmap and delivery log](history/2026-11-08/CORE-PRODUCT-ROADMAP.md)
 is retained, including the preexisting November 7 full-DailyMed authorization.
@@ -27,7 +29,7 @@ not the current finite backfill's completion totals. Read selected manifests and
 3. Finish the explicitly authorized finite full-DailyMed acquisition and assess
    staged evidence before building a broader candidate. The plan records 158,963
    current-listing setids plus 19 retained families; archived-only discovery is
-   unresolved. Use [operations](OPERATIONS.md) for the evolving working profile.
+   unresolved. Use [operations](history/2026-11-11/OPERATIONS.md) for the evolving working profile.
 4. Verify changed-candidate integration, retained citations, selection and rollback
    before promoting a broader release. Acquisition completion, promotion and
    distribution are separate milestones.

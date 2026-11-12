@@ -1,15 +1,12 @@
 # Old release fingerprints (snapshot 1baa5bca)
 
 Recorded 2026-11-11 before the default native release switched to the Step E rebuild
-(`bbe9223a...`). **Nothing was deleted.** This is evidence for the owner-approved
-later deletion of the old release data; deletion itself is a separate, explicitly
-approved step.
+(`bbe9223a...`). The old release data was deleted later the same day (record: [DELETION-PROPOSAL section 10](DELETION-PROPOSAL-2026-11-11.md)); this JSON is the surviving fingerprint. A second copy is in `reports/old-release-fingerprints/`.
 
 - Old snapshot id: `1baa5bca2fd0091dfd8da9c82e260709483513515637df81a7c2db7765d61abc`
   (7,239 families / 51,357 versions, parser spl-sections-0.1.0).
 - Old configuration `runtime/native-config.json` sha256
-  `f392ef1f85d33e2262bc74419f633c0fba66ac493f0d1c4e77baffee2c4418bf` (content embedded in the JSON; still selectable
-  with `GITRX_CONFIG=runtime/native-config.json`).
+  `f392ef1f85d33e2262bc74419f633c0fba66ac493f0d1c4e77baffee2c4418bf` (content embedded in the JSON; the file was renamed `runtime/native-config-1baa5bca.RETIRED-20261111.json`, and the release it pins no longer exists).
 - Full machine-readable record: `/Volumes/Untitled/GitRx/old-release-fingerprints-1baa5bca.json`
   (sha256 `f910fcde0cf59f82c0bf8431c3955e1877f0653bb448bd69e69bb0182a3fa6df`, 15,225,028 bytes).
 

@@ -261,3 +261,25 @@ only after the following sequence:
 2. Verify they answer correctly.
 3. Record the old release's fingerprints (snapshot, commit IDs, file hashes).
 4. Delete.
+
+## 10. Execution record: old release and legacy local databases (2026-11-11)
+
+Owner approved deleting the old release 1baa5bca after the CLI and MCP defaulted to the Step E rebuild. Before deletion:
+the fingerprint JSON `old-release-fingerprints-1baa5bca.json` (sha256 `f910fcde0cf59f82c0bf8431c3955e1877f0653bb448bd69e69bb0182a3fa6df`)
+existed in two copies (SSD and `reports/old-release-fingerprints/`, identical). Coverage was verified: all 74,135 files of the trees to delete
+(non-.git files of 17 export/release trees, 9.8 GB) were present in it with matching size, and all 50 `.git` directories are listed in its
+`git_repositories`. The legacy local databases were fingerprinted in a second JSON, `/Volumes/Untitled/GitRx/legacy-local-db-fingerprints-20261111.json`
+(62 files, 8,910,528,007 bytes; none are raw objects).
+
+Deleted (files staged in `_pending-delete-20261111-old-release/` on the same volume, then removed after the checks below):
+`exports/*` (11 trees), `cohorts/release1/exports/*` (6 trees), `cohorts/release1-recovered-20261106` (all but 31 files), `data/gitrx.sqlite*`,
+`data/current`, `data/backups/*`. Total 32,777,785,067 bytes (30.5 GiB, of which 14.05 GB inside `.git` object stores).
+Left in place by the raw rule: the 31 raw objects under `cohorts/release1-recovered-20261106/artifacts/sha256/`; also kept `data/*.log`,
+`cohorts/release1/{control.sqlite,scope.json,...}` and `reports/evidence-history-20261107/metadata`.
+References retired: `runtime/native-config.json` renamed to `runtime/native-config-1baa5bca.RETIRED-20261111.json`; symlinks
+`runtime/release1-current` and `runtime/current/data` removed; release-cycle, `release1-*`, `gitrx-current` wrappers and the code that built the old release removed (see [CLEANUP](CLEANUP-2026-11-11.md)).
+
+Checks run with the files staged away (all passed): 436 fixture tests, `./label-history describe-release` (snapshot `bbe9223a...`),
+`tools/verify_gitrx.py quick` (73 pass, 0 fail), `gitrx_backend.selftest`, rebuild `COMPLETE.json` sha256 unchanged.
+Deletion log (path, bytes, sha256 per file; commit ids and pack names per Git repository):
+`/Volumes/Untitled/GitRx/DELETION-LOG-20261111-old-release.jsonl` (74,218 lines, sha256 `daad36ccd47c73f9d9e5dddf4d9d022d21f7dc5b08d49d27026876966a9fa621`).

@@ -1,10 +1,17 @@
 """Pinned additive metadata preserves provenance and old evidence identities."""
 import json
 import pytest
-from test_release_cycle import job, SID
+from gitrx_backend.selftest import run
 from gitrx_backend.config import open_reader
 from gitrx_backend.evidence_metadata import build, Projection, _version_record, _write_projection
 from gitrx_backend.query import Query
+
+SID='a0000000-0000-0000-0000-000000000000'
+
+
+@pytest.fixture
+def job(tmp_path):
+    run(tmp_path/'parent')  # synthetic release (the former release-cycle Job fixture was removed)
 
 
 def test_real_fixture_build_adapter_parity_and_corruption(job,tmp_path):

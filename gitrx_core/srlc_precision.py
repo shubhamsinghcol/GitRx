@@ -53,17 +53,18 @@ import sqlite3
 import sys
 
 from . import changes as CH
+from . import dataroot
 from . import spl_parser as SP
 from . import srlc_grade as G
 
 PRECISION_VERSION = "srlc-precision-0.1.0"
 SRG = ("BW", "C", "WP", "AR", "DI", "USP", "MG")
-DEFAULT_ROOT = "/Volumes/Untitled/GitRx/srlc"
+DEFAULT_ROOT = dataroot.DATA_ROOT + "/srlc"
 DEFAULT_GRADEBOOK = DEFAULT_ROOT + "/gradebook.sqlite"
 DEFAULT_SPLIT = DEFAULT_ROOT + "/split.json"
 DEFAULT_INDEX = DEFAULT_ROOT + "/grading/cache/index-allversions.sqlite"
 DEFAULT_CACHE = DEFAULT_ROOT + "/grading/cache/pairs"
-RAW_INTERNAL = "/Volumes/Untitled/GitRx/raw-internal-20261111/sha256"
+RAW_INTERNAL = dataroot.DATA_ROOT + "/raw-internal-20261111/sha256"
 TIMING_BEFORE_DAYS = 365   # SrLC approval may be up to 365 d before the to-version publication ...
 TIMING_AFTER_DAYS = 730    # ... or up to 730 d after it
 

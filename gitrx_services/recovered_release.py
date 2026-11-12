@@ -275,7 +275,11 @@ class ReleaseFederation:
             c.close()
 
 
+RETIRED = 'This command built the 2026-11-06 release (cohorts/release1), which was deleted on 2026-11-11. The library functions remain; the build command is recoverable at git tag codex-final (docs/CLEANUP-2026-11-11.md).'
+
+
 def main():
+    raise SystemExit(RETIRED)
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--project', type=Path, default=Path(__file__).resolve().parents[1])
     a = p.parse_args()

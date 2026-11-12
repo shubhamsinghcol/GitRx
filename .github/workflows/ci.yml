@@ -1,0 +1,42 @@
+name: CI
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  fast:
+    # Fixtures only: no external data root, no network.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.14']
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -e '.[test]'
+      - name: Import every module
+        run: |
+          python - <<'PY'
+          import importlib, pkgutil
+          import gitrx, gitrx_backend, gitrx_core, gitrx_services
+          failed = []
+          for pkg in (gitrx, gitrx_backend, gitrx_core, gitrx_services):
+              for m in pkgutil.walk_packages(pkg.__path__, pkg.__name__ + "."):
+                  try:
+                      importlib.import_module(m.name)
+                  except Exception as exc:
+                      failed.append((m.name, repr(exc)))
+          for item in failed:
+              print("IMPORT FAILED", *item)
+          raise SystemExit(1 if failed else 0)
+          PY
+      - name: Synthetic end-to-end self-test
+        run: gitrx-selftest --output "$RUNNER_TEMP/synthetic-release"
+      - name: Test suite (tests needing the data root skip when GITRX_DATA_ROOT is absent)
+        run: |
+          unset GITRX_DATA_ROOT
+          python -m pytest -q

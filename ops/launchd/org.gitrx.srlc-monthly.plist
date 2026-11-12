@@ -6,13 +6,13 @@
 	<string>org.gitrx.srlc-monthly</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/Users/shubham/Desktop/GitRx/.venv/bin/python</string>
+		<string>@GITRX_ROOT@/.venv/bin/python</string>
 		<string>-B</string>
 		<string>-m</string>
 		<string>gitrx_core.srlc_update</string>
 	</array>
 	<key>WorkingDirectory</key>
-	<string>/Users/shubham/Desktop/GitRx</string>
+	<string>@GITRX_ROOT@</string>
 	<key>Nice</key>
 	<integer>10</integer>
 	<key>ProcessType</key>
@@ -29,8 +29,8 @@
 		<integer>0</integer>
 	</dict>
 	<key>StandardOutPath</key>
-	<string>/Users/shubham/Library/Logs/GitRx/org.gitrx.srlc-monthly.out.log</string>
+	<string>@HOME@/Library/Logs/GitRx/org.gitrx.srlc-monthly.out.log</string>
 	<key>StandardErrorPath</key>
-	<string>/Users/shubham/Library/Logs/GitRx/org.gitrx.srlc-monthly.err.log</string>
+	<string>@HOME@/Library/Logs/GitRx/org.gitrx.srlc-monthly.err.log</string>
 </dict>
 </plist>

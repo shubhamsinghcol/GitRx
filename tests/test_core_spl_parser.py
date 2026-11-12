@@ -359,7 +359,7 @@ def test_real_matches_frozen_010_narrative_text():
     """Narrative text equals frozen 0.1.0 own_text (modulo the recovered [MEDIA:] marker)."""
     import re
     from gitrx.current import spl_parser_v1 as old
-    registry = {c["code"] for c in json.loads((ROOT / "research/section-code-registry.json").read_text())["codes"]}
+    registry = {c["code"] for c in json.loads((FIX / "section-code-registry.json").read_text())["codes"]}
     strip = lambda s: re.sub(r"\s+", "", re.sub(r"\[MEDIA:[^\]]*\]", "", s))  # noqa: E731
     for name in MANIFEST:
         if name in LOST_BY_010:

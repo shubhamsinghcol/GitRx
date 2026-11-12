@@ -1,14 +1,12 @@
 # Portable package and module boundaries
 
-The private source repository is [shubhamsinghcol/GitRx](https://github.com/shubhamsinghcol/GitRx).
-[Remote CI](https://github.com/shubhamsinghcol/GitRx/actions/workflows/backend.yml)
-builds and installs the wheel on fresh Ubuntu runners with Python 3.11/3.14,
-then exercises synthetic releases and the maintained native regressions away
-from the source checkout. Raw evidence and generated release repositories are
-excluded from source control. The disposable runners remove unused Android/.NET
-SDKs to meet the existing 20 GiB archive disk guard; application guards are unchanged.
+The source repository is [shubhamsinghcol/GitRx](https://github.com/shubhamsinghcol/GitRx)
+(publication pending). CI (`.github/workflows/ci.yml`) installs the package on
+Ubuntu with Python 3.11 and 3.14, imports every module, runs `gitrx-selftest` and
+the fixture test suite with no data root and no network. Raw evidence and generated
+release repositories are excluded from source control.
 
-The installed interface is `gitrx-native`; the repeatable offline build check is
+The installed interfaces are `gitrx-native`, `gitrx-native-mcp` and `gitrx-recovery`; the repeatable offline build check is
 `gitrx-selftest`. Both use the installed wheel, not scripts reached through the
 checkout. Python >=3.11, Git with SHA-1 repository support, and pinned lxml are
 runtime requirements. Local evidence was collected on macOS/Python 3.14; Linux
@@ -43,9 +41,7 @@ configuration file, independent of current directory or package installation.
 Select `--backend sqlite` to use the existing metadata/payload release. Git requires
 its meta repo, all sixteen shard repositories and the scope file whose hash the
 meta manifest pins. Full captured family history requires complete shard history;
-shallow-history support is not a v1 promise. The local configured example is
-[local-config.json](../reports/backend-foundation-20261106/local-config.json).
-It binds this checkout's existing selected inputs; it is not bundled into the wheel.
+shallow-history support is not a v1 promise. The default release configuration is [runtime/native-config-rebuild-0.2.3.json](../runtime/native-config-rebuild-0.2.3.json) (backend `rebuild`); a `${GITRX_DATA_ROOT}` placeholder in a path value expands to the data root.
 
 Examples, with SETID and versions replaced by selected values:
 
@@ -69,10 +65,8 @@ Help/missing required arguments use argparse's conventional exit status 2.
 | Portable production-facing native reads | gitrx_backend/config.py, readers.py, query.py, cli.py | Explicit paths, common query contract, no workspace tools imports |
 | Portable offline acceptance builder | gitrx_backend/selftest.py | Synthetic sources only; explicit new output folder; no network |
 | Shared build/storage helpers | gitrx_services/federation.py, export_payloads.py, native_query.py, shard_release.py | Reuse with explicit roots; native_query's older module CLI and shard release orchestration retain checkout convenience defaults |
-| Preserved evidence/extraction/export dependencies | gitrx/current/archive.py, db.py, parser.py, spl_parser_v1.py, normalize.py, content_storage.py, export_git.py | Preserved byte-for-byte; inputs passed explicitly by the portable builder |
-| Accepted interpreted pilot | gitrx/current query/tooling/section_history, gitrx_services/mcp.py | Existing pilot scope; not silently promoted to full corpus |
-| Historical replay engines | gitrx/legacy_*, gitrx/current/legacy_*, frozen report bundles | Preserve rather than merge/refactor; bundled Python dependencies permit replay with the separately retained original inputs |
-| Stage-specific acquisition/validation drivers | tools/*, release1 supervisor/job/rounds, fresh_score | Existing research execution lane; not installed production entry points; retained configurations/manifests may contain original absolute paths |
+| Preserved evidence/extraction/export dependencies | gitrx/current/archive.py, db.py, parser.py, spl_parser_v1.py, normalize.py, content_storage.py, export_git.py (fixture-release builder and parity tests) | Preserved byte-for-byte; inputs passed explicitly by the portable builder |
+| Parser, change records, rebuild, SrLC grading, update jobs | gitrx_core/* | Frozen per version; data root via `GITRX_DATA_ROOT`; not part of the wheel entry points except via `python -m` |
 
 The archive root contains no Git checkout. CI is a committed-file definition for
 a future repository/check-in; defining it locally does not run GitHub Actions.

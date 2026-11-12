@@ -1,5 +1,7 @@
 # Evidence details and complete wording histories
 
+> The local browser (`gitrx_backend.web`) was removed in the 2026-11-11 cleanup (see [CLEANUP](CLEANUP-2026-11-11.md)); the browser passages below describe the retired interface. CLI and MCP behavior is unchanged.
+
 The native library, CLI, MCP and browser can use a separately pinned evidence
 metadata projection for the selected release. It adds per-version extraction
 status and diagnostics, publisher references, observed retrieval routes and

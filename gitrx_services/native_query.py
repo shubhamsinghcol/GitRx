@@ -117,7 +117,11 @@ def show(root, sid, version, code=None, ordinal=None, max_chars=16000, offset=0)
             'historical_completeness_claim': False}
 
 
+RETIRED = 'This command built the 2026-11-06 release (cohorts/release1), which was deleted on 2026-11-11. The library functions remain; the build command is recoverable at git tag codex-final (docs/CLEANUP-2026-11-11.md).'
+
+
 def main():
+    raise SystemExit(RETIRED)
     project = Path(__file__).resolve().parents[1]
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--root', type=Path, default=project / 'runtime/release1-current')

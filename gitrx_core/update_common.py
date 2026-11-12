@@ -15,10 +15,12 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-VOLUME = "/Volumes/Untitled"
-MARKER = "GitRx/.volume-identity"          # same marker the backfill config uses
-TOKEN = "5eeef011-bafd-479c-9bf6-b12862fb44b6"
-GITRX = "/Volumes/Untitled/GitRx"
+from . import dataroot
+
+GITRX = dataroot.DATA_ROOT                   # GITRX_DATA_ROOT or runtime/local.json (see dataroot.py)
+VOLUME = str(Path(GITRX).parent)             # the mount that holds the data root
+MARKER = Path(GITRX).name + "/.volume-identity"
+TOKEN = dataroot.volume_token()              # None: the identity-token check is skipped
 UPDATES = GITRX + "/updates"
 HEAVY_LOCK = GITRX + "/HEAVY-JOB.lock"
 STOP_NAME = "STOP"
@@ -37,6 +39,8 @@ class Skip(Exception):
 def volume_ok(volume=VOLUME, marker=MARKER, token=TOKEN) -> bool:
     v = Path(volume)
     try:
+        if token is None:       # no identity token configured: the data root merely has to exist
+            return v.is_dir()
         return (v.is_mount() and os.stat(v).st_dev != os.stat("/").st_dev
                 and (v / marker).read_text().strip() == token)
     except OSError:

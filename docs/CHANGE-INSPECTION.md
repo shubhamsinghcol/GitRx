@@ -71,7 +71,7 @@ No read operation collects source data, builds indexes or selects a new release.
 Use `--previous`, `--code`, `--offset` and `--max-chars` for change details.
 Changed-text search accepts `--start`, `--end`, `--case-sensitive`,
 `--max-transitions` (1..200, default50) and `--cursor` for continuation.
-The equivalent MCP tools are `version_changes` and `search_changes`. The browser
+(The local browser mentioned below was removed on 2026-11-11.) The equivalent MCP tools are `version_changes` and `search_changes`. The browser
 provides **Version changes** and **Search changes** for the selected family.
 Matching uses the native extracted `own_text` representation; verify original
 occurrences when table/extraction representation matters.

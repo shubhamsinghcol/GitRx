@@ -1,0 +1,442 @@
+{
+  "source_url": "https://www.fda.gov/industry/structured-product-labeling-resources/section-headings-loinc",
+  "source_sha256": "f1f0d1df8f021acc23fbe93febe08b5085f9b62805c558c6f656a95486d92791",
+  "codes": [
+    {
+      "code": "34086-9",
+      "name": "ABUSE SECTION"
+    },
+    {
+      "code": "60555-0",
+      "name": "ACCESSORIES"
+    },
+    {
+      "code": "34084-4",
+      "name": "ADVERSE REACTIONS SECTION"
+    },
+    {
+      "code": "69761-5",
+      "name": "ALARMS"
+    },
+    {
+      "code": "34091-9",
+      "name": "ANIMAL PHARMACOLOGY & OR TOXICOLOGY SECTION"
+    },
+    {
+      "code": "60556-8",
+      "name": "ASSEMBLY OR INSTALLATION INSTRUCTIONS"
+    },
+    {
+      "code": "34066-1",
+      "name": "BOXED WARNING SECTION"
+    },
+    {
+      "code": "60557-6",
+      "name": "CALIBRATION INSTRUCTIONS"
+    },
+    {
+      "code": "34083-6",
+      "name": "CARCINOGENESIS & MUTAGENESIS & IMPAIRMENT OF FERTILITY SECTION"
+    },
+    {
+      "code": "34090-1",
+      "name": "CLINICAL PHARMACOLOGY SECTION"
+    },
+    {
+      "code": "60558-4",
+      "name": "CLEANING, DISINFECTING, AND STERILIZATION INSTRUCTIONS"
+    },
+    {
+      "code": "34092-7",
+      "name": "CLINICAL STUDIES SECTION"
+    },
+    {
+      "code": "90374-0",
+      "name": "CLINICAL TRIALS EXPERIENCE SECTION"
+    },
+    {
+      "code": "69760-7",
+      "name": "COMPATIBLE ACCESSORIES"
+    },
+    {
+      "code": "60559-2",
+      "name": "COMPONENTS"
+    },
+    {
+      "code": "34070-3",
+      "name": "CONTRAINDICATIONS SECTION"
+    },
+    {
+      "code": "34085-1",
+      "name": "CONTROLLED SUBSTANCE SECTION"
+    },
+    {
+      "code": "34087-7",
+      "name": "DEPENDENCE SECTION"
+    },
+    {
+      "code": "34089-3",
+      "name": "DESCRIPTION SECTION"
+    },
+    {
+      "code": "69758-1",
+      "name": "DIAGRAM OF DEVICE"
+    },
+    {
+      "code": "69763-1",
+      "name": "DISPOSAL AND WASTE HANDLING"
+    },
+    {
+      "code": "34068-7",
+      "name": "DOSAGE & ADMINISTRATION SECTION"
+    },
+    {
+      "code": "43678-2",
+      "name": "DOSAGE FORMS & STRENGTHS SECTION"
+    },
+    {
+      "code": "34074-5",
+      "name": "DRUG & OR LABORATORY TEST INTERACTIONS SECTION"
+    },
+    {
+      "code": "42227-9",
+      "name": "DRUG ABUSE AND DEPENDENCE SECTION"
+    },
+    {
+      "code": "34073-7",
+      "name": "DRUG INTERACTIONS SECTION"
+    },
+    {
+      "code": "50742-6",
+      "name": "ENVIRONMENTAL WARNING SECTION"
+    },
+    {
+      "code": "77291-3",
+      "name": "FEMALES & MALES OF REPRODUCTIVE POTENTIAL SECTION"
+    },
+    {
+      "code": "50743-4",
+      "name": "FOOD SAFETY WARNING SECTION"
+    },
+    {
+      "code": "34072-9",
+      "name": "GENERAL PRECAUTIONS SECTION"
+    },
+    {
+      "code": "34082-8",
+      "name": "GERIATRIC USE SECTION"
+    },
+    {
+      "code": "50740-0",
+      "name": "GUARANTEED ANALYSIS OF FEED SECTION"
+    },
+    {
+      "code": "71744-7",
+      "name": "HEALTH CARE PROVIDER LETTER SECTION"
+    },
+    {
+      "code": "69719-3",
+      "name": "HEALTH CLAIM SECTION"
+    },
+    {
+      "code": "88829-7",
+      "name": "HEPATIC IMPAIRMENT SUBSECTION"
+    },
+    {
+      "code": "34069-5",
+      "name": "HOW SUPPLIED SECTION"
+    },
+    {
+      "code": "88830-5",
+      "name": "IMMUNOGENICITY"
+    },
+    {
+      "code": "51727-6",
+      "name": "INACTIVE INGREDIENT SECTION"
+    },
+    {
+      "code": "34067-9",
+      "name": "INDICATIONS & USAGE SECTION"
+    },
+    {
+      "code": "50744-2",
+      "name": "INFORMATION FOR OWNERS/CAREGIVERS SECTION"
+    },
+    {
+      "code": "34076-0",
+      "name": "INFORMATION FOR PATIENTS SECTION"
+    },
+    {
+      "code": "59845-8",
+      "name": "INSTRUCTIONS FOR USE SECTION"
+    },
+    {
+      "code": "60560-0",
+      "name": "INTENDED USE OF THE DEVICE"
+    },
+    {
+      "code": "34079-4",
+      "name": "LABOR & DELIVERY SECTION"
+    },
+    {
+      "code": "34075-2",
+      "name": "LABORATORY TESTS SECTION"
+    },
+    {
+      "code": "77290-5",
+      "name": "LACTATION SECTION"
+    },
+    {
+      "code": "43679-0",
+      "name": "MECHANISM OF ACTION SECTION"
+    },
+    {
+      "code": "49489-8",
+      "name": "MICROBIOLOGY SECTION"
+    },
+    {
+      "code": "43680-8",
+      "name": "NONCLINICAL TOXICOLOGY SECTION"
+    },
+    {
+      "code": "34078-6",
+      "name": "NONTERATOGENIC EFFECTS SECTION"
+    },
+    {
+      "code": "34080-2",
+      "name": "NURSING MOTHERS SECTION"
+    },
+    {
+      "code": "60561-8",
+      "name": "OTHER SAFETY INFORMATION"
+    },
+    {
+      "code": "34088-5",
+      "name": "OVERDOSAGE SECTION"
+    },
+    {
+      "code": "55106-9",
+      "name": "OTC - ACTIVE INGREDIENT SECTION"
+    },
+    {
+      "code": "50569-3",
+      "name": "OTC - ASK DOCTOR SECTION"
+    },
+    {
+      "code": "50568-5",
+      "name": "OTC - ASK DOCTOR/PHARMACIST SECTION"
+    },
+    {
+      "code": "50570-1",
+      "name": "OTC - DO NOT USE SECTION"
+    },
+    {
+      "code": "50565-1",
+      "name": "OTC - KEEP OUT OF REACH OF CHILDREN SECTION"
+    },
+    {
+      "code": "53414-9",
+      "name": "OTC - PREGNANCY OR BREAST FEEDING SECTION"
+    },
+    {
+      "code": "55105-1",
+      "name": "OTC - PURPOSE SECTION"
+    },
+    {
+      "code": "53413-1",
+      "name": "OTC - QUESTIONS SECTION"
+    },
+    {
+      "code": "50566-9",
+      "name": "OTC - STOP USE SECTION"
+    },
+    {
+      "code": "50567-7",
+      "name": "OTC - WHEN USING SECTION"
+    },
+    {
+      "code": "51945-4",
+      "name": "PACKAGE LABEL.PRINCIPAL DISPLAY PANEL"
+    },
+    {
+      "code": "88436-1",
+      "name": "PATIENT COUNSELING INFORMATION"
+    },
+    {
+      "code": "68498-5",
+      "name": "PATIENT MEDICATION INFORMATION SECTION"
+    },
+    {
+      "code": "34081-0",
+      "name": "PEDIATRIC USE SECTION"
+    },
+    {
+      "code": "43681-6",
+      "name": "PHARMACODYNAMICS SECTION"
+    },
+    {
+      "code": "66106-6",
+      "name": "PHARMACOGENOMICS SECTION"
+    },
+    {
+      "code": "43682-4",
+      "name": "PHARMACOKINETICS SECTION"
+    },
+    {
+      "code": "90375-7",
+      "name": "POSTMARKETING EXPERIENCE SECTION"
+    },
+    {
+      "code": "42232-9",
+      "name": "PRECAUTIONS SECTION"
+    },
+    {
+      "code": "42228-7",
+      "name": "PREGNANCY SECTION"
+    },
+    {
+      "code": "43683-2",
+      "name": "RECENT MAJOR CHANGES SECTION"
+    },
+    {
+      "code": "34093-5",
+      "name": "REFERENCES SECTION"
+    },
+    {
+      "code": "53412-3",
+      "name": "RESIDUE WARNING SECTION"
+    },
+    {
+      "code": "100382-1",
+      "name": "REMS ADDRESSED RISK"
+    },
+    {
+      "code": "87523-7",
+      "name": "REMS ADMINISTRATIVE INFORMATION"
+    },
+    {
+      "code": "87526-0",
+      "name": "REMS APPLICANT REQUIREMENTS"
+    },
+    {
+      "code": "82344-3",
+      "name": "REMS COMMUNICATION"
+    },
+    {
+      "code": "82348-4",
+      "name": "REMS ELEMENTS"
+    },
+    {
+      "code": "82345-0",
+      "name": "REMS ELEMENTS TO ASSURE SAFE USE"
+    },
+    {
+      "code": "82349-2",
+      "name": "REMS GOALS"
+    },
+    {
+      "code": "82350-0",
+      "name": "REMS IMPLEMENTATION SYSTEM"
+    },
+    {
+      "code": "82346-8",
+      "name": "REMS MATERIAL"
+    },
+    {
+      "code": "82598-4",
+      "name": "REMS MEDICATION GUIDE"
+    },
+    {
+      "code": "87525-2",
+      "name": "REMS PARTICIPANT REQUIREMENTS"
+    },
+    {
+      "code": "87524-5",
+      "name": "REMS REQUIREMENTS"
+    },
+    {
+      "code": "82347-6",
+      "name": "REMS SUMMARY"
+    },
+    {
+      "code": "82352-6",
+      "name": "REMS TIMETABLE FOR SUBMISSION ASSESSMENTS"
+    },
+    {
+      "code": "88828-9",
+      "name": "RENAL IMPAIRMENT SUBSECTION"
+    },
+    {
+      "code": "69759-9",
+      "name": "RISKS"
+    },
+    {
+      "code": "60562-6",
+      "name": "ROUTE, METHOD AND FREQUENCY OF ADMINISTRATION"
+    },
+    {
+      "code": "50741-8",
+      "name": "SAFE HANDLING WARNING SECTION"
+    },
+    {
+      "code": "48779-3",
+      "name": "SPL INDEXING DATA ELEMENTS SECTION"
+    },
+    {
+      "code": "48780-1",
+      "name": "SPL PRODUCT DATA ELEMENTS SECTION"
+    },
+    {
+      "code": "42231-1",
+      "name": "SPL MEDGUIDE SECTION"
+    },
+    {
+      "code": "42230-3",
+      "name": "SPL PATIENT PACKAGE INSERT SECTION"
+    },
+    {
+      "code": "42229-5",
+      "name": "SPL UNCLASSIFIED SECTION"
+    },
+    {
+      "code": "69718-5",
+      "name": "STATEMENT OF IDENTITY SECTION"
+    },
+    {
+      "code": "44425-7",
+      "name": "STORAGE AND HANDLING SECTION"
+    },
+    {
+      "code": "60563-4",
+      "name": "SUMMARY OF SAFETY AND EFFECTIVENESS"
+    },
+    {
+      "code": "34077-8",
+      "name": "TERATOGENIC EFFECTS SECTION"
+    },
+    {
+      "code": "69762-3",
+      "name": "TROUBLESHOOTING"
+    },
+    {
+      "code": "43684-0",
+      "name": "USE IN SPECIFIC POPULATIONS SECTION"
+    },
+    {
+      "code": "54433-8",
+      "name": "USER SAFETY WARNINGS SECTION"
+    },
+    {
+      "code": "50745-9",
+      "name": "VETERINARY INDICATIONS SECTION"
+    },
+    {
+      "code": "43685-7",
+      "name": "WARNINGS AND PRECAUTIONS SECTION"
+    },
+    {
+      "code": "34071-1",
+      "name": "WARNINGS SECTION"
+    }
+  ]
+}

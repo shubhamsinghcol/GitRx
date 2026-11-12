@@ -18,9 +18,13 @@ instructions. See README.md, MCP.md and LIMITATIONS.md.
 ## Developing the project
 
 Inspect code and source records as needed to understand or debug behavior. The
-active native library/adapters live in `gitrx_backend`; archive/parser/export
-modules and service builders have separate roles. Keep CLI/MCP/browser behavior
-in shared queries rather than implementing different answers per interface.
+native library and CLI/MCP adapters live in `gitrx_backend`; the parser, change
+records, rebuild, SrLC grading and update jobs live in `gitrx_core`; `gitrx` and
+`gitrx_services` only back the offline fixture builder. There is no web front end.
+Keep CLI/MCP behavior in shared queries rather than implementing different answers
+per interface. The external data root is `GITRX_DATA_ROOT` (or git-ignored
+`runtime/local.json`); never hard-code machine paths. Legacy code removed on
+2026-11-11 is recoverable at git tag `codex-final` (docs/CLEANUP-2026-11-11.md).
 Use explicit configuration and pinned derived releases. Reads must not trigger
 collection, classification changes or release promotion.
 
@@ -41,7 +45,7 @@ The tranche1 59/60 and 60/60 scores were AI-graded, not human-reviewed; never ci
 them as validation (docs/VALIDATION-CORRECTION-2026-11-10.md).
 
 Current product priorities and owner constraints are in
-`docs/CORE-PRODUCT-ROADMAP.md`. Independent backups remain outside current scope;
+`docs/CORE-PRODUCT-ROADMAP.md`. Publication is pending (code on GitHub; evidence on Hugging Face with a Zenodo DOI, planned). Licensing: LICENSING.md. Independent backups remain outside current scope;
 the stopped restore drill is not completed. Implement shared backend behavior
 before extending the browser. Do not add infrastructure or new corpus scope
 without a demonstrated product need. No guide here authorizes publication,

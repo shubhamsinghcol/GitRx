@@ -53,7 +53,7 @@ date or complete historical absence. `--case-sensitive` changes literal matching
 
 Launch `./label-history-mcp` for the same shared tools over stdio. The installed
 entry point is `gitrx-native-mcp` after installing the updated package. For a local
-MCP client, the command is `/Users/shubham/Desktop/GitRx/label-history-mcp`; optional
+MCP client, the command is `/absolute/path/to/GitRx/label-history-mcp`; optional
 arguments `--backend sqlite` select that adapter. No separate server or index build
 is required. This server exposes resolve, families, versions, show, show_date,
 compare, first_observed, search, coverage and section_history across the expanded native release. The accepted
@@ -64,4 +64,4 @@ A captured real stdio session and examples are in
 
 
 For incremental updates and the new coverage/section-history commands, see
-[release cycles](RELEASE-CYCLES.md).
+[release cycles](history/2026-11-11/RELEASE-CYCLES.md).

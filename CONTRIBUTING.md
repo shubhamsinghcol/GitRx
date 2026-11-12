@@ -25,7 +25,7 @@ Route a correction to the layer that owns it:
   retain the prior rule/snapshot. Do not promote native source codes into stronger
   clinical claims without the necessary evidence and validation.
 - Annotations: keep them attributed and separate from source label text.
-- Clients: use shared queries so CLI, MCP and browser do not invent different
+- Clients: use shared queries so CLI and MCP do not invent different
   evidence answers for the same selection.
 
 ## Keep changes reviewable

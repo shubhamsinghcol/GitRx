@@ -7,8 +7,8 @@ grades or promotes a release. Plists in `ops/launchd/` are NOT installed by the 
 
 | Job | Module | Schedule | Data |
 | --- | --- | --- | --- |
-| DailyMed weekly | `gitrx_core.dailymed_update` | Sunday 03:00 | `/Volumes/Untitled/GitRx/updates/dailymed/` |
-| SrLC monthly | `gitrx_core.srlc_update` | day 2, 04:00 | `/Volumes/Untitled/GitRx/srlc/updates/` |
+| DailyMed weekly | `gitrx_core.dailymed_update` | Sunday 03:00 | `$GITRX_DATA_ROOT/updates/dailymed/` |
+| SrLC monthly | `gitrx_core.srlc_update` | day 2, 04:00 | `$GITRX_DATA_ROOT/srlc/updates/` |
 
 DailyMed: pages the official v2 listing (newest first) back to `watermark - 7 days`, treats a setid
 as changed if its listed version is not already held (immutable `evidence-v1.sqlite`, read-only, plus the
@@ -36,10 +36,10 @@ the heavy-job lock is held; a `gitrx_core.rebuild` process is running; a backoff
 or another instance of the same job holds its flock (`<job root>/job.lock`). Jobs run at `nice 10`.
 Any HTTP 403/429 stops the run at once and writes `BACKOFF-UNTIL` (24 h); later runs skip until it passes.
 
-- Heavy-job lock convention: a heavy job writes `/Volumes/Untitled/GitRx/HEAVY-JOB.lock` (first line its PID,
+- Heavy-job lock convention: a heavy job writes `$GITRX_DATA_ROOT/HEAVY-JOB.lock` (first line its PID,
   optional description) and removes it when done. A lock with a dead PID is ignored; one without a PID is
   honored. Updates also detect a running `gitrx_core.rebuild` process by command line.
-- Stop all updates: `touch /Volumes/Untitled/GitRx/updates/STOP` (a running job also stops at the next
+- Stop all updates: `touch $GITRX_DATA_ROOT/updates/STOP` (a running job also stops at the next
   item). Resume: remove that file. Uninstall: `launchctl bootout gui/$(id -u)/org.gitrx.<name>`.
 - Manual smoke/testing flags: `--smoke`, `--since-days N`, `--max-downloads N`, `--window FROM:TO`,
   `--run-cap N`, `--ignore-heavy` (never use `--ignore-heavy` unattended).
@@ -57,9 +57,15 @@ content before the holdout is unsealed by the owner.
 ## Install (owner, after the rebuild finishes)
 
     mkdir -p ~/Library/Logs/GitRx
-    cp ops/launchd/org.gitrx.dailymed-weekly.plist ops/launchd/org.gitrx.srlc-monthly.plist ~/Library/LaunchAgents/
-    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/org.gitrx.dailymed-weekly.plist
-    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/org.gitrx.srlc-monthly.plist
+    for n in dailymed-weekly srlc-monthly; do
+      sed -e "s|@GITRX_ROOT@|$PWD|g" -e "s|@HOME@|$HOME|g" ops/launchd/org.gitrx.$n.plist > ~/Library/LaunchAgents/org.gitrx.$n.plist
+      launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/org.gitrx.$n.plist
+    done
+
+The plists in `ops/launchd/` are templates (`@GITRX_ROOT@` = this checkout, `@HOME@`). The jobs find the data root
+from `GITRX_DATA_ROOT` or the git-ignored `runtime/local.json` (`{"data_root": "...", "volume_token": "..."}`);
+with a `volume_token` set they also require `<data_root>/.volume-identity` to contain it. Paths written as
+`$GITRX_DATA_ROOT` in this guide mean that directory.
 
 The first DailyMed run needs a watermark: run once by hand with `--since-days N` (or write
 `updates/dailymed/WATERMARK.json` as `{"watermark": "YYYY-MM-DD"}`) before enabling the schedule.

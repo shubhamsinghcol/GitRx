@@ -35,7 +35,8 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if REPO not in sys.path:
     sys.path.insert(0, REPO)
 
-SSD = "/Volumes/Untitled/GitRx"
+from gitrx_core import dataroot  # noqa: E402  (GITRX_DATA_ROOT or runtime/local.json)
+SSD = dataroot.DATA_ROOT
 SEED = 20261111
 PLAN_DOC = os.path.join(REPO, "docs", "AUTHORITATIVE-PARSER-PLAN.md")
 

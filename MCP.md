@@ -4,11 +4,11 @@ Use **`./label-history-mcp`** for the supported source-native label-history
 workflow. The installed equivalent is `gitrx-native-mcp --config FILE`.
 Both use `gitrx_backend.mcp` and the same query library as `label-history`.
 The default release is the Step E rebuild (158,955 families / 488,016 captured
-versions; snapshot `bbe9223a...`, config `runtime/native-config-rebuild-0.2.3.json`,
-external SSD required; a new `change_records` tool serves SrLC-style per-pair
-change records). The earlier 7,239-family / 51,357-version release remains
-selectable via `GITRX_CONFIG=runtime/native-config.json`. Every process remains pinned to its selected release until
-restart. `GITRX_CONFIG` can explicitly select a retained configuration.
+versions; snapshot `bbe9223a...`, config `runtime/native-config-rebuild-0.2.3.json`);
+it needs the external data root (`GITRX_DATA_ROOT`, see the [README](README.md#configuration)),
+and a `change_records` tool serves SrLC-style per-pair change records. Every process
+stays pinned to its release until restart; `GITRX_CONFIG` selects another configuration.
+Conservative section comparison, citations and uncertainty rules are in the linked guides.
 
 ## Connect to the native server
 
@@ -26,8 +26,8 @@ For a client supporting stdio MCP, adapt the command to your checkout:
 ```
 
 An installed client can instead run `gitrx-native-mcp` with `--config` and an
-absolute configuration path. Git remains selectable with `--backend git` and
-supplies commit citations. SQLite/payload reads are useful for broad scans;
+absolute configuration path. The rebuild backend is the default; `--backend git`/`sqlite` apply to
+fixture releases (for example from `gitrx-selftest`). SQLite/payload reads are useful for broad scans;
 [optional acceleration and limits](docs/QUERY-PERFORMANCE.md) are configured
 explicitly. No reading operation fetches source data or builds an index.
 
@@ -69,23 +69,11 @@ those are distinct from manually verifying every desktop client's UI. The local
 server is not a remotely hosted MCP transport. Consult the query-limits guide for
 execution/transport bounds and current cancellation limitations.
 
-## Separate interpreted pilot
+## Retired interpreted pilot
 
-`gitrx_services.mcp` retains five context-aware tools over the **accepted
-20-family / 587-version pilot** and its pinned query snapshot:
-`first_occurrence`, `section_first_present`, `show`, `diff`, and `coverage`.
-Named-section claims require eligible anchored context under frozen v1.0.1;
-unanchored inventories remain separate. Caller-supplied literal alternatives
-are not inferred synonyms.
-
-The [existing Claude Desktop guide](docs/MCP-CLAUDE-DESKTOP.md) describes this
-pilot configuration. Its coverage does not automatically become the expanded
-native release. The native `compare` uses the conservative section-diff-v2 pairing
-implementation; the pilot's interpreted diff and retained audit reports remain
-separate lanes.
-
-Native 0.7.0 adds [shared evidence metadata and complete wording histories](docs/EVIDENCE-HISTORY.md).
-
-Native 0.8.0 exposes release-pinned resources, an exact-occurrence resource template, and three research prompts. See [MCP discovery](docs/MCP-DISCOVERY.md).
-
-The stdio transport now supports [responsive pings and cancellation](docs/MCP-CANCELLATION.md). Match responses by request ID. [Change inspection](docs/CHANGE-INSPECTION.md) documents the two new tools.
+The earlier context-aware pilot MCP (`gitrx_services.mcp`, 20 families) was removed on
+2026-11-11; see [the cleanup record](docs/CLEANUP-2026-11-11.md). The tools above are the only
+MCP surface. Native 0.7.0 added [shared evidence metadata and complete wording histories](docs/EVIDENCE-HISTORY.md),
+0.8.0 [MCP discovery](docs/MCP-DISCOVERY.md), and the transport supports
+[responsive pings and cancellation](docs/MCP-CANCELLATION.md). [Change inspection](docs/CHANGE-INSPECTION.md)
+documents `version_changes` and `search_changes`.

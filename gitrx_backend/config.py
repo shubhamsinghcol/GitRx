@@ -1,4 +1,4 @@
-"""Versioned configuration; all data paths resolve relative to its location."""
+"""Versioned configuration; data paths resolve relative to its location; ${GITRX_DATA_ROOT} expands to the external data root."""
 import json
 from pathlib import Path
 from .readers import SQLiteReader, GitReader
@@ -10,7 +10,12 @@ def open_reader(config_path,backend=None):
     if ('search_index' in config)!=('search_index_sha256' in config):raise ValueError('Search projection requires both path and SHA-256')
     if ('evidence_metadata' in config)!=('evidence_metadata_sha256' in config):raise ValueError('Evidence metadata requires both path and SHA-256')
     backend=backend or config.get('backend','sqlite')
-    def data(name):return (path.parent/config[name]).resolve()
+    def data(name):
+        value=str(config[name])
+        if '${GITRX_DATA_ROOT}' in value:
+            from gitrx_core.dataroot import require
+            value=value.replace('${GITRX_DATA_ROOT}',require())
+        return (path.parent/value).resolve()
     if backend=='rebuild' or config.get('backend')=='rebuild':
         if backend!='rebuild':raise ValueError('This configuration pins a rebuild release; backend override is not allowed')
         for key in ('rebuild_root','rebuild_complete_sha256','names_index','names_index_sha256'):
