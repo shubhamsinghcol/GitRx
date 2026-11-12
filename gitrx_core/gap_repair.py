@@ -173,13 +173,14 @@ def measure(inv):
     )
 
 
-def draw_sample(inv, seed, per_stratum):
-    """Seeded stratified sample of implied-missing versions: {stratum: [(setid, version), ...]}."""
+def draw_sample(inv, seed, per_stratum, exclude=frozenset()):
+    """Seeded stratified sample of implied-missing versions: {stratum: [(setid, version), ...]}.
+    exclude: (setid, version) pairs already probed; they are removed from the pools before drawing."""
     below, internal = missing_versions(inv["captured"])
     cap = inv["captured"]
     pools = collections.defaultdict(list)
     for s, v in below + internal:
-        if s.startswith(SYNTHETIC_PREFIX):
+        if s.startswith(SYNTHETIC_PREFIX) or (s, v) in exclude:
             continue
         pools[stratum_of(s, v, cap)].append((s, v))
     out = {}
@@ -351,9 +352,11 @@ def main(argv=None):
     ap.add_argument("--sample", default="below_v1_other=70,internal_gap=70,below_v1_start100=60")
     ap.add_argument("--controls", type=int, default=20)
     ap.add_argument("--max-requests", type=int, default=HARD_CAP)
+    ap.add_argument("--skip-retries", action="store_true", help="omit the retry-unavailable targets")
+    ap.add_argument("--rebuild", default=REBUILD, help="rebuild dir that defines the captured versions (read-only)")
     ap.add_argument("--prior-requests", type=int, default=0, help="requests already spent today against the cap")
     a = ap.parse_args(argv)
-    inv = load_inventory()
+    inv = load_inventory(rebuild=a.rebuild)
     if a.command == "measure":
         print(json.dumps(measure(inv), indent=1, sort_keys=True))
         return 0
@@ -364,18 +367,20 @@ def main(argv=None):
         os.nice(10)
     except OSError:
         pass
-    per = {k: int(v) for k, v in (x.split("=") for x in a.sample.split(","))}
-    sample, pools = draw_sample(inv, a.seed, per)
-    targets = [(s, v, "retry_unavailable", "no_raw") for s, v in inv["no_raw"] if not s.startswith(SYNTHETIC_PREFIX)]
-    targets += [(s, v, "control_held", "held") for s, v in draw_controls(inv, a.seed, a.controls)]
-    for name in sorted(sample):
-        targets += [(s, v, "missing_sample", name) for s, v in sample[name]]
     root = Path(a.root)
     done_before = set()
     if (root / "gap-repair.sqlite").exists():     # resumable: never re-request an already attempted (setid, version, kind)
         d = sqlite3.connect(f"file:{root / 'gap-repair.sqlite'}?mode=ro", uri=True)
         done_before = {(s, v, k) for s, v, k in d.execute("SELECT setid, version, kind FROM attempts")}
         d.close()
+    per = {k: int(v) for k, v in (x.split("=") for x in a.sample.split(","))}
+    probed = {(s, v) for s, v, k in done_before if k == "missing_sample"}
+    sample, pools = draw_sample(inv, a.seed, per, exclude=probed)
+    targets = [] if a.skip_retries else [
+        (s, v, "retry_unavailable", "no_raw") for s, v in inv["no_raw"] if not s.startswith(SYNTHETIC_PREFIX)]
+    targets += [(s, v, "control_held", "held") for s, v in draw_controls(inv, a.seed, a.controls)] if a.controls else []
+    for name in sorted(sample):
+        targets += [(s, v, "missing_sample", name) for s, v in sample[name]]
     targets = [t for t in targets if (t[0], t[1], t[2]) not in done_before]
     try:
         uc.preflight(heavy_lock=uc.HEAVY_LOCK, backoff_file=root / "BACKOFF-UNTIL")

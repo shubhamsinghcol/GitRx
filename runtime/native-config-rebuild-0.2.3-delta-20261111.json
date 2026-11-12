@@ -1,0 +1,21 @@
+{
+  "format": "gitrx-backend-config-1",
+  "backend": "rebuild",
+  "snapshot": "69db2791bad3ca2dca4d211bc738603700fe3b5d7dda49da71f85988e78c4c2a",
+  "rebuild_root": "/Volumes/Untitled/GitRx/rebuild/spl-sections-0.2.3__srlc-changes-0.3.2__delta-20261111",
+  "rebuild_complete_sha256": "69db2791bad3ca2dca4d211bc738603700fe3b5d7dda49da71f85988e78c4c2a",
+  "names_index": "/Volumes/Untitled/GitRx/rebuild/spl-sections-0.2.3__srlc-changes-0.3.2__delta-20261111/index/names.sqlite",
+  "names_index_sha256": "153661d511bf747d1252699d1b50b3295afd2bc34d99046e258df6314143d083",
+  "verify_shards": "sha256",
+  "release_notes": {
+    "scope": "158,955 families / 488,016 captured versions rebuilt deterministically from retained raw SPL ZIPs (Step E plus a delta of 26 admitted versions). 56 versions have no retained raw (status no_raw) and carry no text. 26 further versions have retained raw but the frozen parser cannot read them (status extraction_defect, XML nesting deeper than 256 levels): they carry no sections or text and are not compared. Not a national completeness claim; upstream history beyond the evidence inventory is unknown.",
+    "validation": {
+      "freeze_2_sealed": "Parser text 98.30%, section 99.64%; the uncoded-box rule is recorded as 'seen' (not held out) for that sealed result.",
+      "independent_holdout": "pending",
+      "caution": "Earlier tranche1 59/60 and 60/60 scores were AI-graded, not human-reviewed, and are not validation. No independent clinical validation exists."
+    },
+    "replaces": "Step E rebuild spl-sections-0.2.3__srlc-changes-0.3.2 (COMPLETE bbe9223a91eb3a663501d00dea854a5f81a2192c930f015597a5b3b2b9a6869c, 82 no_raw); selectable with GITRX_CONFIG=runtime/native-config-rebuild-0.2.3.json while retained. Earlier: release1 via runtime/native-config.json.",
+    "dates": "DailyMed publication dates and SPL effective dates are not FDA approval dates.",
+    "delta": "Inventory = evidence-v1 (sha256 823a5bc6...ac3c6, unchanged) + delta evidence-delta-20261111.sqlite (sha256 b1d65eaf...f454b0) admitting 26 byte-identical bodies that were ledgered but left pending. 237 of 256 shards copied byte-for-byte from the Step E rebuild (COMPLETE bbe9223a...a6869c); 19 recomputed; row differences are confined to the 21 affected families."
+  }
+}

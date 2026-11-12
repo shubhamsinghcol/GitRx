@@ -495,9 +495,43 @@ def select_setids(inventory, pilot=None):
     return ids
 
 
+def reuse_base(base_root, recompute_setids):
+    """Describe an existing finished rebuild whose shards may be copied verbatim (delta builds).
+    -> {"root", "complete", "complete_sha256", "recompute_setids"}; shards holding a recompute setid are rebuilt."""
+    raw = open(os.path.join(base_root, "COMPLETE.json"), "rb").read()
+    return {"root": base_root, "complete": json.loads(raw), "complete_sha256": hashlib.sha256(raw).hexdigest(),
+            "recompute_setids": set(recompute_setids)}
+
+
+def _reuse_shard(base, shard, n_setids, shards_dir):
+    """Copy a base shard and its sidecar unchanged into shards_dir (sha256-verified against the base manifest)."""
+    info = base["complete"]["shards"][shard]
+    src = os.path.join(base["root"], "shards", shard + ".sqlite")
+    if os.path.getsize(src) != info["bytes"]:
+        raise RuntimeError("base shard %s size differs from its COMPLETE.json" % shard)
+    con = open_ro(src)
+    try:
+        have = con.execute("SELECT count(*) FROM families").fetchone()[0]
+    finally:
+        con.close()
+    if have != n_setids:
+        raise RuntimeError("base shard %s has %d families but the delta inventory has %d" % (shard, have, n_setids))
+    final = os.path.join(shards_dir, shard + ".sqlite")
+    copy_verified(src, final, info["sha256"])
+    side = json.load(open(os.path.join(base["root"], "shards", shard + ".done.json"), encoding="utf-8"))
+    if side.get("sha256") != info["sha256"]:
+        raise RuntimeError("base sidecar for shard %s disagrees with its COMPLETE.json" % shard)
+    side["reused_from_complete_sha256"] = base["complete_sha256"]
+    atomic_write(done_sidecar(shards_dir, shard), json.dumps(side, indent=1, sort_keys=True) + "\n")
+    return side
+
+
 def run(out_dir, inventory, resolve, *, scratch_dir, inputs=None, workers=4, pilot=None, pause=0.0,
-        require_dir=None, max_raw_failures=3, max_shards=None, expected_frozen=None, log=print, family_hook=None, config_extra=None):
-    """inventory: {setid: [{"version","sha","member","states","pub","eff"}]}; resolve(shas)->{sha:[paths]}."""
+        require_dir=None, max_raw_failures=3, max_shards=None, expected_frozen=None, log=print, family_hook=None,
+        config_extra=None, reuse_from=None, only_shards=None):
+    """inventory: {setid: [{"version","sha","member","states","pub","eff"}]}; resolve(shas)->{sha:[paths]}.
+    reuse_from (see reuse_base): shards without a recompute setid are copied byte-for-byte from that finished build.
+    only_shards: build just these shard ids and return None (verification builds; never finalized)."""
     code = check_frozen(expected_frozen)
     check_ssd(require_dir)
     shards_dir = os.path.join(out_dir, "shards")
@@ -560,11 +594,20 @@ def run(out_dir, inventory, resolve, *, scratch_dir, inputs=None, workers=4, pil
             if shard_done(shards_dir, shard):
                 done_n += 1
                 continue
+            if only_shards is not None and shard not in only_shards:
+                continue
             if max_shards is not None and built >= max_shards:
                 break
             check_ssd(require_dir)
             t0 = time.time()
             sids = by_shard[shard]
+            if reuse_from and not any(s in reuse_from["recompute_setids"] for s in sids):
+                side = _reuse_shard(reuse_from, shard, len(sids), shards_dir)
+                done_n += 1
+                event(ev="shard_reused", shard=shard, setids=len(sids), bytes=side["bytes"],
+                      seconds=round(time.time() - t0, 1))
+                log("shard %s reused (%d/%d) %.1f MB" % (shard, done_n, len(shard_list), side["bytes"] / 1e6))
+                continue
             shas = sorted({r["sha"] for s in sids for r in inventory[s] if r.get("sha")})
             cand = resolve(shas)
             tasks = [(s, [{**r, "candidates": cand.get(r.get("sha"), [])} for r in inventory[s]]) for s in sids]
@@ -606,6 +649,9 @@ def run(out_dir, inventory, resolve, *, scratch_dir, inputs=None, workers=4, pil
         if pool:
             pool.terminate()
             pool.join()
+    if only_shards is not None:
+        event(ev="only_shards_done", shards=sorted(only_shards))
+        return None
     remaining = [s for s in shard_list if not shard_done(shards_dir, s)]
     if remaining:
         event(ev="stopped_incomplete", remaining=len(remaining))
@@ -630,6 +676,8 @@ def finalize(out_dir, shard_list, config, setids):
         if sha != side["sha256"] or os.path.getsize(fp) != side["bytes"]:
             raise RuntimeError("shard %s does not match its sidecar" % s)
         per[s] = {"sha256": sha, "bytes": side["bytes"], "rebuild_py_sha256": side.get("rebuild_py_sha256")}
+        if side.get("reused_from_complete_sha256"):
+            per[s]["reused_from_complete_sha256"] = side["reused_from_complete_sha256"]
         totals.update(side["stats"])
         totals["bytes"] += side["bytes"]
     totals["setids"] = len(setids)
@@ -650,8 +698,28 @@ def open_ro(path):
     return sqlite3.connect("file:%s?mode=ro&immutable=1" % path, uri=True)
 
 
-def load_inventory(evidence_path):
-    """Every (setid, version) in evidence versions; the downloaded row (with raw sha256) wins over other states."""
+DELTA_FORMAT = "gitrx-evidence-delta-1"
+DELTA_STATE = "delta-admitted"
+
+
+def delta_admissions(delta_path):
+    """[(setid, version, raw_sha256, xml_member, effective_date)] from a delta evidence database (read-only)."""
+    con = open_ro(delta_path)
+    try:
+        fmt = dict(con.execute("SELECT k, v FROM delta_meta")).get("format")
+        if fmt != DELTA_FORMAT:
+            raise ValueError("unsupported delta evidence format %r" % (fmt,))
+        return [(s, int(v), sha, mem, eff) for s, v, sha, mem, eff in con.execute(
+            "SELECT setid, version, raw_sha256, xml_member, effective_date FROM admissions ORDER BY setid, version")]
+    finally:
+        con.close()
+
+
+def load_inventory(evidence_path, delta_path=None):
+    """Every (setid, version) in evidence versions; the downloaded row (with raw sha256) wins over other states.
+    delta_path (optional): admissions from an append-only delta evidence database are applied on top.  An admission
+    must name an inventory version that has no raw artifact (or the identical one); the evidence database itself is
+    never modified.  Without delta_path the result is exactly the evidence-only inventory."""
     con = open_ro(evidence_path)
     pub = {}
     for s, v, d in con.execute("SELECT setid, version, published_date FROM history_entries ORDER BY id"):
@@ -667,6 +735,16 @@ def load_inventory(evidence_path):
         if eff and not e["eff"]:
             e["eff"] = eff
     con.close()
+    for s, v, sha, mem, eff in (delta_admissions(delta_path) if delta_path else ()):
+        e = inv.get(s, {}).get(v)
+        if e is None:
+            raise ValueError("delta admission %s v%s is not in the evidence inventory" % (s, v))
+        if e["sha"] and e["sha"] != sha:
+            raise ValueError("delta admission %s v%s conflicts with the evidence raw artifact" % (s, v))
+        e["states"].add(DELTA_STATE)
+        e["sha"], e["member"] = sha, mem
+        if eff and not e["eff"]:
+            e["eff"] = eff
     out = {}
     for s, vs in inv.items():
         out[s] = [{**e, "states": "+".join(sorted(e["states"]))} for _, e in sorted(vs.items())]
@@ -721,6 +799,11 @@ def main(argv=None):
     ap.add_argument("--max-shards", type=int, default=None)
     ap.add_argument("--no-ssd-check", action="store_true")
     ap.add_argument("--skip-evidence-hash", action="store_true")
+    ap.add_argument("--delta", default=None, help="delta evidence database (admissions applied on top of --evidence)")
+    ap.add_argument("--delta-sha256", default=None, help="expected sha256 of --delta (required with --delta)")
+    ap.add_argument("--reuse-from", default=None,
+                    help="finished rebuild dir; shards without a delta-affected setid are copied byte-for-byte")
+    ap.add_argument("--only-shards", default=None, help="comma list: build just these shards (verification builds)")
     a = ap.parse_args(argv)
     if a.workers > 4:
         sys.exit("at most 4 workers (SSD care)")
@@ -740,12 +823,28 @@ def main(argv=None):
             print("warning: no expected evidence sha256 available", flush=True)
         inputs["evidence_sha256"] = got
     inputs["raw_manifest_bytes"] = os.path.getsize(a.raw_manifest)
-    inv = load_inventory(a.evidence)
+    config_extra, reuse = None, None
+    if a.delta:
+        if not a.delta_sha256:
+            sys.exit("--delta requires --delta-sha256")
+        got = sha256_file(a.delta)
+        if got != a.delta_sha256:
+            sys.exit("delta database sha256 %s != expected %s" % (got, a.delta_sha256))
+        inputs["delta_path"], inputs["delta_sha256"] = a.delta, got
+    inv = load_inventory(a.evidence, a.delta)
+    if a.reuse_from:
+        if not a.delta:
+            sys.exit("--reuse-from is only for delta builds")
+        reuse = reuse_base(a.reuse_from, {s for s, *_ in delta_admissions(a.delta)})
+        config_extra = {"reuse_from": {"complete_sha256": reuse["complete_sha256"], "root": a.reuse_from,
+                                       "recomputed_setids": sorted(reuse["recompute_setids"])}}
     print("inventory: %d families, %d versions" % (len(inv), sum(len(v) for v in inv.values())), flush=True)
     os.makedirs(a.out, exist_ok=True)
     manifest = run(a.out, inv, manifest_resolver(a.raw_manifest), scratch_dir=a.scratch, inputs=inputs,
                    workers=a.workers, pilot=(a.pilot_fraction, a.seed) if a.pilot_fraction else None, pause=a.pause,
-                   require_dir=require, max_shards=a.max_shards, log=lambda m: print(m, flush=True))
+                   require_dir=require, max_shards=a.max_shards, log=lambda m: print(m, flush=True),
+                   config_extra=config_extra, reuse_from=reuse,
+                   only_shards=set(a.only_shards.split(",")) if a.only_shards else None)
     if not a.skip_evidence_hash and manifest is not None:
         after = sha256_file(a.evidence)
         print("evidence sha256 after run %s %s" % (after, "UNCHANGED" if after == inputs["evidence_sha256"] else "CHANGED"),

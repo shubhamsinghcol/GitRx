@@ -30,8 +30,8 @@ def all_shards(out):
     return sorted(glob.glob(os.path.join(out, "shards", "*.sqlite")))
 
 
-def check_a(out, evidence, sweep, sweep_index):
-    inv = R.load_inventory(evidence)
+def check_a(out, evidence, sweep, sweep_index, delta=None):
+    inv = R.load_inventory(evidence, delta)
     want = {(s, r["version"]) for s, rs in inv.items() for r in rs}
     have, status, by_sha = set(), collections.Counter(), {}
     nostatus = 0
@@ -94,14 +94,32 @@ def rederive(out, resolve, setid, va, vb):
     return (rec["record_sha256"] == stored and C.record_hash(full) == stored), None
 
 
-def check_b(out, resolve, n, seed):
+def delta_pairs(out, delta):
+    """Pairs (any comparison) in the build that have an admitted delta version as an endpoint."""
+    adm = collections.defaultdict(set)
+    for s, v, *_ in R.delta_admissions(delta):
+        adm[s].add(v)
+    res = []
+    for s in sorted(adm):
+        con = shard_con(out, s)
+        for a, b in con.execute("SELECT from_version, to_version FROM pairs WHERE setid=? AND record_sha256 IS NOT NULL "
+                                "ORDER BY from_version, to_version", (s,)):
+            if a in adm[s] or b in adm[s]:
+                res.append((s, a, b))
+        con.close()
+    return res
+
+
+def check_b(out, resolve, n, seed, must_include=()):
     pairs = []
     for fp in all_shards(out):
         con = sqlite3.connect("file:%s?mode=ro&immutable=1" % fp, uri=True)
         pairs += list(con.execute("SELECT setid, from_version, to_version FROM pairs WHERE record_sha256 IS NOT NULL"))
         con.close()
     pairs.sort()
-    sample = random.Random(seed).sample(pairs, min(n, len(pairs)))
+    forced = sorted(set(must_include))
+    rest = [p for p in pairs if p not in set(forced)]
+    sample = forced + random.Random(seed).sample(rest, max(0, min(n - len(forced), len(rest))))
     ok, bad = 0, []
     for s, a, b in sample:
         good, err = rederive(out, resolve, s, a, b)
@@ -109,7 +127,7 @@ def check_b(out, resolve, n, seed):
             ok += 1
         else:
             bad.append([s, a, b, err])
-    return {"pairs_with_records": len(pairs), "sampled": len(sample), "identical": ok, "mismatches": bad}
+    return {"pairs_with_records": len(pairs), "sampled": len(sample), "forced_included": len(forced), "identical": ok, "mismatches": bad}
 
 
 def check_c(out, rows_path, cache_dir, n, seed):
@@ -161,7 +179,8 @@ def main(argv=None):
     ap.add_argument("--out", default=R.DEFAULT_OUT)
     ap.add_argument("--evidence", default=R.DEFAULT_EVIDENCE)
     ap.add_argument("--raw-manifest", default=R.DEFAULT_MANIFEST)
-    ap.add_argument("--sweep", required=True)
+    ap.add_argument("--sweep", default=None)
+    ap.add_argument("--delta", default=None, help="delta evidence db: inventory = evidence + delta; all its pairs are sampled")
     ap.add_argument("--rows", default=None)
     ap.add_argument("--cache", default="/Volumes/Untitled/GitRx/srlc/grading/cache/pairs")
     ap.add_argument("--seed", type=int, default=20261111)
@@ -172,10 +191,13 @@ def main(argv=None):
     os.nice(10)
     out = {}
     if not a.skip_a:
-        out["a"] = check_a(a.out, a.evidence, a.sweep, None)
+        if not a.sweep:
+            ap.error("--sweep is required unless --skip-a")
+        out["a"] = check_a(a.out, a.evidence, a.sweep, None, a.delta)
         print(json.dumps({"a": out["a"]}, indent=1, sort_keys=True), flush=True)
     resolve = R.manifest_resolver(a.raw_manifest)
-    out["b"] = check_b(a.out, resolve, a.n_b, a.seed)
+    forced = delta_pairs(a.out, a.delta) if a.delta else ()
+    out["b"] = check_b(a.out, resolve, a.n_b, a.seed, forced)
     print(json.dumps({"b": out["b"]}, indent=1, sort_keys=True), flush=True)
     if a.rows:
         out["c"] = check_c(a.out, a.rows, a.cache, a.n_c, a.seed)

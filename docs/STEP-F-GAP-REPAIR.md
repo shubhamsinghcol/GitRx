@@ -1,9 +1,12 @@
 # Step F: gap repair (measurement, plan, cheap probe)
 
 Written 2026-11-11. Owner-approved scope: unavailable versions, NALTREXONE history,
-families whose captured history starts after version 1. Collection only: nothing was
-parsed, rebuilt, promoted or deleted. `evidence-v1.sqlite` (sha256 823a5bc6...ac3c6) and the
-rebuild shards were opened read-only. Unrecoverable items remain explicitly unknown.
+families whose captured history starts after version 1. Sections 1-5 are the collection-only
+measurement and probe: nothing was parsed, rebuilt, promoted or deleted, and `evidence-v1.sqlite`
+(sha256 823a5bc6...ac3c6) and the rebuild shards were opened read-only. Section 6 records the follow-up
+the owner approved the same day (delta admission of the 26 held bodies and a partial rebuild); section 7
+records the 1,000-request tightening probe that replaced the full recovery run. Unrecoverable items remain
+explicitly unknown.
 
 Code: `gitrx_core/gap_repair.py` (tests `tests/test_core_gap_repair.py`, mocked HTTP; all
 `tests/test_core_*.py` pass, 283). Observations: `/Volumes/Untitled/GitRx/updates/gap-repair/gap-repair.sqlite`
@@ -135,7 +138,7 @@ Target: every implied-missing integer, 429,282 (368,094 below + 61,188 internal;
   Higher-value targets: the 55 listing-only 404s (already tried twice; re-check once per quarter at most) and, if
   the owner wants, a single re-check of the NALTREXONE history after a month.
 
-## 5. What a delta rebuild needs (not done)
+## 5. What a delta rebuild needs (done in section 6)
 1. Admit the 26 byte-identical Nov 9 bodies as new version rows (state downloaded) in a new delta
    evidence database; their sha256 are in `gap-repair.sqlite` (`attempts` where `outcome='recovered_new'`)
    and in `backfill-20261107/network/bodies/`. Evidence-v1 stays unchanged.
@@ -148,3 +151,95 @@ Target: every implied-missing integer, 429,282 (368,094 below + 61,188 internal;
    additional 404s); keep the implied-missing integers as "not in DailyMed history", never as versions.
 5. The weekly update job's deltas (`updates/dailymed`) are a separate input and should be merged in the
    same delta build if the owner wants currency; no promotion happens automatically.
+
+## 6. Delta admission and partial rebuild (done 2026-11-11, owner-approved)
+
+Nothing was downloaded for this step. `evidence-v1.sqlite` (sha256 823a5bc6...ac3c6, re-hashed after the build:
+unchanged) and the Step E rebuild (COMPLETE sha256 bbe9223a...a6869c, re-hashed: unchanged) were only read.
+
+**Delta evidence.** `/Volumes/Untitled/GitRx/evidence/evidence-delta-20261111.sqlite` (sha256
+`b1d65eaf6497e7428194593b1d6e23abc4c3b628c9a027a1f382635cebf454b0`; hash and per-row re-derivation in
+`evidence/VERIFY-delta-20261111.json`) holds 26 `admissions` rows in 21 setids. Each row records setid, version,
+raw sha256, bytes, XML member, effective date (XML `effectiveTime`, the same convention as evidence-v1), the body path
+under `backfill-20261107/network/bodies/`, the evidence-v1 `pending` version row id and history publication date, every
+evidence-v1 `http_requests` row with that sha256 (id, url, time, status), the backfill ledger request where one exists
+(2 rows), and the gap-repair re-fetch (attempt id, run id, ledger request id, time, equal sha256, XML identity
+check). Reason: "byte-identical body ledgered but not admitted". Triggers refuse UPDATE/DELETE. The ledgered
+requests are dated 2026-11-08 to 2026-11-09 (UTC); the re-fetches 2026-11-11 23:14-23:16 UTC. Code: `gitrx_core/rebuild_delta.py`
+(`create`, `verify`, `prove`); inventory source: `rebuild.load_inventory(evidence, delta_path)` (default `None` keeps the
+old behaviour).
+
+**Partial rebuild.** `/Volumes/Untitled/GitRx/rebuild/spl-sections-0.2.3__srlc-changes-0.3.2__delta-20261111/`
+(COMPLETE sha256 `69db2791bad3ca2dca4d211bc738603700fe3b5d7dda49da71f85988e78c4c2a`; names index
+`153661d511bf747d1252699d1b50b3295afd2bc34d99046e258df6314143d083`, families table identical to the old one, only its
+`complete_sha256` meta differs). Built with the frozen modules (all four sha256 unchanged, check passed) through
+`gitrx_core.rebuild --delta ... --reuse-from <old build>`; `rebuild.py` gained backwards-compatible `delta_path`,
+`reuse_from` (copy shards without a delta setid, sha256-verified against the old COMPLETE, sidecar kept verbatim plus a
+`reused_from_complete_sha256` note) and `only_shards` (verification builds), new sha256
+`faf6b44bbbe40468067a37c99d4760c56e5921fdad2321e4e659078071fea319` (old `8593d840...417f`); tests in
+`tests/test_core_rebuild_delta.py` (reuse + recompute equals a from-scratch build of the same inventory).
+
+Proof (`DELTA-PROOF.json` in the build dir, `rebuild_delta prove`, ok = true):
+- 237 of 256 shards are byte-identical to the old build (re-hashed both sides); 19 shards were recomputed
+  (01 07 0d 0e 1e 25 2a 2d 2e 31 48 61 6d 8a 94 9a a2 e3 e9).
+- Row-level diff of the 19 shards against the old ones (all tables, EXCEPT both directions): differences exist only in
+  the 21 affected families; no other family changed; no text was lost; 0 new texts.
+- Determinism: the 19 affected shards were built a second time from scratch into a separate directory; all 19 are
+  byte-identical to the first build.
+- Inventory coverage: evidence + delta = 488,016 (setid, version) = the rebuild rows; raw sha256 equal for every row.
+- Validation sample (`DELTA-VALIDATION-SAMPLE.json`, `rebuild_validate --delta`): 50 pair records re-derived from raw
+  with the frozen `compare_docs`, including all 21 new/recomputed pairs of the affected families; 50/50 record hashes
+  identical.
+- `tests/test_core_*.py` and `tests/test_rebuild_reader.py`: 327 passed.
+
+**Result: the 26 now have rows, but not parsed text.** All 26 admitted bodies are intact ZIPs with matching setId/version, and
+all 26 end up as status `extraction_defect` (reason `xml_error`): the frozen parser's XML read rejects them with "Excessive
+depth in document: 256, use XML_PARSE_HUGE option" (lxml parses all 26 with `huge_tree=True`). That is a limit of the frozen
+parser (spl-sections-0.2.3), not a defect in the bytes; the modules stay frozen, so the 26 carry no sections or text and are
+not compared with their neighbours (their 21 pairs are recorded as `not_comparable`, reasons `from_status:/to_status:
+extraction_defect`, never invented as changes). Reading them needs a new, versioned parser build, which was not done.
+
+| Count | Step E | Delta build |
+|---|---|---|
+| versions | 488,016 | 488,016 |
+| `no_raw` (no retained raw) | 82 | **56** (55 listing-only 404s + the synthetic fixture version) |
+| `extraction_defect` | 0 | 26 |
+| pairs | 328,985 | 329,005 (+21 new, -1 replaced: one old pair spanned an admitted version) |
+| change records | 1,493,012 | 1,493,011 |
+| `not_comparable` pairs | 7 | 28 |
+
+`describe-release` reports `versions_without_raw: 56` (it is derived from the release's status counts); the release
+notes in `runtime/native-config-rebuild-0.2.3-delta-20261111.json` say so, and that config is now the default of
+`label-history` and `label-history-mcp`. The old config `runtime/native-config-rebuild-0.2.3.json` still selects the Step E
+release (82). Weekly-update deltas were not merged.
+
+## 7. Tightened gap estimate (1,000 more probes, 2026-11-12 02:16-02:49 UTC)
+
+Run `20261112T021604Z` of the same `gap_repair probe`: seed 20261112, stratified (350 below-v1-other, 300 below-v1
+from families starting at 100, 350 internal gap), drawn from the implied-missing pools after removing the 200 targets of
+the first sample (no target probed twice; pools 81,023 / 286,941 / 61,117), no retries or controls. One lane,
+nice 10, 2.0 s per request, guarded by `preflight` (SSD identity, STOP, HEAVY-JOB.lock, backoff), stop on 403/429.
+1,000 requests, 12.4 MB, status 404 for all 1,000, no 403/429. Total requests today 1,414 of the 1,500 cap
+(414 earlier). Rows are in `updates/gap-repair/gap-repair.sqlite` (`attempts`, kind `missing_sample`); summary in
+`updates/gap-repair/SUMMARY-missing-sample-20261112.json`. Code change: `draw_sample(exclude=)`, `--skip-retries`,
+`--rebuild`.
+
+| Sample (Wilson 95%) | n | Recovered | Upper bound |
+|---|---|---|---|
+| First 200 (section 3) | 200 | 0 | 1.88% |
+| New 1,000 | 1,000 | 0 | 0.38% |
+| **Pooled, all missing-version probes** | **1,200** | **0** | **0.32%** (about 1,370 of 429,282) |
+| below-v1, families starting >1 (not 100) | 420 | 0 | 0.91% |
+| below-v1, families starting at 100 | 360 | 0 | 1.06% |
+| internal gap | 420 | 0 | 0.91% |
+
+The pooled row is unweighted and under-represents the start-100 stratum (30% of draws, 67% of the pool). Reweighting by
+pool size with zero hits keeps the point estimate at 0; the conservative ceiling (pool size x per-stratum upper bound,
+summed; not a joint 95% bound) is 1.0%, about 4,300 versions, almost all in the start-100 stratum.
+
+Recommendation: do not run the ~429k-request full recovery. 0 of 1,200 sampled implied-missing integers exist at
+DailyMed, which agrees with section 1: none of them is in DailyMed's own history. If a residual doubt about the start-100
+families matters, a further 500 probes of that stratum alone (about 17 minutes) would lower its bound to about 0.5%; it is not
+needed for any current product path. Keep the 55 listing-only 404s and the NALTREXONE history as unknown (re-check at most
+quarterly). A better use of effort is the 26 parser-unreadable versions above, which are in hand and need only a new
+versioned parser (large-depth XML), not more collection.

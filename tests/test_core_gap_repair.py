@@ -65,6 +65,11 @@ class T(unittest.TestCase):
         self.assertEqual(s1, s2)
         self.assertEqual(pools["below_v1_start100"], 99)
         self.assertEqual(len(s1["below_v1_start100"]), 5)
+        done = set(s1["below_v1_start100"])
+        s3, pools3 = gr.draw_sample(inv, 8, {"below_v1_start100": 94}, exclude=done)
+        self.assertEqual(pools3["below_v1_start100"], 99 - 5)
+        self.assertFalse(done & set(s3["below_v1_start100"]))      # a later draw never repeats a probed target
+        self.assertEqual(len(s3["below_v1_start100"]), 94)
 
     def test_probe_outcomes_and_append_only(self):
         with tempfile.TemporaryDirectory() as d:
