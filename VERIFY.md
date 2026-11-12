@@ -54,7 +54,7 @@ deletion record (they are derived and rebuildable). Anything that needs them reb
 ## 2. One command
 
 ```sh
-cd /Users/shubham/Desktop/GitRx           # a checkout at the frozen commit with its .venv (needs lxml)
+cd /path/to/GitRx           # a checkout at the frozen commit with its .venv (needs lxml)
 .venv/bin/python tools/verify_gitrx.py quick                   # minutes; read-only
 .venv/bin/python tools/verify_gitrx.py quick --out /some/new/dir   # also saves verify-quick.json
 .venv/bin/python tools/verify_gitrx.py full --out /some/new/dir    # hours; re-runs open-split grading
@@ -116,7 +116,7 @@ verify one without the tool:
 
 ```python
 import hashlib, os, sqlite3, sys
-sys.path.insert(0, "/Users/shubham/Desktop/GitRx")          # the repo checkout (frozen modules; needs lxml)
+sys.path.insert(0, "/path/to/GitRx")          # the repo checkout (frozen modules; needs lxml)
 from gitrx_core import changes, rebuild, spl_parser
 
 SSD = "/Volumes/Untitled/GitRx"
@@ -239,7 +239,7 @@ Full breakdown (per group, timing-robust, formatting share, reference_only count
 digests, which have to be rebuilt from raw ZIPs (about 30-60 minutes with 3 workers, 10,272 pairs):
 
 ```sh
-cd /Users/shubham/Desktop/GitRx
+cd /path/to/GitRx
 nice -n 10 .venv/bin/python -m gitrx_core.srlc_precision \
   --grading-dir /Volumes/Untitled/GitRx/srlc/grading/open-spl-sections-0.2.3-srlc-changes-0.3.2-h0.3.2-either \
   --out /some/new/dir        # writes precision.json, records.jsonl (every scored unit), report.txt, cache/

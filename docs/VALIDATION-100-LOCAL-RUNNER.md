@@ -68,7 +68,7 @@ The import command validates and writes a NEW plan; it does not run queries:
 
 ## Commands for later — not executed during implementation
 
-From `/Users/shubham/Desktop/GitRx`, freeze the sample:
+From the repository root, freeze the sample:
 
 ```sh
 .venv/bin/python -m gitrx_backend.validation_study freeze \
