@@ -21,7 +21,8 @@ def call(server,method,params=None):
     return server.dispatch({'jsonrpc':'2.0','id':4,'method':method,'params':params or {}})
 
 
-def test_description_is_cheap_and_shared(release,monkeypatch):
+def test_description_is_cheap_and_shared(release,monkeypatch,tmp_path):
+    monkeypatch.setenv('GITRX_DATA_ROOT',str(tmp_path/'absent'))   # hermetic: update state reads as unknown
     with open_reader(release,'sqlite') as reader:
         s=ready(reader)
         def forbidden(*args):raise AssertionError('Discovery must not read label payloads')

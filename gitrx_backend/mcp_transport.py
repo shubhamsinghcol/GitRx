@@ -24,7 +24,7 @@ class QueryCancelled(BaseException):
 def freeze_config(path, directory):
     path = Path(path).resolve()
     cfg = json.loads(path.read_bytes())
-    for key in ('release_root','export_root','scope_path','search_index','evidence_metadata','rebuild_root','names_index'):
+    for key in ('release_root','export_root','scope_path','search_index','evidence_metadata','rebuild_root','names_index','retrieval_routes'):
         # ${GITRX_DATA_ROOT} values stay as written; open_reader expands them (resolving them
         # here would glue the placeholder onto the config directory).
         if key in cfg and '${GITRX_DATA_ROOT}' not in str(cfg[key]):

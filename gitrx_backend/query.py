@@ -144,38 +144,73 @@ class Query:
                 family_offset,section_offset=state['family'],state['section']
                 if type(family_offset) is not int or type(section_offset) is not int or min(family_offset,section_offset)<0:raise ValueError()
             except (ValueError,KeyError,TypeError,UnicodeError):raise ValueError('Invalid cursor or query/release mismatch') from None
-        start=time.monotonic();families=self.reader.families();hits=[];scanned=0;reason=None
+        start=time.monotonic();families=self.reader.families();hits=[];scanned=0;reason=None;no_text=[]
         fi=family_offset;si=section_offset
         end=min(len(families),family_offset+max_families)
-        while fi<end:
-            if time.monotonic()-start>=time_budget_seconds:reason='time_budget';break
-            sid=families[fi]['setid'];versions=self.reader.versions(sid)
-            if not versions:fi+=1;si=0;continue
-            version=versions[-1]['version'];scanned+=1
-            # A verified optional text projection avoids decompressing nonmatches.
-            candidates=self.reader.search_candidates(sid,version,phrase,si) if hasattr(self.reader,'search_candidates') else None
-            if candidates==[]:fi+=1;si=0;continue
-            sections,cite=self.reader.read(sid,version)
-            indices=candidates if candidates is not None else range(si,len(sections))
-            stopped=False
+        folded=phrase.casefold()
+        # A verified optional projection only proposes (family, section) candidates; every hit below is
+        # confirmed against the reader's own text, so results equal an exhaustive scan.
+        plan=self.reader.search_plan(phrase) if hasattr(self.reader,'search_plan') else None
+        def confirm(sid,version,sections,cite,indices):
+            """Return (stopped, stop_reason); appends confirmed hits."""
+            nonlocal si
             for index in indices:
                 si=index
-                if time.monotonic()-start>=time_budget_seconds:reason='time_budget';stopped=True;break
+                if time.monotonic()-start>=time_budget_seconds:return True,'time_budget'
                 s=sections[index];text=s['own_text'] or ''
-                if phrase.casefold() in text.casefold():
-                    if len(hits)==limit:reason='result_limit';stopped=True;break
+                if folded in text.casefold():
+                    if len(hits)==limit:return True,'result_limit'
                     hits.append({'setid':sid,'version':version,'ordinal':s['ordinal'],'source_code':s['loinc_code'],
                                  'title':s['title'],'text_preview':text[:500],'citation':cite})
                 si=index+1
-            if stopped:break
-            fi+=1;si=0
+            return False,None
+        def has_text(versions):return versions[-1].get('parsed',True)
+        if plan is None:
+            while fi<end:
+                if time.monotonic()-start>=time_budget_seconds:reason='time_budget';break
+                sid=families[fi]['setid'];versions=self.reader.versions(sid)
+                if not versions:fi+=1;si=0;continue
+                version=versions[-1]['version'];scanned+=1
+                if not has_text(versions):no_text.append(sid);fi+=1;si=0;continue
+                candidates=self.reader.search_candidates(sid,version,phrase,si) if hasattr(self.reader,'search_candidates') else None
+                if candidates==[]:fi+=1;si=0;continue
+                sections,cite=self.reader.read(sid,version)
+                stopped,why=confirm(sid,version,sections,cite,candidates if candidates is not None else range(si,len(sections)))
+                if stopped:reason=why;break
+                fi+=1;si=0
+        else:
+            stopped_early=False
+            for item in plan.stream(family_offset,section_offset,families):
+                if item[0]=='part':
+                    if time.monotonic()-start>=time_budget_seconds:
+                        reason='time_budget';fi=plan.first_family(item[1],families);si=0;stopped_early=True;break
+                    continue
+                _,cfi,sid,cversion,n,positions=item
+                if time.monotonic()-start>=time_budget_seconds:reason='time_budget';fi=cfi;si=positions[0];stopped_early=True;break
+                if scanned>=max_families:reason='family_limit';fi=cfi;si=positions[0];stopped_early=True;break
+                fi=cfi;versions=self.reader.versions(sid)
+                if not versions:continue
+                scanned+=1
+                if not has_text(versions):no_text.append(sid);continue
+                version=versions[-1]['version'];sections,cite=self.reader.read(sid,version)
+                if version==cversion and len(sections)==n:indices=positions
+                else:indices=range(si if cfi==family_offset else 0,len(sections))   # stale projection entry: scan the family
+                si=section_offset if cfi==family_offset else 0
+                stopped,why=confirm(sid,version,sections,cite,indices)
+                if stopped:reason=why;stopped_early=True;break
+            if not stopped_early:fi=len(families);si=0
         partial=fi<len(families)
         if reason is None and partial:reason='family_limit'
         token=base64.urlsafe_b64encode(json.dumps({'snapshot':self.reader.snapshot,'phrase':phrase,'family':fi,'section':si},separators=(',',':')).encode()).decode() if partial else None
         return self.envelope(scope='Greatest SPL version per selected family; native own_text only',phrase=phrase,hits=hits,
           families_scanned=scanned,total_families=len(families),result_limit_reached=reason=='result_limit',
           next_family_offset=fi if partial else None,partial=partial,next_section_offset=si if partial else 0,
-          continuation=token,stop_reason=reason,time_budget_seconds=time_budget_seconds)
+          continuation=token,stop_reason=reason,time_budget_seconds=time_budget_seconds,
+          families_with_unreadable_latest_version=no_text[:50],families_with_unreadable_latest_version_count=len(no_text),
+          candidate_projection={'used':plan is not None,'sha256':getattr(self.reader,'search_index_sha256',None) if plan is not None else None,
+            'meaning':'Optional pinned index proposed candidates only; every hit was confirmed against the release text. '
+                      'max_families then bounds families actually read, not families passed over.' if plan is not None else
+                      ('No usable projection for this phrase or release; exhaustive scan.')})
 
     @bounded
     def show_date(self,sid,on_date,code=None,ordinal=None,max_chars=16000,offset=0,section_limit=100,section_offset=0):

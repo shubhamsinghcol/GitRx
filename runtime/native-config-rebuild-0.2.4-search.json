@@ -1,0 +1,27 @@
+{
+  "format": "gitrx-backend-config-1",
+  "backend": "rebuild",
+  "snapshot": "8dc88e7a55831af605dbedd2a2b3bccdbd6575d51eaacb62c75c399975ce644b",
+  "rebuild_root": "${GITRX_DATA_ROOT}/rebuild/spl-sections-0.2.4__srlc-changes-0.3.2",
+  "rebuild_complete_sha256": "8dc88e7a55831af605dbedd2a2b3bccdbd6575d51eaacb62c75c399975ce644b",
+  "names_index": "${GITRX_DATA_ROOT}/rebuild/spl-sections-0.2.4__srlc-changes-0.3.2/index/names.sqlite",
+  "names_index_sha256": "1b54fe9ff866252ef2e1af528ff608349d17993d358632b4d73f74fb7802e3e4",
+  "verify_shards": "sha256",
+  "release_notes": {
+    "scope": "158,955 families / 488,016 captured versions rebuilt deterministically from retained raw SPL ZIPs with parser spl-sections-0.2.4 (Step E inventory plus a delta of 26 admitted versions). 56 versions have no retained raw (status no_raw) and carry no text. The 26 delta-admitted versions, which the earlier 0.2.3 builds could not read (XML nesting deeper than 256 levels), are now parsed. Not a national completeness claim; upstream history beyond the evidence inventory is unknown.",
+    "validation": {
+      "freeze_2_sealed": "Parser text 98.30%, section 99.64% (Freeze 2 sealed, parser 0.2.3; outputs for every graded version are identical under 0.2.4); the uncoded-box rule is recorded as 'seen' (not held out) for that sealed result.",
+      "independent_holdout": "pending",
+      "caution": "Earlier tranche1 59/60 and 60/60 scores were AI-graded, not human-reviewed, and are not validation. No independent clinical validation exists."
+    },
+    "replaces": "spl-sections-0.2.3__srlc-changes-0.3.2__delta-20261111 (COMPLETE 69db2791...c2a4, 26 extraction_defect, selectable with GITRX_CONFIG=runtime/native-config-rebuild-0.2.3-delta-20261111.json) and Step E spl-sections-0.2.3__srlc-changes-0.3.2 (COMPLETE bbe9223a...a6869c, 82 no_raw, runtime/native-config-rebuild-0.2.3.json). Earlier: release1 via runtime/native-config.json.",
+    "dates": "DailyMed publication dates and SPL effective dates are not FDA approval dates.",
+    "delta": "Inventory = evidence-v1 (sha256 823a5bc6...ac3c6, unchanged) + delta evidence-delta-20261111.sqlite (sha256 b1d65eaf...f454b0) admitting 26 byte-identical bodies. Parser 0.2.4 = 0.2.3 plus only a lifted XML depth limit (huge_tree); all 487,934 other parsed versions give identical parser output apart from the version identifier; row differences from the 0.2.3 delta build are confined to the 21 affected families (DELTA-PROOF-0.2.4.json in the build directory).",
+    "search_index": "Pinned literal-search projection (FTS5 trigram candidates, every hit confirmed against release text; format gitrx-rebuild-search-1, 256 parts under index/search-literal-1). Optional: runtime/native-config-rebuild-0.2.4.json runs the identical exhaustive scan without it.",
+    "retrieval_routes": "Pinned derived lookup raw_sha256 -> observed retrieval routes (from evidence-v1 + evidence-delta-20261111, read-only); 979,209 route rows covering all 487,960 raw artifacts. Observations, not proof a route still serves the bytes."
+  },
+  "search_index": "${GITRX_DATA_ROOT}/rebuild/spl-sections-0.2.4__srlc-changes-0.3.2/index/search-literal-1/SEARCH-INDEX.json",
+  "search_index_sha256": "c1c54893e9cfd7c7d0559bbf157a121123f5d6c4ef50124d4a534860db89f1f0",
+  "retrieval_routes": "${GITRX_DATA_ROOT}/rebuild/spl-sections-0.2.4__srlc-changes-0.3.2/index/routes-1/routes.sqlite",
+  "retrieval_routes_sha256": "feaceebbc88e21c2e552f08682ec31815926c6e2a8145abfb707a8e66a5af714"
+}

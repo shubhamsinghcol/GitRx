@@ -4,7 +4,7 @@
     tools/verify_gitrx.py quick [--out DIR] [--seed N] [--records N] [--skip-big-hashes]
     tools/verify_gitrx.py full  --out DIR   [--workers N] [--rebuild-pilot]
 
-quick (minutes): sha256 of the kept evidence/gradebook/split/index/rebuild artifacts and all rebuild shards,
+quick (minutes): MCP-vs-CLI interface agreement on the default config (starts ./label-history-mcp), sha256 of the kept evidence/gradebook/split/index/rebuild artifacts and all rebuild shards,
 sealed-split fingerprints (including the seeded re-draw), frozen code hashes against the Freeze 2 declaration (spl_parser against Freeze 2.1),
 N seeded change records re-derived from raw ZIPs, one SrLC fragment traced end to end, and the summary metrics and
 precision recomputed from the kept grading jsonl.
@@ -534,6 +534,18 @@ def check_kept_precision(rep, name, grading_dir):
     return k
 
 
+def check_interfaces(rep):
+    """Start the shipped MCP launcher with its default config, list tools, run ~7 calls and require the CLI to agree."""
+    from gitrx_backend import interface_check
+    try:
+        checks = interface_check.run([os.path.join(REPO, "label-history-mcp")], [os.path.join(REPO, "label-history")])
+    except Exception as exc:  # noqa: BLE001
+        rep.add("interface agreement", "fail", "%s: %s" % (type(exc).__name__, str(exc)[:300]))
+        return
+    for name, ok, detail in checks:
+        rep.ok("interfaces: " + name, ok, detail)
+
+
 # ----------------------------------------------------------------------------- quick
 def quick(args):
     ssd = args.ssd
@@ -583,6 +595,8 @@ def quick(args):
         compare_metrics(rep, name, d)
         if name.startswith("open-"):
             check_kept_precision(rep, name, d)
+    print("== 8. interface agreement: ./label-history-mcp (default config) vs ./label-history")
+    check_interfaces(rep)
     s = rep.summary()
     print("\nSUMMARY %s  (%.0fs)" % (s, time.time() - t0))
     if rep.failed:

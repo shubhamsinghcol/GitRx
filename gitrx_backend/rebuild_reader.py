@@ -47,7 +47,8 @@ class RebuildReader(EvidenceReader):
     kind = 'rebuild'
     uninstalled_shards = ()
 
-    def __init__(self, root, complete_sha256, names_path, names_sha256, verify_shards='sha256', description=None):
+    def __init__(self, root, complete_sha256, names_path, names_sha256, verify_shards='sha256', description=None,
+                 search_index=None, search_index_sha256=None, retrieval_routes=None, retrieval_routes_sha256=None):
         if verify_shards not in ('sha256', 'size'):
             raise ValueError('verify_shards must be sha256 or size')
         self.root = Path(root)
@@ -89,6 +90,21 @@ class RebuildReader(EvidenceReader):
             self.close()
             raise ValueError('Name index belongs to a different rebuild release')
         self.names_sha256 = names_sha256
+        self.routes = None
+        self.retrieval_routes_sha256 = retrieval_routes_sha256
+        if retrieval_routes is not None:
+            from .rebuild_routes import RoutesLookup
+            self.routes = RoutesLookup(retrieval_routes, retrieval_routes_sha256, complete_sha256, verify_shards)
+        self.search_projection = None
+        self.search_index_sha256 = search_index_sha256
+        self._family_index = None
+        if search_index is not None:
+            from .rebuild_search import SearchProjection
+            try:
+                self.search_projection = SearchProjection(search_index, search_index_sha256, self.snapshot, verify_shards)
+            except BaseException:
+                self.close()
+                raise
 
     # -- shards
     def _shard(self, sid):
@@ -124,6 +140,14 @@ class RebuildReader(EvidenceReader):
             self._families = [{'setid': s, 'title': t or ''}
                               for s, t in self.names.execute('SELECT setid,title FROM families ORDER BY setid')]
         return self._families
+
+    def search_plan(self, phrase):
+        """Candidate proposer for a literal phrase, or None (no projection, or phrase unusable): callers must scan."""
+        if self.search_projection is None:
+            return None
+        if self._family_index is None:
+            self._family_index = {f['setid']: i for i, f in enumerate(self.families())}
+        return self.search_projection.plan(phrase, self._family_index)
 
     def family(self, sid):
         row = self.names.execute('SELECT setid,title FROM families WHERE setid=?', (sid,)).fetchone()
@@ -165,6 +189,18 @@ class RebuildReader(EvidenceReader):
         sid = canonical_sid(sid)
         row = self._row(sid, version)
         from .evidence_metadata import unknown_evidence
+        constructed = unknown_evidence(sid, version)['publisher_references']
+        if self.routes is None:
+            status, reason, routes = 'unavailable', 'No retrieval-routes lookup is pinned in this configuration.', []
+        elif row['raw_sha256'] is None:
+            status, reason, routes = 'none_recorded', 'This version has no retained raw artifact.', []
+        else:
+            status, reason, routes = self.routes.routes(row['raw_sha256'], sid, version)
+        if routes:
+            from .rebuild_routes import publisher_references
+            references = publisher_references(routes, constructed)
+        else:
+            references = constructed
         diagnostics = _json(_unz(row['diagnostics_z']), []) if row['diagnostics_z'] else []
         return {'metadata_status': 'pinned', 'raw_sha256': row['raw_sha256'],
                 'extraction': {'status': row['status'], 'status_reasons': _json(row['status_reasons'], []),
@@ -173,8 +209,13 @@ class RebuildReader(EvidenceReader):
                                'parser_versions': [self.versions_info['parser']],
                                'meaning': 'Parser status (spl-sections-0.2.x status model), not independent proof of '
                                           'complete source fidelity or clinical meaning.'},
-                'publisher_references': unknown_evidence(sid, version)['publisher_references'],
-                'retrieval_routes': []}
+                'publisher_references': references,
+                'retrieval_routes': routes, 'retrieval_routes_status': status,
+                'retrieval_routes_note': reason or (
+                    'Routes actually observed for this raw artifact in the retained evidence (URL, time, HTTP status, whether the '
+                    'response body hashed to this raw SHA-256); not proof the route still serves it. publisher_references with '
+                    'observed true are drawn from them; observed false is a constructed route that was not verified.'
+                    if routes else 'No retrieval route for this raw artifact is recorded in the pinned lookup.')}
 
     def inventory(self, sid):
         sid = canonical_sid(sid)
@@ -313,6 +354,11 @@ class RebuildReader(EvidenceReader):
         self.shard_conns.clear()
         self.family_cache.clear()
         self.label_cache.clear()
+        if self.routes is not None:
+            self.routes.close()
+        if self.search_projection is not None:
+            self.search_projection.close()
+            self.search_projection = None
         if self.names is not None:
             self.names.close()
             self.names = None

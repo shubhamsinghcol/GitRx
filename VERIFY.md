@@ -82,6 +82,8 @@ are not passes. `--skip-big-hashes` skips the 22 GB of hashing for a developer s
    recomputed from `rows.jsonl`/`fragments.jsonl`/`gitrx_only.jsonl` and must equal `summary.json` exactly; the
    sealed `summary.json` sha256 values must equal those declared in the plan; crude precision is recomputed from
    `summary.json` + `gitrx_only.jsonl`.
+8. Interface agreement: the MCP server is started with the default configuration and its answers to the same
+   queries must equal the command line's.
 
 ### full mode
 

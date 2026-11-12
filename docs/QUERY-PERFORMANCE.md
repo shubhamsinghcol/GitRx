@@ -35,6 +35,14 @@ earlier pages were scanned.
 
 Follow pages with the same release and filters.
 
+## Fast search
+
+The default release ships a search index, so `search` across all 158,955 label families
+returns its first page in under a second. The index only proposes candidates; every hit is
+re-checked against the label text, so results are exactly those of a full scan (tested on 40
+phrases: [proof](evidence/search-equality-proof-0.2.4.json)). Phrases shorter than 3 characters
+use the full scan. To run without the index: `GITRX_CONFIG=runtime/native-config-rebuild-0.2.4.json`.
+
 ## For maintainers: optional search index
 
 An optional prebuilt SQLite index of latest-version text speeds up literal search; matches are re-read from the original data for citations.

@@ -44,6 +44,10 @@
 !/tests/conftest.py
 !/tests/test_core_*.py
 !/tests/test_backend_portable.py
+!/tests/test_freshness.py
+!/tests/test_interface_agreement.py
+!/tests/test_rebuild_routes.py
+!/tests/test_rebuild_search.py
 !/tests/test_benchmark.py
 !/tests/test_census.py
 !/tests/test_change_clients.py

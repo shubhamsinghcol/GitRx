@@ -8,6 +8,10 @@ source), and whether the family's inventory is known to be complete. When this i
 answer says "unknown" instead of assuming completeness. A parse marked `complete` still does not guarantee perfect table
 or layout fidelity, or that DailyMed's history for the label is complete.
 
+Citations also list how each label file was actually downloaded, taken from GitRx's download
+records: the URL, the time, the HTTP status, and whether the downloaded file's hash matches. This
+records what happened at download time; it does not prove the link still serves the same file.
+
 A link to a bulk archive means the label came from inside that archive; it does not claim a direct download of that one file.
 
 ## Trace a phrase through a family

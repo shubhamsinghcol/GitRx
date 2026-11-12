@@ -41,6 +41,10 @@ jobs:
           PY
       - name: Synthetic end-to-end self-test
         run: gitrx-selftest --output "$RUNNER_TEMP/synthetic-release"
+      - name: MCP startup smoke and MCP/CLI agreement on the synthetic release (no data root)
+        run: |
+          unset GITRX_DATA_ROOT
+          python -m gitrx_backend.interface_check --config "$RUNNER_TEMP/synthetic-release/backend.json"
       - name: Test suite (tests needing the data root skip when GITRX_DATA_ROOT is absent)
         run: |
           unset GITRX_DATA_ROOT

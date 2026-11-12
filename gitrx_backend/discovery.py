@@ -3,6 +3,7 @@ import json
 import re
 from datetime import date
 from urllib.parse import parse_qs, urlsplit
+from .freshness import freshness
 
 CAPABILITIES = {
     'verify_citation': 'Verify retained release/raw/location and optional literal quote; not clinical validity.',
@@ -57,10 +58,10 @@ def describe(reader):
         'capabilities': capabilities,
         'evidence_metadata': {'available': bool(getattr(reader, 'evidence_metadata_available', False)),
                               'sha256': getattr(reader, 'evidence_metadata_sha256', None)},
-        'search_acceleration': {'available': hasattr(reader, 'search_candidates'),
+        'search_acceleration': {'available': hasattr(reader, 'search_candidates') or getattr(reader, 'search_projection', None) is not None,
+                                'kind': 'pinned candidate projection; hits are always confirmed against release text' if getattr(reader, 'search_projection', None) is not None else None,
                                 'sha256': getattr(reader, 'search_index_sha256', None)},
-        'freshness': {'mode': 'snapshot', 'source_checked_at': None,
-                      'meaning': 'This reader does not infer source freshness from release selection, source dates or local file times. Consult release-cycle status for recorded checks.'},
+        'freshness': freshness(reader),
         'matching': {'literal': True, 'default_case': 'Unicode casefold for native phrase/search tools',
                      'punctuation_and_whitespace': 'preserved', 'context': 'unclassified native source'},
         'dates': 'Captured SPL-version order and observed publication-cutoff selection; effective/retrieval dates remain distinct',
