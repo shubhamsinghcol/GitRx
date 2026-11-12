@@ -23,7 +23,8 @@ DailyMed lacks some label versions. About 80 of every 100 changes GitRx reports 
 on FDA's list (87 allowing for timing). See
 [plain-language accuracy](docs/ACCURACY-IN-PLAIN-LANGUAGE.md),
 [the reasoning behind every number](docs/VALIDATION-REASONING.md) and
-[VERIFY.md](VERIFY.md). This is a comparison with FDA's list on a sealed sample, not
+[VERIFY.md](VERIFY.md). Structural problems in DailyMed and SrLC that any study using them should
+know about are listed in [SOURCE-DATA-ISSUES.md](docs/SOURCE-DATA-ISSUES.md). This is a comparison with FDA's list on a sealed sample, not
 independent clinical validation; the independent holdout is pending. The earlier
 tranche1 "59/60" and "60/60" scores were AI-graded and are not validation
 ([correction](docs/VALIDATION-CORRECTION-2026-11-10.md)).

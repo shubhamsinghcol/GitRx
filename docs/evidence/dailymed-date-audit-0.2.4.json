@@ -1,0 +1,22 @@
+{
+ "versions": 488011,
+ "real": 487956,
+ "no_pub": 99,
+ "no_eff": 57,
+ "inversion": 7,
+ "inv_fams": 7,
+ "eff_after_pub": 2240,
+ "eff_after_pub_30": 216,
+ "setid_mismatch": 0,
+ "version_mismatch": 0,
+ "pub_before_eff_365": 14646,
+ "same_pub_multi": 0,
+ "pub_minus_eff_days": {
+  "n": 487910,
+  "median": 3.0,
+  "p90": 50,
+  "p99": 972,
+  "gt90": 36622,
+  "gt365": 14646
+ }
+}
