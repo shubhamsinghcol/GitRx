@@ -3,8 +3,11 @@
 Use **`./label-history-mcp`** for the supported source-native label-history
 workflow. The installed equivalent is `gitrx-native-mcp --config FILE`.
 Both use `gitrx_backend.mcp` and the same query library as `label-history`.
-The configured expanded release initially contains 7,239 families / 51,357
-captured versions. Every process remains pinned to its selected release until
+The default release is the Step E rebuild (158,955 families / 488,016 captured
+versions; snapshot `bbe9223a...`, config `runtime/native-config-rebuild-0.2.3.json`,
+external SSD required; a new `change_records` tool serves SrLC-style per-pair
+change records). The earlier 7,239-family / 51,357-version release remains
+selectable via `GITRX_CONFIG=runtime/native-config.json`. Every process remains pinned to its selected release until
 restart. `GITRX_CONFIG` can explicitly select a retained configuration.
 
 ## Connect to the native server

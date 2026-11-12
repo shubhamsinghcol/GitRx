@@ -15,7 +15,19 @@ artifacts, not files bundled with this source checkout. A clean source checkout
 can run `gitrx-selftest` offline after installing dependencies; real label queries
 require a separately supplied pinned archive configuration.
 
-The November 6, 2026 expanded release contains **7,239 families and 51,357
+**Default release (from 2026-11-11):** the Step E deterministic rebuild
+`spl-sections-0.2.3__srlc-changes-0.3.2` (158,955 families / 488,016 captured
+versions, 82 without retained raw; snapshot id = SHA-256 of its COMPLETE.json,
+`bbe9223a...`). It lives on the external SSD and is pinned by
+`runtime/native-config-rebuild-0.2.3.json`; with the SSD absent, queries fail
+with a clear error (no fallback). It adds SrLC-style change records
+(`change-records`). Validation is limited: Freeze 2 sealed result parser text
+98.30% / section 99.64% with the uncoded-box rule "seen"; the independent holdout
+is pending. DailyMed dates are not FDA approval dates. The earlier release below
+stays selectable with `GITRX_CONFIG=runtime/native-config.json`.
+
+The November 6, 2026 expanded release (previous default, snapshot `1baa5bca...`)
+contains **7,239 families and 51,357
 retrieved known version targets**. All 15 exact recoveries are admitted.
 NALTREXONE's upstream history inventory remains unresolved; known-target coverage
 is not proof of complete historical coverage. This remains a local release
@@ -107,3 +119,5 @@ Native 0.8.0 adds [MCP discovery](docs/MCP-DISCOVERY.md), [observed operational 
 Native 0.9.0 adds [responsive MCP cancellation](docs/MCP-CANCELLATION.md) and [version-change summaries and scoped changed-text search](docs/CHANGE-INSPECTION.md).
 
 Native 0.10.0 repairs nested deadline cleanup and adds [maintained workload qualification](docs/QUALIFICATION.md) plus [bounded research helpers](docs/RESEARCH-HELPERS.md): citation checks, token replay, cohort-date inventories and selective local Git installations. [Verification and operating limits](reports/qualification-20261107/REPORT.md).
+
+To audit the validation yourself, see [VERIFY.md](VERIFY.md) (one-command checks, `tools/verify_gitrx.py`) and [docs/VALIDATION-REASONING.md](docs/VALIDATION-REASONING.md) (the reasoning behind every number).

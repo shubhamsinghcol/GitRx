@@ -1,6 +1,14 @@
 # Current limitations
 
-- **Scope:** the expanded acquisition covers 7,239 captured source-category
+- **Default release:** the Step E rebuild (158,955 families / 488,016 versions;
+  82 versions have no retained raw and no text) reads from an external SSD; if
+  it is absent queries fail rather than fall back. Parser/section scores
+  (Freeze 2 sealed: text 98.30%, section 99.64%, uncoded-box rule "seen") are
+  not independent validation; the independent holdout is pending. Change
+  records are mechanical text comparisons with rule-derived groups, not clinical
+  or FDA-approval statements. Family titles are latest listing titles (selection
+  aids). The scope line below describes the earlier release1 acquisition.
+- **Scope (earlier release1):** the expanded acquisition covers 7,239 captured source-category
   NDA/BLA families and 51,357 known version targets, not every historical US
   drug label. Current-listing discovery does not establish archived-only coverage.
 - **Recovery:** all 15 staged targets are admitted with exact identities.
