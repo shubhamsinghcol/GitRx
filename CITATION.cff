@@ -5,6 +5,7 @@ type: software
 authors:
   - family-names: Singh
     given-names: Shubham
+    orcid: "https://orcid.org/0000-0002-0091-7391"
 license: Apache-2.0
 date-released: "2026-11-11"
 keywords:
@@ -20,4 +21,5 @@ references:
     authors:
       - family-names: Singh
         given-names: Shubham
+    orcid: "https://orcid.org/0000-0002-0091-7391"
     license: CC-BY-4.0
