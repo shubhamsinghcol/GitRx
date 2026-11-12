@@ -1,51 +1,56 @@
-# Current limitations
+# Limitations
 
-- **Default release:** the Step E rebuild (158,955 families / 488,016 versions;
-  56 versions have no retained raw and no text) reads from an external SSD; if
-  it is absent queries fail rather than fall back. Parser/section scores
-  (Freeze 2 sealed: text 98.30%, section 99.64%, uncoded-box rule "seen") are
-  not independent validation; the independent holdout is pending. Change
-  records are mechanical text comparisons with rule-derived groups, not clinical
-  or FDA-approval statements. Family titles are latest listing titles (selection
-  aids). 
-- **Scope:** the release covers what the evidence inventory holds (158,955 families,
-  488,016 captured versions), not every historical US drug label. Current-listing
-  discovery does not establish archived-only coverage; upstream history beyond the
-  inventory is unknown. The earlier 7,239-family release was deleted on 2026-11-11
-  (fingerprints retained).
-- **Meaning of dates:** DailyMed publication observations, XML effectiveTime
-  and retrieval timestamps are distinct. None alone establishes FDA approval,
-  legal applicability, what shipped, risk-discovery time or causation.
-- **Family identity:** a setid is a document lineage. Similar names do not
-  authorize merging brands, ingredients, labelers or applications.
-- **Extraction:** sections, tables and source references are retained with
-  diagnostics; no OCR. Partial parses and successful text retention checks
-  do not establish perfect visual/table fidelity or medical meaning.
-- **Interpretation:** source codes can repeat or be miscoded. Context rules
-  are derived; default/unknown instances cannot support confident named-section
-  headlines. Anchored status is evidence found by a rule, not a probability.
-- **Validation — corrected 2026-11-10:** the 59/60 and 60/60 results below were
-  AI-graded, not human-reviewed; the parser currently has no human validation.
-  See [validation correction](docs/VALIDATION-CORRECTION-2026-11-10.md).
-  Original text retained: the original fresh sample had 59/60 agreement, with one IFU
-  human label later corrected by the owner under the existing taxonomy.
-  Adjudicated agreement is 60/60, not a second blind pass. This anchored-only
-  tranche1 sample cannot establish global recall or release1-wide accuracy.
-- **Queries:** `label-history` and native MCP serve the release through the shared query library.
-  Source-code occurrences remain unclassified; literal searches do not infer concepts or synonyms.
-- **History and bounds:** first-observed wording is not a proven addition date.
-  Integer holes are not all known upstream inventory targets. Unfinished scans,
-  partial extraction and missing dates limit negative conclusions. Respect
-  pagination/continuation and [execution limits](docs/QUERY-PERFORMANCE.md).
-- **Diffs:** native `compare` uses conservative v2 pairing and keeps ambiguous
-  repeats unmatched. Token equality is not clinical or layout equivalence;
-  an unmatched occurrence is not proof of an actual source addition/removal.
-  
-- **Freshness:** the selected release is a captured snapshot. Weekly DailyMed and monthly SrLC collection
-  jobs ([ops/UPDATES.md](ops/UPDATES.md)) only collect; new data appears in a release only after an explicit
-  rebuild. Queries never refresh sources. Checking one family does not refresh the corpus.
-- **Git:** an expanded release has new IDs under a new immutable tag. Old refs
-  remain valid. Reproducibility from pinned inputs is not append-only chronology
-  or a claim that fresh network observations reproduce historical bytes.
-- **Distribution:** publication is pending. Code is Apache-2.0, GitRx-created data and docs CC BY 4.0, and DailyMed/FDA
-  content is not relicensed ([LICENSING.md](LICENSING.md)). Researcher evidence on Hugging Face with a Zenodo DOI is planned, not yet published.
+Read these before drawing conclusions from GitRx output.
+
+## What the data is
+
+- **Release:** `spl-sections-0.2.4`, a snapshot of 158,955 DailyMed label families and 488,016
+  versions. 56 versions have no retained file and so have no text. It is not every historical
+  US drug label, and DailyMed's own history for a label can be incomplete or start late.
+- **Snapshot, not live.** Queries never fetch anything. New DailyMed versions appear only after
+  a new release is built.
+- **Family names are only a way to find a label.** A family is one DailyMed setid. Similar names do
+  not mean the same product, ingredient, labeler or application; pick the setid you mean.
+  Family titles are the latest listing titles.
+
+## What dates mean
+
+DailyMed posting dates, label effective dates and the time we retrieved a file are three
+different things. None is an FDA approval date, the date a product shipped, or when a risk was
+discovered. "First observed" is the first captured version containing the text, not when the text
+was introduced.
+
+## What absence means
+
+A phrase not found is weak evidence it was absent. Versions can be missing (see `coverage`),
+extraction can be partial (no OCR; tables and layout can be imperfect), and a search that did not
+finish says nothing about what it did not reach. Follow continuation until a search reports it is
+complete.
+
+## What the comparison and change records mean
+
+- Changes are mechanical text comparisons. They are not clinical or FDA statements, and equal text
+  is not proof of equal meaning or layout.
+- Section codes in labels can repeat or be wrong. GitRx reports each coded section as found and
+  does not decide which product section it belongs to. Repeated sections that cannot be paired
+  are shown as unmatched; unmatched is not proof of an addition or removal.
+- Search is literal text matching; it does not know synonyms.
+- Nothing here is clinical advice.
+
+## Accuracy
+
+Checked against FDA's SrLC list on a sealed sample, with the results and caveats in
+[plain language](docs/ACCURACY-IN-PLAIN-LANGUAGE.md). The parser has no human validation: the
+earlier 59/60 and 60/60 scores were graded by AI and are not evidence
+([correction](docs/VALIDATION-CORRECTION-2026-11-10.md)). A fresh test on new FDA entries is
+being collected. Known flaws in the source data are in [SOURCE-DATA-ISSUES](docs/SOURCE-DATA-ISSUES.md).
+
+## Git export
+
+An expanded release gets a new export; old ones stay valid. The export is rebuilt from pinned
+inputs, so it reproduces the same history, but it is not a record of when things happened.
+
+## Licensing
+
+Code is Apache-2.0; GitRx-created data and docs are CC BY 4.0. DailyMed and FDA content is not
+relicensed by GitRx ([LICENSING.md](LICENSING.md)).

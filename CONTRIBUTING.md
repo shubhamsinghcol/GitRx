@@ -1,51 +1,33 @@
-# Contributing to GitRx
+# Contributing
 
-Start with [README](README.md), [the native contract](docs/PRODUCTION-CONTRACT.md)
-and [AGENTS](AGENTS.md). The source software and generated label-history Git
-repositories are separate. Propose software changes in the source project;
-generated label text is not a place for hand-written corrections.
+Thanks for helping. Please read the [README](README.md) first; maintainers also use [AGENTS.md](AGENTS.md).
 
-## Report a defect with evidence
+## Report a problem
 
-Include the selected release/snapshot, setid, SPL version and source occurrence
-where relevant, the command and filters, actual versus expected behavior, and
-an official-source reference or retained raw hash supporting the concern. State
-whether the problem is acquisition, extraction, matching, interpretation, client
-presentation or documentation. Similar drug names do not establish the same
-label family. Distinguish publication observations, SPL effective dates and
-retrieval timestamps.
+Include:
 
-Route a correction to the layer that owns it:
+- the command or tool call, and the release (`./label-history describe-release`);
+- the setid, version and section involved;
+- what you expected and what you got;
+- an official source or raw-file hash that supports your point.
 
-- Acquisition: retain the original response, failure and competing observations;
-  admit separately verified evidence through a new selected build.
-- Extraction: fix the parser and diagnostics through an explicitly versioned
-  derived build. Preserve original bytes and old parser outputs.
-- Interpretation/matching: specify the changed rule, classify regressions and
-  retain the prior rule/snapshot. Do not promote native source codes into stronger
-  clinical claims without the necessary evidence and validation.
-- Annotations: keep them attributed and separate from source label text.
-- Clients: use shared queries so CLI and MCP do not invent different
-  evidence answers for the same selection.
+Say whether you think the fault is in the source data, the parsing, the matching, or the docs. Similar drug
+names are not the same label family, and DailyMed posting dates, label effective dates and retrieval times are
+different things; please say which you mean.
 
-## Keep changes reviewable
+## Where fixes go
 
-Describe the concrete problem, resulting behavior and relevant verification. Add
-focused tests for changed behavior, especially gaps, repeated sections, partial
-extraction, old citations, paging and bounded failures. Check source-backed examples
-when semantics change; agreement between wrappers of one algorithm is insufficient
-independent evidence. Use the [performance record](docs/PERFORMANCE-RECORD.md) for
-measured bottlenecks and compare equivalent workloads before adding infrastructure.
+- **Parsing or text extraction:** fix the parser and publish a new versioned build. Old outputs stay.
+- **Matching or change rules:** describe the changed rule and the regressions it causes.
+- **Source data:** keep the original response and add any better evidence as a new build.
+- **CLI or MCP:** change the shared query code in `gitrx_backend`, not one interface.
 
-Preserve immutable raw objects, source observations, old releases/refs, frozen
-rules, goldens and historical reports. Do not rewrite stored SPL text to make a
-query pass. Keep original blind labels, predictions and later adjudication
-separate. Do not open sealed answers or run excluded held-out packet tests.
-Clinical validation and full-corpus recall are not established by unit-test counts.
+Generated label text is not a place for hand-written corrections. Never rewrite stored label text to make a query pass.
 
-Document AI assistance and what was actually human-reviewed when relevant to the
-change. Repository code availability does not decide redistribution rights for
-labeler-supplied text/images. Licensing, source attribution and public distribution
-remain separate decisions; contributions should not select a license or publish
-data as an incidental step. No contribution workflow installs recurring collection,
-sends external messages, or changes a selected live release merely to run checks.
+## Pull requests
+
+Describe the problem and how you checked the fix. Add focused tests, especially for gaps, repeated sections, partial
+extraction, paging and limits. Tests that need the data folder skip without it. Unit-test counts do not establish clinical
+validity. Please say what was human-reviewed and what was AI-assisted.
+
+Do not open sealed validation answers or add recurring collection. Licensing choices are the owner's ([LICENSING.md](LICENSING.md)).

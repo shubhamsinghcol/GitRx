@@ -8,12 +8,10 @@ reasoning behind the design and the interpretation of the numbers are in
 and sealed results are in [docs/AUTHORITATIVE-PARSER-PLAN.md](docs/AUTHORITATIVE-PARSER-PLAN.md).
 
 **Read this first.**
-- Evidence lives on an external SSD mounted at `/Volumes/Untitled/GitRx` (931 GiB volume, 631 GiB used when this was written). It is not hosted
-  publicly yet; public hosting is not done. To audit independently, the owner has to give you the volume (or a
-  copy) or run the commands for you.
-- The repository commits that define the frozen code and record the results are local: as of this writing
-  `main` is 32 commits ahead of `origin/main` and has not been pushed. Hashes below are what you can compare
-  against, not a public tag.
+- The evidence (raw label files, databases, SrLC pages) is in the data folder, not in the Git repository. The
+  commands below use `/Volumes/Untitled/GitRx` as that folder; substitute your copy's path. The data is being
+  published to Hugging Face with a Zenodo DOI; until then ask the owner for a copy.
+- The hashes below are what you can compare against.
 - The parser has no human validation. The earlier "59/60" and "60/60" tranche1 scores were AI-graded and are not
   evidence ([docs/VALIDATION-CORRECTION-2026-11-10.md](docs/VALIDATION-CORRECTION-2026-11-10.md)). The only
   external check is SrLC, used as a mechanical gradebook. SrLC is itself incomplete and sometimes
@@ -23,7 +21,7 @@ and sealed results are in [docs/AUTHORITATIVE-PARSER-PLAN.md](docs/AUTHORITATIVE
 
 ## 1. The artifacts
 
-All paths are under `/Volumes/Untitled/GitRx` (the SSD). Hashes are sha256.
+All paths are under the data folder (`/Volumes/Untitled/GitRx` in the commands below). Hashes are sha256.
 
 | Artifact | Path | What it is | sha256 |
 |---|---|---|---|

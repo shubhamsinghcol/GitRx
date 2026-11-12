@@ -1,7 +1,6 @@
 # Recurring updates (weekly DailyMed, monthly SrLC)
 
-Approved by the owner 2026-11-11. Collection only: nothing here parses, classifies,
-grades or promotes a release. Plists in `ops/launchd/` are NOT installed by the build.
+For maintainers. These jobs only collect new data; they do not parse, grade or promote a release, and nothing is installed by the build. New data reaches queries only after an explicit rebuild.
 
 ## What runs
 
@@ -47,14 +46,14 @@ Any HTTP 403/429 stops the run at once and writes `BACKOFF-UNTIL` (24 h); later 
 ## Holdout rule (SrLC)
 
 SrLC entries with an approval/supplement date OR Database Updated date after 2026-11-11 are the sealed
-prospective holdout for Freeze 2. Jobs never grade, print or summarize them. Logs carry counts and
+prospective test set for the accuracy check. Jobs never grade, print or summarize them. Logs carry counts and
 fingerprints only; `srlc/updates/holdout/manifest-<run>.json` lists DrugNameIDs, dates, which criterion
 fired, and sha256 fingerprints (no text). The dated gradebook snapshot omits holdout supplements and
 changes (and the per-drug CSV/reconcile rows of drugs that have any), so it cannot be graded against them
-by accident. Raw bodies containing them are kept as evidence in the raw store; do not open them for
-content before the holdout is unsealed by the owner.
+by accident. Raw bodies containing them are kept as evidence in the raw store; do not read them
+until the owner unseals the test set.
 
-## Install (owner, after the rebuild finishes)
+## Install (maintainer, after any rebuild has finished)
 
     mkdir -p ~/Library/Logs/GitRx
     for n in dailymed-weekly srlc-monthly; do

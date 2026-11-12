@@ -1,9 +1,7 @@
-# Repeatable native performance record
+# Performance ledger (for maintainers)
 
-`gitrx_backend.benchmark` measures an explicitly selected small family cohort and
-appends one JSON object to a separate `.jsonl` ledger. It uses configured native
-readers and the shared Query library. It makes no network requests, collects no
-new labels, and does not change evidence, indexes or selected releases.
+`gitrx_backend.benchmark` times a small fixed set of queries and appends one JSON row to a separate `.jsonl` ledger.
+It makes no network requests and changes no data.
 
 ```sh
 .venv/bin/python -B -m gitrx_backend.benchmark \
@@ -12,48 +10,12 @@ new labels, and does not change evidence, indexes or selected releases.
   --phrase seizures --repeat 3 --output reports/performance/runs.jsonl
 ```
 
-Repeat `--setid` for a fixed cohort (maximum 20 families) and `--phrase` for literal
-wording (maximum 10). The backend is required; it never silently switches. Without
-phrases the workload contains only latest exact reads and earliest/latest captured
-version comparisons. For each phrase it also reads the first 50-version history
-page. Exact reads and comparisons use fixed text/record limits. Continuation and
-truncation remain in the recorded results: these timings do **not** represent
-exhaustive history traversal, an all-corpus search, or complete result export.
+Repeat `--setid` (up to 20 families) and `--phrase` (up to 10). The backend (`git` or `sqlite`) must be given; this tool does not read the default rebuild release. The workload is the latest exact reads,
+earliest-versus-latest comparisons, and for each phrase the first 50-version history page, so timings do not represent
+exhaustive traversal or all-corpus search. A new reader startup is timed separately (not cold-disk: OS caches are not cleared).
+Each operation gets one warm-up and then timed repeats; the row keeps each sample, the median, response size, a result digest and peak memory.
 
-One new reader startup is timed separately, including configured index hash
-verification. This is a cold *application reader*, not a cold-disk experiment:
-the tool does not clear OS caches. Each operation gets one unmeasured warm-up,
-then three timed calls by default. The ledger retains each sample, its median,
-serialized result size and a canonical result digest. Process-lifetime high-water
-RSS is recorded in bytes where supported; it includes earlier Python work and
-excludes Git children, so it is neither per-query memory nor a memory budget. It checks repeat answers
-agree. A digest equality is an engineering consistency check, not proof that
-extraction or interpretation is correct.
-
-## Comparable runs
-
-A comparison requires an identical descriptor: selected snapshot, backend and
-Git/meta pin where relevant, metadata/search-projection identities, cache settings,
-workload and bounds, runtime/hardware description, repetition count, timeout,
-cache conditions, and benchmark harness identity. Query software hashes and package
-version are recorded separately so a software change can be measured against its
-previous implementation on the same data. A changed cohort, release, backend or
-harness establishes a new baseline instead of producing a misleading regression.
-
-The baseline is the last comparable ledger row. The default slowdown threshold
-requires **both** a factor greater than 1.5 and an increase greater than 0.1 seconds.
-These tolerances suppress very small timing noise; they are not user-facing SLOs.
-`--regression-ratio` and `--regression-seconds` allow an explicit experiment to use
-other tolerances. Timings include local system noise and are not production p95.
-
-A run is still appended when it finds a regression or changed result digest, and
-the CLI exits 1. Review those findings: a changed schema, policy or intentional answer correction
-can change a digest. This is a review signal, not an established incorrect answer;
-a faster wrong answer is not a successful optimization. An exception
-while measuring produces no completed row. Do not run multiple writers against one
-ledger. The command rejects output inside configured evidence/export roots and
-refuses to append to an existing non-performance JSONL file.
-
-This is an explicitly invoked developer tool, not a scheduler, monitoring daemon,
-capacity test or hosted-service qualification. Existing broader measurements remain
-in their original dated reports; this ledger supplies continuity for future runs.
+Two runs are comparable only if their descriptor matches (release, backend, projections, cache settings, workload, runtime,
+repeat count, timeout). Otherwise the row starts a new baseline. A regression needs both a factor above 1.5 and an increase above 0.1 s
+(`--regression-ratio`, `--regression-seconds` change this). A regression or changed digest still appends the row and exits 1;
+treat it as a signal to review, not proof of a wrong answer. Do not run two writers on one ledger.

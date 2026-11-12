@@ -1,47 +1,28 @@
-# Source register
+# Where the data comes from
 
-This register describes **captured project sources**, not a fresh survey of
-their live behavior. The November 6 admission/export work used retained ZIPs;
-one separate metadata-only history recheck reconfirmed the NALTREXONE anomaly.
-Exact URLs, response times, statuses, headers, hashes
-and original bodies are retained in source stores and evidence ledgers.
+GitRx is built from public sources. Original responses and files are kept so every result can be traced back.
 
-| Source | Role | Important boundary |
+| Source | Used for | Caveat |
 |---|---|---|
-| DailyMed `/services/v2/spls.json` listings | Family discovery and category/listing targets | Current listing is not a complete archived-only universe |
-| DailyMed `/services/v2/spls/{setid}/history.json` | Captured version/publication observations | Multiple dates, pagination changes and listing/history disagreements are retained |
-| DailyMed `getFile.cfm?type=zip&setid=…&version=…` | Ordinary exact-version ZIP route | Internal XML identity is mandatory; a URL/HTTP200 alone is insufficient |
-| DailyMed `getArchivalFile.cfm?archive_id=…` | Captured archive-ID fallback | Its distinct route is recorded; archive membership is not market status |
-| DailyMed published bulk/update files | Alternative original SPL delivery | Member identity, enclosing archive, range-response provenance and source hashes stay linked |
-| Captured openFDA set-ID responses | Independent metadata cross-check during recovery | JSON was not substituted for exact SPL XML/ZIP bytes |
-| FDA section-code vocabulary capture | Code-registry provenance | A code is not proof of context or source coding correctness |
+| DailyMed listing (`/services/v2/spls.json`) | Finding label families | The current listing does not include labels that exist only in the archive |
+| DailyMed history (`/services/v2/spls/{setid}/history.json`) | Which versions exist and when they were posted | Dates can disagree between listing and history; all are kept |
+| DailyMed version download (`getFile.cfm?type=zip`) | The label file (SPL) for an exact version | The XML must identify the expected setid and version; a successful download alone is not enough |
+| DailyMed archive download (`getArchivalFile.cfm`) | Fallback for versions the normal route lacks | Being in the archive says nothing about market status |
+| DailyMed bulk/monthly update files | Another source of original label files | Each file stays linked to the archive it came from |
+| openFDA | Cross-checking metadata during recovery of missing versions | Never used in place of the label file itself |
+| FDA section-code list | Names for section codes | A code does not prove which section a passage belongs to |
+| FDA Drug Safety-related Labeling Changes (SrLC) | The answer key for accuracy checks | Incomplete and sometimes inconsistent; see [SOURCE-DATA-ISSUES](docs/SOURCE-DATA-ISSUES.md) |
 
-The 15 recovered targets came from:
+Fifteen labels that had no direct download were recovered from the
+[DailyMed May 2026 monthly update](https://dailymed-data.nlm.nih.gov/public-release-files/dm_spl_monthly_update_may2026.zip);
+the retained [candidate list](reports/recovery-attempt-20261103/VERIFIED-CANDIDATES.json) and
+[request ledger](reports/recovery-attempt-20261103/evidence/requests.jsonl) show how. Fourteen of
+them appear only in the listing, not in the history endpoint, so a family can have a recovered version without a full history.
 
-[DailyMed May 2026 monthly update](https://dailymed-data.nlm.nih.gov/public-release-files/dm_spl_monthly_update_may2026.zip).
-The retained [candidate manifest](reports/recovery-attempt-20261103/VERIFIED-CANDIDATES.json)
-names each nested ZIP and XML member. The [range-response ledger](reports/recovery-attempt-20261103/evidence/requests.jsonl)
-records actual HTTP206 captures. The supplemental database preserves these
-separately from the offline-extracted member; no direct member HTTP response
-or publication date is invented.
+Out of scope: RxNorm ingredient merging, reconciliation with FDA approvals, OTC-only sources and non-US labels.
 
-Fourteen targets were listing-only at the captured history endpoints. The
-NALTREXONE v1 recovery establishes that version's bytes, not a complete family
-history. Original upstream failures and empty-history responses remain evidence.
+## Attribution
 
-The [November 6 metadata recheck](reports/continuation-20261106/naltrexone-history-recheck/CORRECTED-INTERPRETATION.json)
-returned HTTP200 with a blank source setid and zero history rows. It was not
-accepted as a complete inventory and admitted no additional document.
-
-Future FDA SrLC comparison is a planned independent research input, not a
-source already reconciled into this release. RxNorm identity merging,
-FDA-approval reconciliation, OTC and non-US sources are outside this build.
-
-## Attribution and distribution
-
-The [November 1 licensing-source review](reports/block3b/LICENSING-SUMMARY.md)
-retains official NLM/DailyMed terms and unresolved third-party-rights questions.
-It is a dated research record. This project has not selected a public data
-license or concluded that every labeler-submitted text/image may be redistributed.
-Public packaging needs the applicable attribution, non-endorsement and
-historical-snapshot notices plus the owner's distribution decision.
+Label text is DailyMed/NLM content and is not relicensed by GitRx. Terms and open rights questions are in
+[LICENSING.md](LICENSING.md) and the dated [licensing review](reports/block3b/LICENSING-SUMMARY.md).
+Labeler-submitted text and images may carry their own rights.

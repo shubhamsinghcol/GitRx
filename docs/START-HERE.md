@@ -1,30 +1,22 @@
 # Start here
 
-GitRx preserves DailyMed label versions and lets researchers inspect their captured
-history. Raw bytes and source observations are evidence; Git exports and search
-indexes are derived. Choose a label family by setid, keep release pins in citations,
-and distinguish publication observations from effective dates. Publication of the
-code and data buckets is pending (see the [README](../README.md)); licensing is in
-[LICENSING.md](../LICENSING.md).
+GitRx keeps every captured DailyMed version of drug labels and lets you see how the text changed over time.
+Three ways in:
 
-## Use the product
+| You want to | Use |
+|---|---|
+| Look up one drug's history from a terminal | `./label-history` : [Core workflow](CORE-WORKFLOW.md) |
+| Ask an AI assistant questions about label history | The MCP server : [MCP](../MCP.md) |
+| Analyze everything with `git log`, `git grep` or scripts | The Git export : [Git export](GIT-EXPORT.md) |
 
-- [README](../README.md): scope, buckets, configuration, quick start.
-- [Core workflow](CORE-WORKFLOW.md): resolve, versions, read, compare, literal history.
-- [MCP](../MCP.md): assistant access; [installation](BACKEND-PACKAGING.md).
-- [Limitations](../LIMITATIONS.md): coverage, extraction and interpretation boundaries.
-- [Accuracy in plain language](ACCURACY-IN-PLAIN-LANGUAGE.md), [reasoning](VALIDATION-REASONING.md),
-  [verify it yourself](../VERIFY.md).
+Setup and the first commands are in the [README](../README.md).
 
-## Work on the project
+## Before you trust a result
 
-- [AGENTS](../AGENTS.md): development and evidence rules.
-- [Authoritative parser plan](AUTHORITATIVE-PARSER-PLAN.md), [Step F gap repair](STEP-F-GAP-REPAIR.md),
-  [product roadmap](CORE-PRODUCT-ROADMAP.md).
-- [Document map](DOCUMENT-MAP.md), [repository layout](REPOSITORY-LAYOUT.md),
-  [update jobs](../ops/UPDATES.md), [2026-11-11 cleanup](CLEANUP-2026-11-11.md).
+- [Limitations](../LIMITATIONS.md): what dates mean, what absence means, what is not covered.
+- [How accurate is it?](ACCURACY-IN-PLAIN-LANGUAGE.md), then [VERIFY.md](../VERIFY.md) to re-run the checks.
+- [Where the data comes from](../SOURCES.md) and [known flaws in DailyMed and SrLC](SOURCE-DATA-ISSUES.md).
 
-Code map: shared native behavior lives in `gitrx_backend` (CLI, MCP, queries, readers);
-the parser, change records, rebuild, SrLC grading and update jobs in `gitrx_core`;
-the legacy fixture-release builder used by `gitrx-selftest` in `gitrx` and
-`gitrx_services`. Interfaces use the shared queries.
+## Everything else
+
+The [document map](DOCUMENT-MAP.md) lists all guides, including those for maintainers.

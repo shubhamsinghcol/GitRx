@@ -1,32 +1,46 @@
 # Document map
 
-[Start here](START-HERE.md) is the entry point. This map routes to owning guides;
-dated notes and reports record observations rather than live state.
+## Using GitRx
 
-| Task | Guide |
+| I want to | Read |
 |---|---|
-| Run native queries | [Core workflow](CORE-WORKFLOW.md), [production contract](PRODUCTION-CONTRACT.md) |
-| Use MCP | [MCP](../MCP.md), [discovery](MCP-DISCOVERY.md), [cancellation](MCP-CANCELLATION.md) |
-| Install/configure | [Packaging](BACKEND-PACKAGING.md), [README configuration](../README.md#configuration) |
-| Understand evidence/citations | [Evidence history](EVIDENCE-HISTORY.md), [sources](../SOURCES.md), [limitations](../LIMITATIONS.md) |
-| Inspect wording changes | [Change inspection](CHANGE-INSPECTION.md), [research helpers](RESEARCH-HELPERS.md) |
-| Understand query limits | [Query performance](QUERY-PERFORMANCE.md) |
-| Check accuracy | [Plain language](ACCURACY-IN-PLAIN-LANGUAGE.md), [reasoning](VALIDATION-REASONING.md), [VERIFY](../VERIFY.md), [parser plan](AUTHORITATIVE-PARSER-PLAN.md), [validation correction](VALIDATION-CORRECTION-2026-11-10.md) |
-| Collection and gap repair | [Update jobs](../ops/UPDATES.md), [Step F](STEP-F-GAP-REPAIR.md) |
-| Assess qualification | [Qualification](QUALIFICATION.md), [performance record](PERFORMANCE-RECORD.md) |
-| Recovery | [Evidence recovery and retention](RECOVERY.md) |
-| Deletions and fingerprints | [Deletion proposal and records](DELETION-PROPOSAL-2026-11-11.md), [old release fingerprints](OLD-RELEASE-FINGERPRINTS-1baa5bca.md), [cleanup](CLEANUP-2026-11-11.md) |
-| Plan development | [Core roadmap](CORE-PRODUCT-ROADMAP.md), [contributing](../CONTRIBUTING.md), [AGENTS](../AGENTS.md), [licensing](../LICENSING.md) |
-| Locate files | [Repository layout](REPOSITORY-LAYOUT.md) |
-| Proposed external validation (drafts) | [100-family protocol](VALIDATION-100-FAMILIES-PROTOCOL-DRAFT.md), [local runner](VALIDATION-100-LOCAL-RUNNER.md) |
+| Install and run the first query | [README](../README.md) |
+| Query from the command line | [Core workflow](CORE-WORKFLOW.md) |
+| Use an AI assistant | [MCP](../MCP.md) |
+| Use the Git export | [Git export](GIT-EXPORT.md) |
+| Understand evidence and citations | [Evidence and wording history](EVIDENCE-HISTORY.md) |
+| Know what the data can and cannot show | [Limitations](../LIMITATIONS.md), [Sources](../SOURCES.md), [Known flaws in DailyMed and SrLC](SOURCE-DATA-ISSUES.md) |
+| Understand query limits and paging | [Query limits](QUERY-PERFORMANCE.md) |
+| Report a problem or contribute | [Contributing](../CONTRIBUTING.md), [Security](../SECURITY.md) |
+| Check licensing | [LICENSING](../LICENSING.md) |
 
-## Historical context
+## Validation evidence (for verification)
 
-- [Archived 2026-11-11 guides](history/2026-11-11/README.md): browser, release cycles, backfill,
-  November 6 build status, briefs and earlier roadmaps, pilot MCP guide.
-- [Archived November 8 navigation](history/2026-11-08/START-HERE.md) and
-  [document inventory](history/2026-11-08/DOCUMENT-MAP.md); [DailyMed collection history](history/dailymed/).
-- `reports/` (local evidence workspace): retained experiments, audits, incidents and validation evidence.
+How accurate GitRx is and how to check it. Start with the plain-language page.
 
-Preserve frozen rules, original scoring records and held-out boundaries. An older
-"latest", "running" or "pending" heading does not authorize an action today.
+- [Accuracy in plain language](ACCURACY-IN-PLAIN-LANGUAGE.md)
+- [VERIFY.md](../VERIFY.md): commands and hashes to re-run the checks
+- [Validation reasoning](VALIDATION-REASONING.md): how each number was computed
+- [Authoritative parser plan](AUTHORITATIVE-PARSER-PLAN.md): the pre-registered plan and sealed results
+- [Validation correction, 2026-11-10](VALIDATION-CORRECTION-2026-11-10.md): earlier scores were AI-graded
+- [Step F gap repair](STEP-F-GAP-REPAIR.md)
+- Draft proposals for external validation: [100-family protocol](VALIDATION-100-FAMILIES-PROTOCOL-DRAFT.md), [local runner](VALIDATION-100-LOCAL-RUNNER.md)
+
+## For maintainers
+
+Operating and development notes; users do not need these.
+
+- [Packaging and configuration](BACKEND-PACKAGING.md), [Repository layout](REPOSITORY-LAYOUT.md)
+- [Native contract](PRODUCTION-CONTRACT.md), [Qualification](QUALIFICATION.md), [Performance record](PERFORMANCE-RECORD.md)
+- [Update jobs](../ops/UPDATES.md), [Evidence recovery](RECOVERY.md)
+- [AGENTS.md](../AGENTS.md)
+
+## Project records (maintainers)
+
+Historical records, kept unchanged. A heading such as "latest", "running" or "pending" in an old record
+is not current.
+
+- [Core product roadmap](CORE-PRODUCT-ROADMAP.md)
+- [Cleanup, 2026-11-11](CLEANUP-2026-11-11.md), [deletion proposal](DELETION-PROPOSAL-2026-11-11.md), [old release fingerprints](OLD-RELEASE-FINGERPRINTS-1baa5bca.md)
+- [Archived guides](history/2026-11-11/README.md), [earlier navigation](history/2026-11-08/START-HERE.md), [DailyMed collection history](history/dailymed/)
+- `reports/`: experiments, audits and incident records
