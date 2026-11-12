@@ -29,7 +29,7 @@ All paths are under `/Volumes/Untitled/GitRx` (the SSD). Hashes are sha256.
 |---|---|---|---|
 | Evidence database | `evidence/evidence-v1.sqlite` | Every retained source observation (HTTP ledgers, publication dates, inventory) consolidated from 769 SQLite sources. Raw ZIPs are not inside it. | `823a5bc6c384a5f4529ec76c738ba9120b4010a7cf212462662a641ff72ac3c6` (`evidence/VERIFY.json`) |
 | Raw SPL ZIPs | `backfill-20261107/network/bodies/<sha256>` and `raw-internal-20261111/sha256/<xx>/<sha256>` | The downloaded DailyMed label ZIPs, content-addressed: the file name is the sha256 of the bytes. 487,963 unique ZIPs, 0 hash mismatches at consolidation. | file name |
-| Rebuild (the GitRx change records) | `rebuild/spl-sections-0.2.3__srlc-changes-0.3.2/` | 256 shard SQLite files (`shards/NN.sqlite`, each with `NN.done.json` carrying its sha256 and size), `build-config.json`, `COMPLETE.json`, `runlog.jsonl`. Contains the parsed sections, 328,985 version pairs and 1,493,012 changes of 158,955 setids, derived deterministically from the raw ZIPs by the frozen code. | `COMPLETE.json`: `bbe9223a91eb3a663501d00dea854a5f81a2192c930f015597a5b3b2b9a6869c` |
+| Rebuild (the GitRx change records) | `rebuild/spl-sections-0.2.4__srlc-changes-0.3.2/` | 256 shard SQLite files (`shards/NN.sqlite`, each with `NN.done.json` carrying its sha256 and size), `build-config.json`, `COMPLETE.json`, `runlog.jsonl`. Contains the parsed sections, 329,005 version pairs and 1,493,091 changes of 158,955 setids, derived deterministically from the raw ZIPs by the frozen code. | `COMPLETE.json`: `8dc88e7a55831af605dbedd2a2b3bccdbd6575d51eaacb62c75c399975ce644b` (older builds, selectable with `quick --build 0.2.3-delta` / `0.2.3`: `69db2791...`, `bbe9223a...`) |
 | SrLC raw pages | `srlc/raw/sha256/<xx>/<sha256>` + `srlc/ledger.sqlite` | The FDA SrLC pages exactly as fetched (3,278 detail pages, 1,548 per-drug CSVs, 136 enumeration pages); the ledger records URL, time and HTTP status per request. | file name |
 | SrLC gradebook | `srlc/gradebook.sqlite` | Parsed SrLC: 3,278 drugs, 11,167 supplements, 40,562 change rows with their underlined spans. Built by `gitrx_core/srlc.py` from the raw pages. | `863aea6712ed024fb49456d4a155337bb503d12cad4bf347c3ed46e04b896db4` |
 | Sealed/open split | `srlc/split.json` | 3,278 DrugNameIDs: 983 sealed, 2,295 open, seed 20261111. Fingerprints were committed before any grading. | `45725c78830a4a5a657bd92bf3f01d6d85580a3f8f4abd23d56ae82b664750a9` |
@@ -121,7 +121,7 @@ from gitrx_core import changes, rebuild, spl_parser
 
 SSD = "/Volumes/Untitled/GitRx"
 SETID, VA, VB = "da1e5afd-d707-4af1-8935-8195ba6d769f", 8, 9   # any pair from the rebuild
-REB = SSD + "/rebuild/spl-sections-0.2.3__srlc-changes-0.3.2"
+REB = SSD + "/rebuild/spl-sections-0.2.4__srlc-changes-0.3.2"
 
 def raw_zip(sha):                                              # raw ZIPs are stored under their own sha256
     for p in (SSD + "/backfill-20261107/network/bodies/" + sha,

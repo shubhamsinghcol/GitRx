@@ -243,3 +243,25 @@ families matters, a further 500 probes of that stratum alone (about 17 minutes) 
 needed for any current product path. Keep the 55 listing-only 404s and the NALTREXONE history as unknown (re-check at most
 quarterly). A better use of effort is the 26 parser-unreadable versions above, which are in hand and need only a new
 versioned parser (large-depth XML), not more collection.
+
+## 8. The 26 unreadable versions are now parsed (parser spl-sections-0.2.4, 2026-11-12, owner-approved)
+
+Section 6 left 26 admitted versions as `extraction_defect` (XML nesting deeper than 256). Parser `spl-sections-0.2.4`
+is `0.2.3` plus only `huge_tree=True` (entity/DTD/network handling unchanged, see Freeze 2.1 in
+[AUTHORITATIVE-PARSER-PLAN](AUTHORITATIVE-PARSER-PLAN.md)). Full rebuild
+`rebuild/spl-sections-0.2.4__srlc-changes-0.3.2/` (COMPLETE sha256
+`8dc88e7a55831af605dbedd2a2b3bccdbd6575d51eaacb62c75c399975ce644b`, names index
+`1b54fe9ff866252ef2e1af528ff608349d17993d358632b4d73f74fb7802e3e4`) is now the default
+(`runtime/native-config-rebuild-0.2.4.json`; the 0.2.3 configs stay selectable). Proof: `DELTA-PROOF-0.2.4.json` in the build
+directory. Of 487,960 versions with retained raw, 487,934 give identical parser output (version string normalized) and
+the 26 changed from `extraction_defect` to `complete`; rows differ from the 0.2.3 delta build only in the 21 affected
+families; the 21 pairs that were `not_comparable` because of them are now `ok`; the 19 affected shards rebuild
+byte-identically; 100/100 pair records re-derived from raw match.
+
+| Count | 0.2.3 delta build | 0.2.4 build |
+|---|---|---|
+| `no_raw` | 56 | 56 |
+| `extraction_defect` | 26 | **0** |
+| `complete` | 400,962 | 400,988 |
+| pairs / `not_comparable` pairs | 329,005 / 28 | 329,005 / 7 |
+| change records | 1,493,011 | 1,493,091 |

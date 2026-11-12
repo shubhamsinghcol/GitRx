@@ -16,7 +16,7 @@ from lxml import etree
 
 from .normalize import WHITE_SPACE, normalize
 
-PARSER_VERSION = "spl-sections-0.2.3"
+PARSER_VERSION = "spl-sections-0.2.4"
 NORMALIZATION = "literal-v1"
 HL7 = "urn:hl7-org:v3"
 NS = {"s": HL7}
@@ -596,8 +596,15 @@ def check_order(narr, pos, what):
 # --------------------------------------------------------------------------- document
 
 def read_xml(body):
+    # 0.2.4: huge_tree=True (libxml2 XML_PARSE_HUGE) lifts only libxml2's size/depth safety limits (element nesting
+    # of 256, 10 MB text nodes, name/dictionary sizes) so legitimately deep SPL parses.  It does not enable entity
+    # or DTD processing: resolve_entities=False (no XML_PARSE_NOENT, so entity references are never expanded and
+    # no entity text is substituted), load_dtd=False and no_network=True (no external DTD/entity fetch, hence no
+    # XXE and no network access) stay as in 0.2.3, and the check below still rejects any DTD/entity-bearing
+    # document before it is interpreted.  The only exposure is memory use on pathological input, which is
+    # bounded by the retained raw file size.
     parser = etree.XMLParser(resolve_entities=False, no_network=True, load_dtd=False,
-                             recover=False, remove_blank_text=False, huge_tree=False)
+                             recover=False, remove_blank_text=False, huge_tree=True)
     root = etree.fromstring(body, parser=parser)
     if root.getroottree().docinfo.doctype or any(isinstance(x, etree._Entity) for x in root.iter()):
         raise ValueError("DTD/entity-bearing XML is retained but not interpreted")

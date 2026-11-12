@@ -5,7 +5,7 @@
     tools/verify_gitrx.py full  --out DIR   [--workers N] [--rebuild-pilot]
 
 quick (minutes): sha256 of the kept evidence/gradebook/split/index/rebuild artifacts and all rebuild shards,
-sealed-split fingerprints (including the seeded re-draw), frozen code hashes against the Freeze 2 declaration,
+sealed-split fingerprints (including the seeded re-draw), frozen code hashes against the Freeze 2 declaration (spl_parser against Freeze 2.1),
 N seeded change records re-derived from raw ZIPs, one SrLC fragment traced end to end, and the summary metrics and
 precision recomputed from the kept grading jsonl.
 
@@ -46,9 +46,17 @@ EXPECTED_FILES = {   # name -> (path under SSD, full sha256 from docs/AUTHORITAT
     "split.json": ("srlc/split.json", "45725c78830a4a5a657bd92bf3f01d6d85580a3f8f4abd23d56ae82b664750a9"),
     "index-allversions.sqlite": ("srlc/grading/cache/index-allversions.sqlite",
                                  "a5739f4d8a9e484901d201311f83a64f3a6eafc734ebfb4eddb5ae54ab3243e7"),
-    "rebuild COMPLETE.json": ("rebuild/spl-sections-0.2.3__srlc-changes-0.3.2/COMPLETE.json",
-                              "bbe9223a91eb3a663501d00dea854a5f81a2192c930f015597a5b3b2b9a6869c"),
 }
+# Rebuild releases that can be verified (default: the newest).  `parser` is the parser version the build was made with.
+BUILDS = {
+    "0.2.4": {"dir": "rebuild/spl-sections-0.2.4__srlc-changes-0.3.2", "parser": "spl-sections-0.2.4",
+              "complete_sha256": "8dc88e7a55831af605dbedd2a2b3bccdbd6575d51eaacb62c75c399975ce644b"},
+    "0.2.3-delta": {"dir": "rebuild/spl-sections-0.2.3__srlc-changes-0.3.2__delta-20261111", "parser": "spl-sections-0.2.3",
+                    "complete_sha256": "69db2791bad3ca2dca4d211bc738603700fe3b5d7dda49da71f85988e78c4c2a"},
+    "0.2.3": {"dir": "rebuild/spl-sections-0.2.3__srlc-changes-0.3.2", "parser": "spl-sections-0.2.3",
+              "complete_sha256": "bbe9223a91eb3a663501d00dea854a5f81a2192c930f015597a5b3b2b9a6869c"},
+}
+DEFAULT_BUILD = "0.2.4"
 EXPECTED_SPLIT = {   # fingerprints declared in the plan before any grading
     "population_sha256": "b065c433be0b393db3b734bdbfe61ea5b319d86cf0eee46f1681b85f9c2f03f0",
     "sealed_sha256": "354025929110b2c565129d565b2ddcdc6ab7e5bc7a9d889f0ba4a241e897d894",
@@ -115,6 +123,11 @@ def sha256_file(path, chunk=1 << 23):
 def ro(path):
     """Read-only, immutable SQLite connection (creates no -wal/-shm/-journal files)."""
     return sqlite3.connect("file:%s?mode=ro&immutable=1" % path, uri=True)
+
+
+def spl_parser_version():
+    from gitrx_core import spl_parser
+    return spl_parser.PARSER_VERSION
 
 
 def check_ssd(ssd):
@@ -185,11 +198,18 @@ def parse_freeze(plan_text, heading_prefix):
     return {a: b for a, b in re.findall(r"^- (\w+\.py) ([0-9a-f]{64})\s*$", m.group(1), re.M)}
 
 
-def check_frozen_code(rep, repo=REPO, plan_path=PLAN_DOC, heading="Freeze 2 — sealed rerun"):
+def check_frozen_code(rep, repo=REPO, plan_path=PLAN_DOC, heading="Freeze 2 — sealed rerun",
+                      amend_heading="Freeze 2.1 — parser spl-sections-0.2.4"):
+    """Freeze 2 declares every module; Freeze 2.1 (if the plan has it) replaces only the hashes it lists (spl_parser)."""
     text = open(plan_path, encoding="utf-8").read()
     decl = parse_freeze(text, heading)
     rep.ok("Freeze 2 declaration parsed from plan", len(decl) == len(FROZEN_MODULES) and set(decl) == set(FROZEN_MODULES),
            "%d module hashes" % len(decl))
+    amend = parse_freeze(text, amend_heading) if amend_heading else {}
+    if amend:
+        rep.ok("Freeze 2.1 declaration parsed from plan", set(amend) <= set(FROZEN_MODULES) and "spl_parser.py" in amend,
+               "%d module hashes (%s)" % (len(amend), ", ".join(sorted(amend))))
+    decl = {**decl, **amend}
     for name in FROZEN_MODULES:
         p = os.path.join(repo, "gitrx_core", name)
         got = sha256_file(p) if os.path.exists(p) else None
@@ -202,7 +222,7 @@ def check_versions(rep):
     from gitrx_core import changes, section_groups, spl_parser
     from gitrx_core import srlc_grade
     got = (spl_parser.PARSER_VERSION, section_groups.GROUPS_VERSION, changes.CHANGES_VERSION, srlc_grade.HARNESS_VERSION)
-    rep.ok("code versions", got == ("spl-sections-0.2.3", "srlc-groups-0.3.0", "srlc-changes-0.3.2", "srlc-grade-0.3.2"),
+    rep.ok("code versions", got == ("spl-sections-0.2.4", "srlc-groups-0.3.0", "srlc-changes-0.3.2", "srlc-grade-0.3.2"),
            " / ".join(got))
 
 
@@ -240,8 +260,16 @@ def check_shards(rep, rebuild_dir, skip=False):
            and tot["changes"] == c["changes"] and tot["families"] == c["families"],
            "setids %d pairs %d changes %d" % (tot["setids"], tot["pairs"], tot["changes"]))
     from gitrx_core import rebuild as R
-    rep.ok("COMPLETE.json frozen_code_sha256 equals this repo's frozen modules",
-           all(comp["config"]["frozen_code_sha256"].get(n) == h for n, h in R.code_hashes().items()))
+    recorded = comp["config"]["frozen_code_sha256"]
+    mine = R.code_hashes()
+    if comp["config"]["versions"]["parser"] == R.EXPECTED_VERSIONS["parser"]:
+        rep.ok("COMPLETE.json frozen_code_sha256 equals this repo's frozen modules",
+               all(recorded.get(n) == h for n, h in mine.items()))
+    else:   # an older build made with the previous parser: every other frozen module must still be the same
+        rep.ok("COMPLETE.json (older parser %s) frozen modules other than spl_parser.py equal this repo's" %
+               comp["config"]["versions"]["parser"],
+               all(recorded.get(n) == h for n, h in mine.items() if n != "spl_parser.py")
+               and recorded.get("spl_parser.py") != mine["spl_parser.py"])
     return comp
 
 
@@ -516,23 +544,31 @@ def quick(args):
     rep = Report()
     t0 = time.time()
     gdir = os.path.join(ssd, "srlc", "grading")
-    rebuild_dir = os.path.join(ssd, "rebuild", "spl-sections-0.2.3__srlc-changes-0.3.2")
+    build = BUILDS[args.build]
+    rebuild_dir = os.path.join(ssd, build["dir"])
     print("== 1. frozen code and versions")
     check_frozen_code(rep)
     check_versions(rep)
     print("== 2. artifact hashes")
     check_file_hashes(rep, ssd, skip_big=args.skip_big_hashes)
+    check_file_hashes(rep, ssd, {"rebuild COMPLETE.json (%s)" % args.build: (build["dir"] + "/COMPLETE.json",
+                                                                              build["complete_sha256"])})
     print("== 3. sealed split fingerprints")
     check_split(rep, os.path.join(ssd, "srlc", "split.json"), redraw_root=os.path.join(ssd, "srlc"))
     print("== 4. rebuild shards")
     check_shards(rep, rebuild_dir, skip=args.skip_big_hashes)
-    print("== 5. re-derive %d seeded change records from raw ZIPs" % args.records)
-    resolve = make_resolver(ssd, os.path.join(gdir, "cache", "index-allversions.sqlite"))
-    good, n = rederive_records(rep, rebuild_dir, resolve, args.records, args.seed)
-    rep.ok("re-derived records identical", good == n, "%d of %d" % (good, n))
+    older = build["parser"] != spl_parser_version()
+    if older:   # records embed the parser version; re-deriving needs that parser, which is no longer the checked-out code
+        rep.add("re-derive records", "skipped", "build made with %s; this checkout has %s" % (build["parser"], spl_parser_version()))
+        rep.add("trace 5", "skipped", "same reason")
+    else:
+        print("== 5. re-derive %d seeded change records from raw ZIPs" % args.records)
+        resolve = make_resolver(ssd, os.path.join(gdir, "cache", "index-allversions.sqlite"))
+        good, n = rederive_records(rep, rebuild_dir, resolve, args.records, args.seed)
+        rep.ok("re-derived records identical", good == n, "%d of %d" % (good, n))
     print("== 6. trace one SrLC fragment end to end (open split)")
     try:
-        trace_fragment(rep, ssd, os.path.join(gdir, OPEN_F2 % "either"), args.seed, rebuild_dir)
+        trace_fragment(rep, ssd, os.path.join(gdir, OPEN_F2 % "either"), args.seed, None if older else rebuild_dir)
     except Exception as exc:  # noqa: BLE001
         rep.add("trace", "fail", "%s: %s" % (type(exc).__name__, exc))
     print("== 7. kept grading outputs: declared summary hashes, metrics and precision recomputed from jsonl")
@@ -685,6 +721,8 @@ def main(argv=None):
         sp.add_argument("--workers", type=int, default=3)
         if name == "quick":
             sp.add_argument("--records", type=int, default=20, help="seeded change records to re-derive from raw")
+            sp.add_argument("--build", choices=sorted(BUILDS), default=DEFAULT_BUILD,
+                            help="rebuild release to verify (default %s)" % DEFAULT_BUILD)
             sp.add_argument("--skip-big-hashes", action="store_true", help="skip files > 1 GiB and shard hashing")
         else:
             sp.add_argument("--rebuild-pilot", action="store_true")

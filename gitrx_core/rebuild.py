@@ -1,6 +1,6 @@
 """Step E: full, deterministic rebuild of every captured DailyMed version from raw evidence.
 
-Frozen code (Freeze 2, commit 34ff8d0): spl_parser (spl-sections-0.2.3), section_groups (srlc-groups-0.3.0),
+Frozen code (Freeze 2.1; groups/changes/normalize from Freeze 2, commit 34ff8d0): spl_parser (spl-sections-0.2.4), section_groups (srlc-groups-0.3.0),
 changes (srlc-changes-0.3.2), normalize.  This module only orchestrates them; it never modifies them and refuses
 to run when any of the four files differs from FROZEN_SHA256.
 
@@ -44,13 +44,13 @@ import zlib
 
 FORMAT = "gitrx-rebuild-1"
 FROZEN_SHA256 = {
-    "spl_parser.py": "2bffee02825edf82e97a6373a45e8fdab40c7d3f39f8ed95edcdeccde6468853",
+    "spl_parser.py": "7477e225d9ef2b07dc144cb56c538c607a662ab898ac7ac719baafdb3849cefe",
     "section_groups.py": "f1a2684d4d1aead3d2c42ff8b89b90495513cb1877ae9dd0af2381774a538b80",
     "changes.py": "9b0bc06db5adaffd38d5a1099db50a4fd4ddfddca4d9fb3a1cf1fbac02e11c95",
     "normalize.py": "4a613040e6f1660d917f955ebea194b6084765a121e28e5caef3d45be886d12b",
 }
-EXPECTED_VERSIONS = {"parser": "spl-sections-0.2.3", "groups": "srlc-groups-0.3.0", "changes": "srlc-changes-0.3.2"}
-OUT_NAME = "spl-sections-0.2.3__srlc-changes-0.3.2"
+EXPECTED_VERSIONS = {"parser": "spl-sections-0.2.4", "groups": "srlc-groups-0.3.0", "changes": "srlc-changes-0.3.2"}
+OUT_NAME = "spl-sections-0.2.4__srlc-changes-0.3.2"
 DEFAULT_OUT = "/Volumes/Untitled/GitRx/rebuild/" + OUT_NAME
 DEFAULT_EVIDENCE = "/Volumes/Untitled/GitRx/evidence/evidence-v1.sqlite"
 DEFAULT_MANIFEST = ("/private/tmp/claude-502/-Users-shubham-Desktop-GitRx/b81b1d09-9a13-41a3-9d0c-882a73ea8595/"

@@ -284,3 +284,59 @@ No tuning on these results. Independent confirmation of Freeze 2 requires the fr
   word-level diff aligned "or to" with existing tokens.
 - Excluding SrLC self-contradicting rows: BW 283/285 (99.3%), C 272/273 (99.6%). Any-group text
   recall is 100% for both groups. Not a structural parser defect; reported, not used to tune.
+
+
+## Freeze 2.1 — parser spl-sections-0.2.4 (depth limit only) (2026-11-12), declared before the new build was used
+Owner-approved 2026-11-12. The only code change from Freeze 2 is in `spl_parser.py`: PARSER_VERSION
+`spl-sections-0.2.4` and `huge_tree=True` in the lxml XML parser (libxml2 `XML_PARSE_HUGE`), which lifts the
+element-nesting limit of 256 (and the 10 MB text-node and dictionary limits) so the 26 delta-admitted versions that
+0.2.3 rejected with "Excessive depth in document: 256" can be parsed. `resolve_entities=False`, `no_network=True`,
+`load_dtd=False` and the rejection of DTD/entity-bearing documents are unchanged (huge_tree does not enable entity
+expansion or any DTD/network access); new tests cover a >256-deep SPL and entity/XXE/entity-bomb inputs. The condition
+of approval: every existing output is identical apart from the version identifier fields, otherwise stop. Nothing
+else in `groups` (srlc-groups-0.3.0), `changes` (srlc-changes-0.3.2), `normalize` or the grading harness
+(srlc-grade-0.3.2) changed. Uncommitted at declaration time; the code hashes below identify the code.
+Code sha256 (only spl_parser.py differs from Freeze 2):
+- spl_parser.py 7477e225d9ef2b07dc144cb56c538c607a662ab898ac7ac719baafdb3849cefe
+- normalize.py 4a613040e6f1660d917f955ebea194b6084765a121e28e5caef3d45be886d12b
+- section_groups.py f1a2684d4d1aead3d2c42ff8b89b90495513cb1877ae9dd0af2381774a538b80
+- changes.py 9b0bc06db5adaffd38d5a1099db50a4fd4ddfddca4d9fb3a1cf1fbac02e11c95
+- srlc_grade.py 26c40e528240bea241bedb75d82c15a7e587a293a483a5294e09bed9becb88e9
+- srlc.py 99702e2aee1d9bbdca59c20a2445872d82a7441965b1e36ee9923bc9e10179b9
+- srlc_split.py b8509beb71895874a14702a83184f8bd348426ff7bedb70874f1729e12343a79
+Also: `rebuild.py` d4e62f3cf6cf89369180a64509dc794d5a0bab0e8f2be2db0af08080400ee137 (frozen-hash table, expected parser version and OUT_NAME updated for
+spl_parser only), proof tools `rebuild_parser_proof.py` 68bf2194e1849b498cbdcf483d73e2d730562fddc387dfd5c8696f929b36306b and
+`rebuild_diff_proof.py` f6c97d5ca4adaec1f096e7c0c326b697d119893fe7ff013efea416c3ab8a1a70.
+
+### Proof (all in `rebuild/spl-sections-0.2.4__srlc-changes-0.3.2/DELTA-PROOF-0.2.4.json`, ok = true)
+Normalization: the parser output hash embeds the parser version string, so exactly that field (and, in pair records,
+`parser_version` / `from_parser_version`) is replaced by `spl-sections-0.2.3` and the embedding hashes recomputed or
+mapped to the base build's value before comparing. Nothing else is normalized.
+- Version level, all 488,016 inventory versions (evidence-v1 + delta; parser run over the retained raw ZIPs against the
+  stored parser output of the 0.2.3 delta build): 487,960 have retained raw; **487,934 identical** (status, normalized
+  output hash, section count); the 26 differences are exactly the 26 delta-admitted versions, all
+  `extraction_defect` -> `complete`; 56 `no_raw` rows unchanged.
+- New build `spl-sections-0.2.4__srlc-changes-0.3.2` (full rebuild of 256 shards, 158,955 families, frozen-code check
+  passed; COMPLETE.json sha256 `8dc88e7a55831af605dbedd2a2b3bccdbd6575d51eaacb62c75c399975ce644b`; names index
+  `1b54fe9ff866252ef2e1af528ff608349d17993d358632b4d73f74fb7802e3e4`): row-level diff against the 0.2.3 delta build
+  (all tables, EXCEPT in both directions, hash columns normalized as above): rows differ only in the 21 families that hold
+  an admitted version and only for rows involving an admitted version; 328,984 of 329,005 pair records are identical
+  after normalization (including the stored change content: spans, groups, kinds, flags), the other 21 are the pairs
+  that span an admitted version (not_comparable -> ok); 0 pairs only in one build; no text lost, 245 texts added;
+  every parsed version's output hash differs only through the version string (487,960 changed, 0 unchanged).
+  Counts: status complete 400,962 -> 400,988, extraction_defect 26 -> 0, no_raw 56 -> 56, not_comparable pairs 28 -> 7,
+  change records 1,493,011 -> 1,493,091 (+80), pairs 329,005 -> 329,005.
+- Determinism: the 19 affected shards were built a second time from scratch (separate directory, kept as
+  `spl-sections-0.2.4__srlc-changes-0.3.2.DETERMINISM-SECOND-BUILD`); all 19 byte-identical to the first build.
+- Re-derivation from raw: 100 seeded pair records (including all 21 newly comparable pairs) re-derived with the frozen
+  `compare_docs`: 100/100 record hashes identical.
+
+### Freeze 2 sealed and open results carry over
+The kept Freeze 2 graded runs (SEALED and open, modes either and primary) used 18,841 distinct
+(setid, version) pairs (candidate pairs and windows from the kept `rows.jsonl` and the pair versions of `fragments.jsonl`)
+in 4,976 candidate setids. All 18,841 versions are present in the new build; none is among the
+26 changed versions, and none of the candidate setids belongs to the 21 affected families, so every graded version
+(indeed every version of every graded family) has an identical 0.2.4 output apart from the version string. The
+Freeze 2 sealed/open results (sealed text 98.30%, section 99.64%, "seen" for the uncoded-box rule) therefore carry over
+unchanged to 0.2.4; they were not re-run and 0.2.4 gives no new accuracy evidence. Only the (setid, version) identifiers of the kept sealed rows were read for this check (no sealed answers or grades
+were examined, the sealed set was not graded again) and no tuning happened. Marker: `srlc/grading/FROZEN-spl-sections-0.2.4.json`.

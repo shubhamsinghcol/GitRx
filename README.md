@@ -37,8 +37,9 @@ tranche1 "59/60" and "60/60" scores were AI-graded and are not validation
   [AUTHORITATIVE-PARSER-PLAN](docs/AUTHORITATIVE-PARSER-PLAN.md).
 - **Rebuild:** `gitrx_core.rebuild` deterministically rebuilds a release from retained
   raw artifacts plus the evidence database. Default release:
-  `spl-sections-0.2.3__srlc-changes-0.3.2` (158,955 families / 488,016 captured versions,
-  82 without retained raw; snapshot = SHA-256 of its `COMPLETE.json`, `bbe9223a...`).
+  `spl-sections-0.2.4__srlc-changes-0.3.2` (158,955 families / 488,016 captured versions,
+  56 without retained raw; snapshot = SHA-256 of its `COMPLETE.json`, `8dc88e7a...`;
+  config `runtime/native-config-rebuild-0.2.4.json`; older builds stay selectable).
 - **CLI and MCP:** `label-history`, `label-history-mcp` (installed: `gitrx-native`,
   `gitrx-native-mcp`) over `gitrx_backend`. See [MCP.md](MCP.md) and
   [the workflow](docs/CORE-WORKFLOW.md).

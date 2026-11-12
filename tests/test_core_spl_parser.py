@@ -338,7 +338,11 @@ def test_real_fixture_golden(name):
     d = P.parse(xml)
     assert d["source_sha256"] == exp["xml_sha256"] and hashlib.sha256(xml).hexdigest() == exp["xml_sha256"]
     assert d["status"] == exp["status"] and len(d["sections"]) == exp["sections"]
-    assert d["content_sha256"] == exp["content_sha256"]
+    # The 0.2.3 goldens are kept verbatim.  0.2.4 differs only in the parser_version field (and therefore the hash
+    # that embeds it): normalize exactly that field back to 0.2.3 and the output hash must equal the 0.2.3 golden.
+    assert d["parser_version"] == "spl-sections-0.2.4"
+    d["parser_version"] = "spl-sections-0.2.3"
+    assert P.content_hash(d) == exp["content_sha256"]
     assert d["setid"] == exp["setid"] and d["version"] == exp["version"]
     assert d["bucket_total"] == sum(d["buckets"].values())
 
@@ -524,8 +528,40 @@ def test_invariants_do_not_fire_on_clean_inputs():
 
 # ---------------------------------------------------------------- 0.2.1 regressions (full-corpus sweep)
 
-def test_version_is_023():
-    assert P.PARSER_VERSION == "spl-sections-0.2.3"
+def test_version_is_024():
+    assert P.PARSER_VERSION == "spl-sections-0.2.4"
+
+
+def _deep(levels):
+    inner = "<paragraph>deep text</paragraph>"
+    body = sec("34067-9", "Deep", inner)
+    for _ in range(levels):
+        body = f"<component>{body}</component>"
+    return doc(f"<component><structuredBody>{body}</structuredBody></component>")
+
+
+def test_024_deeply_nested_spl_parses():
+    """0.2.3 failed with 'Excessive depth in document: 256'; 0.2.4 lifts only that limit (huge_tree)."""
+    d = P.parse(_deep(300))
+    assert d["status"] != "extraction_defect", d["diagnostics"]
+    assert d["sections"] and "deep text" in json.dumps(d["sections"])
+
+
+def test_024_entities_still_not_expanded():
+    xml = (b'<!DOCTYPE document [<!ENTITY e "SECRET">]><document xmlns="urn:hl7-org:v3">&e;</document>')
+    d = P.parse(xml)
+    assert d["status"] == "extraction_defect" and "SECRET" not in json.dumps(d)
+    # billion-laughs style nesting, with and without depth: rejected quickly, never expanded
+    bomb = (b'<!DOCTYPE d [<!ENTITY a "aaaaaaaaaa"><!ENTITY b "&a;&a;&a;&a;&a;&a;&a;&a;&a;&a;">'
+            b'<!ENTITY c "&b;&b;&b;&b;&b;&b;&b;&b;&b;&b;">]><document xmlns="urn:hl7-org:v3">&c;</document>')
+    d = P.parse(bomb)
+    assert d["status"] == "extraction_defect" and len(json.dumps(d)) < 5000
+    # external entity / DTD: not loaded, not fetched
+    xxe = (b'<!DOCTYPE d [<!ENTITY x SYSTEM "file:///etc/passwd">]><document xmlns="urn:hl7-org:v3">&x;</document>')
+    d = P.parse(xxe)
+    assert d["status"] == "extraction_defect" and "root:" not in json.dumps(d)
+    with pytest.raises(ValueError):
+        P.read_xml(xxe)
 
 
 def test_media_caption_inside_table_cell_is_conserved():

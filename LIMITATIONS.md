@@ -1,7 +1,7 @@
 # Current limitations
 
 - **Default release:** the Step E rebuild (158,955 families / 488,016 versions;
-  82 versions have no retained raw and no text) reads from an external SSD; if
+  56 versions have no retained raw and no text) reads from an external SSD; if
   it is absent queries fail rather than fall back. Parser/section scores
   (Freeze 2 sealed: text 98.30%, section 99.64%, uncoded-box rule "seen") are
   not independent validation; the independent holdout is pending. Change

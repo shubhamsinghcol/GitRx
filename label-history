@@ -2,7 +2,7 @@
 set -eu
 GITRX_PROJECT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$GITRX_PROJECT"
-# Default: the pinned Step E rebuild plus the 2026-11-11 delta (parser spl-sections-0.2.3; previous pin runtime/native-config-rebuild-0.2.3.json). No silent fallback to an older
+# Default: the pinned 2026-11-12 rebuild (parser spl-sections-0.2.4; previous pins runtime/native-config-rebuild-0.2.3-delta-20261111.json and runtime/native-config-rebuild-0.2.3.json). No silent fallback to an older
 # release: select one explicitly, e.g. GITRX_CONFIG=runtime/native-config.json (release1, retained).
-GITRX_DEFAULT_CONFIG="$GITRX_PROJECT/runtime/native-config-rebuild-0.2.3-delta-20261111.json"
+GITRX_DEFAULT_CONFIG="$GITRX_PROJECT/runtime/native-config-rebuild-0.2.4.json"
 exec "$GITRX_PROJECT/.venv/bin/python" -B -m gitrx_backend.cli --config "${GITRX_CONFIG:-$GITRX_DEFAULT_CONFIG}" "$@"
