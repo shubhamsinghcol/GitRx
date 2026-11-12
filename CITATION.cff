@@ -1,13 +1,14 @@
 cff-version: 1.2.0
 message: "If you use GitRx software or data, please cite it as below."
-title: "GitRx: an SrLC-validated, version-by-version archive of DailyMed drug-label changes"
+title: "GitRx: SrLC, fixed and expanded - DailyMed drug-label change history in Git"
 type: software
 authors:
   - family-names: Singh
     given-names: Shubham
     orcid: "https://orcid.org/0000-0002-0091-7391"
 license: Apache-2.0
-date-released: "2026-11-11"
+version: "0.2.4"
+date-released: "2026-11-12"
 keywords:
   - drug labeling
   - DailyMed
