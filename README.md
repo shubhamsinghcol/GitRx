@@ -15,6 +15,15 @@ artifacts, not files bundled with this source checkout. A clean source checkout
 can run `gitrx-selftest` offline after installing dependencies; real label queries
 require a separately supplied pinned archive configuration.
 
+**How accurate is it, in plain terms?** Checked against FDA's own list of
+drug-safety label changes: when FDA's new wording appears in a DailyMed label
+version, GitRx catches it in the right section about 98 times out of 100. Starting
+from FDA's whole list, GitRx shows the change in DailyMed around FDA's approval date
+94 times out of 100 by section and 79 by exact wording. The gap is mostly because
+DailyMed and FDA keep different clocks and DailyMed lacks some label versions.
+About 80 of every 100 changes GitRx reports are on FDA's list (87 allowing for
+timing). See [plain-language accuracy](docs/ACCURACY-IN-PLAIN-LANGUAGE.md).
+
 **Default release (from 2026-11-11):** the Step E deterministic rebuild
 `spl-sections-0.2.3__srlc-changes-0.3.2` (158,955 families / 488,016 captured
 versions, 82 without retained raw; snapshot id = SHA-256 of its COMPLETE.json,
