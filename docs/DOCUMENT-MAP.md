@@ -10,6 +10,7 @@
 | Use the Git export | [Git export](GIT-EXPORT.md) |
 | Understand evidence and citations | [Evidence and wording history](EVIDENCE-HISTORY.md) |
 | Know what the data can and cannot show | [Limitations](../LIMITATIONS.md), [Sources](../SOURCES.md), [Known flaws in DailyMed and SrLC](SOURCE-DATA-ISSUES.md) |
+| See figures on dates, coverage and SrLC | [Figures](figures/README.md) |
 | Understand query limits and paging | [Query limits](QUERY-PERFORMANCE.md) |
 | Report a problem or contribute | [Contributing](../CONTRIBUTING.md), [Security](../SECURITY.md) |
 | Check licensing | [LICENSING](../LICENSING.md) |

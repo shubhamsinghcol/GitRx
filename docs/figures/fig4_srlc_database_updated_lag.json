@@ -1,0 +1,32 @@
+{
+ "bins": [
+  "< 0",
+  "0",
+  "1 to 7",
+  "8 to 30",
+  "31 to 90",
+  "91 to 365",
+  "> 365"
+ ],
+ "caption": "Supplement-weighted, 10,203 SrLC supplements with both dates. Median 5 days; 82 more than 90 days, 9 more than a year, maximum 1,349; 33 show an update date before the approval date (red). This is the gap between two SrLC fields, not an FDA approval delay or a risk-recognition delay; it shows only that SrLC is incomplete for recent periods.",
+ "counts": [
+  33,
+  59,
+  8031,
+  1777,
+  221,
+  73,
+  9
+ ],
+ "inputs": {
+  "gradebook_sqlite_sha256": "863aea6712ed024fb49456d4a155337bb503d12cad4bf347c3ed46e04b896db4",
+  "table": "search_hits (suppl_date_iso, database_updated_iso)"
+ },
+ "max_days": 1349,
+ "median_days": 5,
+ "n_over_365_days": 9,
+ "n_over_90_days": 82,
+ "n_supplements": 10203,
+ "n_updated_before_approval": 33,
+ "unit": "SrLC supplements with an approval date and a Database Updated date (supplement-weighted; all drugs, not split-specific; this is a source property, not a grading result)"
+}

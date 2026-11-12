@@ -1,0 +1,42 @@
+{
+ "caption": "Fragment-weighted. Sealed split (published figures): 3,344 never present, 3,169 present from the first captured version, 1,203 with a transition outside the window, of 25,315 (30.5% not locatable). Open split: 34.2% of 59,324. Not-locatable fragments say nothing about parser accuracy. Locatability depends on where captured history starts and on SrLC text differing from the label.",
+ "inputs": {
+  "srlc_open_summary_sha256": "02f9b979a001934c86ec9b533595126204cbabfd655ba2a3a16f19c06cb00d6f",
+  "validation_reasoning_md_sha256": "18e11187d3630c2156e0739e28ee0a12b2138e8ae940d93768713bd048067836"
+ },
+ "splits": {
+  "open split (grading summary.json)": {
+   "located": 39027,
+   "not_locatable": {
+    "never present in any captured version": 10062,
+    "present from the first captured version": 7207,
+    "transition outside [-730 d, +365 d] of approval": 3028
+   },
+   "pct_located": 65.8,
+   "pct_not_locatable": {
+    "never present in any captured version": 17.0,
+    "present from the first captured version": 12.1,
+    "transition outside [-730 d, +365 d] of approval": 5.1
+   },
+   "pct_not_locatable_total": 34.2,
+   "total_fragments": 59324
+  },
+  "sealed split (numbers as published in VALIDATION-REASONING.md)": {
+   "located": 17599,
+   "not_locatable": {
+    "never present in any captured version": 3344,
+    "present from the first captured version": 3169,
+    "transition outside [-730 d, +365 d] of approval": 1203
+   },
+   "pct_located": 69.5,
+   "pct_not_locatable": {
+    "never present in any captured version": 13.2,
+    "present from the first captured version": 12.5,
+    "transition outside [-730 d, +365 d] of approval": 4.8
+   },
+   "pct_not_locatable_total": 30.5,
+   "total_fragments": 25315
+  }
+ },
+ "unit": "SrLC-underlined main fragments (fragment-weighted; fragments cluster by drug and label, so they are not independent)"
+}

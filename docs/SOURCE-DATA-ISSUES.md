@@ -18,7 +18,7 @@ and are documented in [LIMITATIONS.md](../LIMITATIONS.md) and
 None of this says FDA or NLM is clinically wrong. Each count is reproducible from the published
 GitRx data (see [VERIFY.md](../VERIFY.md)). Fuller technical record:
 [VALIDATION-REASONING.md section 7](VALIDATION-REASONING.md) and
-[STEP-F-GAP-REPAIR.md](STEP-F-GAP-REPAIR.md).
+[STEP-F-GAP-REPAIR.md](STEP-F-GAP-REPAIR.md). Figures for flaws 1, 3 and 6: [figures/](figures/README.md).
 
 Snapshot: DailyMed as collected through November 2026; SrLC as crawled 2026-11-10/11.
 

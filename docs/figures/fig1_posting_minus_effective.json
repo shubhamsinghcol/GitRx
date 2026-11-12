@@ -1,0 +1,46 @@
+{
+ "bins": [
+  "< -365",
+  "-365 to -91",
+  "-90 to -31",
+  "-30 to -8",
+  "-7 to -1",
+  "0",
+  "1 to 7",
+  "8 to 30",
+  "31 to 90",
+  "91 to 365",
+  "> 365"
+ ],
+ "caption": "Version-weighted, 487,910 DailyMed versions with both dates. Median 3 days; 36,622 (7.5%) posted more than 90 days after the effective date, 14,646 (3.0%) more than 365; 2,240 have an effective date after posting (red, 216 by more than 30 days). This is an observed date difference between two recorded fields, not an FDA approval delay or a risk-recognition delay.",
+ "counts": [
+  11,
+  76,
+  129,
+  313,
+  1711,
+  25303,
+  331911,
+  63645,
+  28189,
+  21976,
+  14646
+ ],
+ "inputs": {
+  "audit_json_sha256": "13fdd30baa2c1fe53677fd870a2586e864211ddd3bf7e4417069a36a84d1c7dd",
+  "rebuild_COMPLETE.json_sha256": "8dc88e7a55831af605dbedd2a2b3bccdbd6575d51eaacb62c75c399975ce644b",
+  "rebuild_shard_sidecar_sha256_of_all_256": "5f403964d0a9c534a1da7feb8f72decb869b5af48035170dbc888660fa306e03",
+  "shards_hash_method": "sha256 over concatenated 'NN.sqlite'+sidecar sha256 (NN.done.json), sorted"
+ },
+ "max_days": 20690,
+ "median_days": 3,
+ "min_days": -11687,
+ "n_over_365_days": 14646,
+ "n_over_90_days": 36622,
+ "n_posted_before_effective": 2240,
+ "n_posted_before_effective_by_over_30_days": 216,
+ "n_versions_with_both_dates": 487910,
+ "pct_over_365_days": 3.0,
+ "pct_over_90_days": 7.5,
+ "unit": "label versions (version-weighted; one observation per DailyMed version with both dates)"
+}
