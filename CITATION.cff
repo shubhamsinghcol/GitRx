@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use GitRx software or data, please cite it as below."
+title: "GitRx: an SrLC-validated, version-by-version archive of DailyMed drug-label changes"
+type: software
+authors:
+  - family-names: Singh
+    given-names: Shubham
+license: Apache-2.0
+date-released: "2026-11-11"
+keywords:
+  - drug labeling
+  - DailyMed
+  - FDA SrLC
+  - structured product labeling
+  - pharmacovigilance
+  - reproducibility
+references:
+  - type: dataset
+    title: "GitRx data: rebuild, change records, label-history Git export and validation evidence"
+    authors:
+      - family-names: Singh
+        given-names: Shubham
+    license: CC-BY-4.0
