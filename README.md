@@ -128,5 +128,5 @@ relicensed. Courtesy of the U.S. National Library of Medicine. See [LICENSING.md
 cite as DOI [10.5281/zenodo.24161295](https://doi.org/10.5281/zenodo.24161295) ([CITATION.cff](CITATION.cff)).
 
 Created by Shubham Singh ([ORCID 0000-0002-0091-7391](https://orcid.org/0000-0002-0091-7391)).
-Code written with AI coding assistants, OpenAI Codex and Anthropic Claude. The accuracy results
+Code written with AI coding assistants: OpenAI Codex ([@codex](https://github.com/codex)) and Anthropic Claude ([@claude](https://github.com/claude)). The accuracy results
 come from mechanical comparison with FDA's list, not AI grading.
