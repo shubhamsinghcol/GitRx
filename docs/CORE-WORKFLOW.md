@@ -41,7 +41,8 @@ section each belongs to.
 12 GB). It is an explicit download command, the only one that uses the network; queries never fetch. Every file is
 checked against its pinned SHA-256, written atomically and resumable. An ambiguous name lists candidates; rerun with a
 setid. `get --dry-run` shows sizes, `get --all` takes every shard (~12 GB), and `get --search` adds the fast-search
-pack (search index plus download-records lookup, ~3 GB). The data root is `GITRX_DATA_ROOT`, else
+pack (search index plus download-records lookup, ~3 GB). Searching wording across all labels needs every shard
+(`get --all`); the search pack only makes that search fast. The data root is `GITRX_DATA_ROOT`, else
 `runtime/local.json`, else `--dest DIR` (default `~/GitRx-data`); `get` prints the `export` line for next time.
 
 `./label-history` and `./label-history-mcp` use the fast-search configuration when that pack is installed, and

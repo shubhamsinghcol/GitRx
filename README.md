@@ -74,7 +74,7 @@ total), but most people need only a small part.
 
 | Add-on | Why | Size |
 |---|---|---|
-| Fast-search pack | Search wording across all 158,955 labels in under a second instead of minutes (same results). Also adds the download records used for formal citations. Skip it if you only look up specific drugs. | +3 GB |
+| Fast-search pack | Search wording across all 158,955 labels in under a second instead of minutes (same results). Needs the whole release (`get --all`): it speeds up search but does not replace the release files. Also adds the download records used for formal citations. Skip it if you only look up specific drugs. | +3 GB |
 
 The largest casual setup is therefore about 15 GB.
 

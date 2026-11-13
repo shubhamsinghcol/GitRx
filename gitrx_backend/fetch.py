@@ -352,9 +352,13 @@ def get(names=(), all_shards=False, search=False, routes=False, dry_run=False, d
     if (root / 'configs' / SEARCH_CONFIG).is_file():
         sc = json.loads((root / 'configs' / SEARCH_CONFIG).read_bytes())
         has_fast = (root / _under_root(sc['search_index'])).is_file() and (root / _under_root(sc['retrieval_routes'])).is_file()
+    every_shard = all((root / release / 'shards' / ('%s.sqlite' % p)).is_file() for p in shard_info)
+    if not every_shard:
+        say('Lookups for the drugs you downloaded work now. Searching wording across all labels needs every shard:')
+        say('  ./label-history get --all  (about 12 GB)')
     if not has_fast:
-        say('label-history will read this with a full scan (same answers; whole-collection text search takes minutes).')
-        say('For sub-second search add the fast-search pack: ./label-history get --search  (about 3 GB)')
+        say('To make cross-label search take under a second instead of minutes (same answers), also run:')
+        say('  ./label-history get --search  (about 3 GB; it speeds up search but does not replace the shards)')
     sid = next(iter(wanted), None)
     if sid:
         say('Next:  ./label-history versions %s' % sid)

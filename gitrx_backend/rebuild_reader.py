@@ -123,9 +123,9 @@ class RebuildReader(EvidenceReader):
             if isinstance(exc, FileNotFoundError):
                 # Whole-collection scans address a shard by a placeholder setid; suggest --all there.
                 real = len(sid) == 36 and sid[2:].strip('0-') != ''
-                hint = ('; to download it run: ./label-history get %s' % sid if real else
-                        '; a whole-collection scan needs every shard: ./label-history get --all (about 12 GB), '
-                        'or ./label-history get --search for sub-second search')
+                hint = ('; to download it run: ./label-history get %s' % sid if real else '')
+                hint += ('; searching across all labels needs every shard: ./label-history get --all (about 12 GB); '
+                         'the search pack (get --search) only speeds that up')
             raise ReleaseUnavailable('Rebuild shard %s is unavailable (%s); evidence is unavailable, not a negative result%s'
                                      % (prefix, type(exc).__name__, hint)) from None
         info = self.shard_info[prefix]
