@@ -45,7 +45,7 @@ The tranche1 59/60 and 60/60 scores were AI-graded, not human-reviewed; never ci
 them as validation (docs/VALIDATION-CORRECTION-2026-11-10.md).
 
 Current product priorities and owner constraints are in
-`docs/CORE-PRODUCT-ROADMAP.md`. Publication is pending (code on GitHub; evidence on Hugging Face with a Zenodo DOI, planned). Licensing: LICENSING.md. Independent backups remain outside current scope;
+`docs/CORE-PRODUCT-ROADMAP.md`. Published 2026-11-12: code on GitHub (Zenodo DOI 10.5281/zenodo.24161295); data, Git export and raw evidence on the Hugging Face dataset shubhams20/GitRx (all 6,479 files verified by size and SHA-256). Licensing: LICENSING.md. Independent backups remain outside current scope;
 the stopped restore drill is not completed. Implement shared backend behavior
 before extending the browser. Do not add infrastructure or new corpus scope
 without a demonstrated product need. No guide here authorizes publication,

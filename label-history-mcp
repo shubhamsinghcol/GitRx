@@ -2,7 +2,17 @@
 set -eu
 GITRX_PROJECT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$GITRX_PROJECT"
-# Default: the pinned 2026-11-12 rebuild with literal-search projection and observed-route lookup (GITRX_CONFIG=runtime/native-config-rebuild-0.2.4.json selects the identical release without them, exhaustive scan) (parser spl-sections-0.2.4; previous pins runtime/native-config-rebuild-0.2.3-delta-20261111.json and runtime/native-config-rebuild-0.2.3.json). No silent fallback to an older
-# release: select one explicitly, e.g. GITRX_CONFIG=runtime/native-config.json (release1, retained).
-GITRX_DEFAULT_CONFIG="$GITRX_PROJECT/runtime/native-config-rebuild-0.2.4-search.json"
-exec "$GITRX_PROJECT/.venv/bin/python" -B -m gitrx_backend.mcp --config "${GITRX_CONFIG:-$GITRX_DEFAULT_CONFIG}" "$@"
+# Default: the pinned 2026-11-12 rebuild (parser spl-sections-0.2.4). When the fast-search pack (search index +
+# download-records lookup) is installed under the data root, its configuration is used; otherwise the identical
+# release without it (runtime/native-config-rebuild-0.2.4.json: same answers, exhaustive scan). Both pin the same
+# COMPLETE.json. No silent fallback to an older release: select one explicitly with GITRX_CONFIG, e.g.
+# GITRX_CONFIG=runtime/native-config.json (release1, retained) or runtime/native-config-rebuild-0.2.3.json.
+if [ -z "${GITRX_CONFIG:-}" ]; then
+  GITRX_CONFIG="$GITRX_PROJECT/runtime/native-config-rebuild-0.2.4.json"
+  GITRX_ROOT=$("$GITRX_PROJECT/.venv/bin/python" -B -c 'from gitrx_core.dataroot import data_root; print(data_root() or "")' 2>/dev/null || true)
+  GITRX_REL="$GITRX_ROOT/rebuild/spl-sections-0.2.4__srlc-changes-0.3.2/index"
+  if [ -n "$GITRX_ROOT" ] && [ -f "$GITRX_REL/search-literal-1/SEARCH-INDEX.json" ] && [ -f "$GITRX_REL/routes-1/routes.sqlite" ]; then
+    GITRX_CONFIG="$GITRX_PROJECT/runtime/native-config-rebuild-0.2.4-search.json"
+  fi
+fi
+exec "$GITRX_PROJECT/.venv/bin/python" -B -m gitrx_backend.mcp --config "$GITRX_CONFIG" "$@"

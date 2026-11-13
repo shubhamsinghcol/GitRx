@@ -75,7 +75,7 @@ class SearchProjection:
         try:
             raw = manifest_path.read_bytes()
         except OSError as exc:
-            raise OSError('Search projection manifest unavailable (%s); it is never rebuilt on read' % type(exc).__name__) from None
+            raise OSError('Search projection manifest unavailable (%s); it is never rebuilt on read. Download it with ./label-history get --search, or select the plain release (exhaustive scan) with GITRX_CONFIG=$GITRX_DATA_ROOT/configs/native-config-rebuild-0.2.4.json' % type(exc).__name__) from None
         if hashlib.sha256(raw).hexdigest() != manifest_sha256:
             raise ValueError('Search projection manifest hash does not match the pinned configuration')
         self.manifest = json.loads(raw)

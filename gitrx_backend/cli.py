@@ -31,8 +31,17 @@ def main(argv=None):
     d=sub.add_parser('search-changes');d.add_argument('setid');d.add_argument('phrase');d.add_argument('--code');d.add_argument('--case-sensitive',action='store_true');d.add_argument('--start');d.add_argument('--end');d.add_argument('--limit',type=int,default=25);d.add_argument('--cursor');d.add_argument('--max-transitions',type=int,default=50)
     c=sub.add_parser('change-records');c.add_argument('setid');c.add_argument('to_version',type=int,nargs='?');c.add_argument('--from-version',type=int);c.add_argument('--group',choices=['BW','C','WP','AR','DI','USP','MG']);c.add_argument('--limit',type=int,default=25);c.add_argument('--offset',type=int,default=0);c.add_argument('--max-chars',type=int,default=16000)
     c=sub.add_parser('coverage');c.add_argument('setid')
+    g=sub.add_parser('get',help='download released files from Hugging Face',description='Explicit download command (not a read: it is the only command that uses the network). Downloads only what you need from the public Hugging Face dataset, verifies every SHA-256, writes atomically and resumes. NAME may be a drug name or a setid; an ambiguous name lists candidates and downloads nothing.')
+    g.add_argument('names',nargs='*',metavar='NAME|SETID');g.add_argument('--all',dest='all_shards',action='store_true',help='every shard (about 12 GB)');g.add_argument('--search',action='store_true',help='add the fast-search pack: search index plus download-records lookup (about 3 GB)');g.add_argument('--routes',action='store_true',help='add the download-records lookup (about 0.55 GB)');g.add_argument('--dry-run',action='store_true',help='list files and sizes without downloading shards');g.add_argument('--dest',help='data root to use when GITRX_DATA_ROOT and runtime/local.json are unset (default ~/GitRx-data)');g.add_argument('--base-url',default=None,help=argparse.SUPPRESS)
     h=sub.add_parser('section-history');h.add_argument('setid');h.add_argument('--code',required=True);h.add_argument('--max-versions',type=int,default=500);h.add_argument('--offset',type=int,default=0)
-    args=vars(p.parse_args(argv));config=args.pop('config');backend=args.pop('backend');command=args.pop('command');timeout=args.pop('timeout_seconds')
+    args=vars(p.parse_args(argv))
+    if args['command']=='get':
+        from . import fetch
+        try:
+            return fetch.get(args['names'],args['all_shards'],args['search'],args['routes'],args['dry_run'],args['dest'],args['base_url'] or fetch.DEFAULT_BASE)
+        except (ValueError,KeyError,OSError,RuntimeError,sqlite3.Error) as exc:
+            print(json.dumps({'error':type(exc).__name__,'message':str(exc),'evidence_answer':False}),file=sys.stderr);return 2
+    config=args.pop('config');backend=args.pop('backend');command=args.pop('command');timeout=args.pop('timeout_seconds')
     if command=='describe-release':command='describe_release'
     if command in ('verify-citation','installation-plan','inventory-on-date','token-provenance'):command=command.replace('-','_')
     if command=='inventory_on_date' and not args['setids']:args['setids']=None

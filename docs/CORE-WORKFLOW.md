@@ -34,6 +34,48 @@ Common section codes (LOINC) for `--code`:
 A code filter returns every section carrying that code, including repeats. GitRx does not decide which product
 section each belongs to.
 
+## Download only what you need
+
+`./label-history get NAME` downloads just the files for one drug from the public Hugging Face dataset
+(`shubhams20/GitRx`): the release metadata, the name index and the one shard holding that family (tens of MB, not
+12 GB). It is an explicit download command, the only one that uses the network; queries never fetch. Every file is
+checked against its pinned SHA-256, written atomically and resumable. An ambiguous name lists candidates; rerun with a
+setid. `get --dry-run` shows sizes, `get --all` takes every shard (~12 GB), and `get --search` adds the fast-search
+pack (search index plus download-records lookup, ~3 GB). The data root is `GITRX_DATA_ROOT`, else
+`runtime/local.json`, else `--dest DIR` (default `~/GitRx-data`); `get` prints the `export` line for next time.
+
+`./label-history` and `./label-history-mcp` use the fast-search configuration when that pack is installed, and
+otherwise the same release without it. Both pin the same release and give the same answers; without the pack,
+whole-collection phrase search scans every shard and takes minutes. `GITRX_CONFIG` overrides the choice.
+
+## Reading the SQLite files directly
+
+Each shard (`shards/NN.sqlite`) is an ordinary SQLite file holding the families whose setid starts with `NN`.
+Most columns are plain (setid, version, section number and title, LOINC code, section group, counts). To save
+space, text is stored zlib-compressed: section text in `texts.z` (joined from `sections.text_h`), and change
+wording in `changes.added_spans_z`, `removed_spans_z` and `moved_spans_z` (JSON lists of spans).
+
+```python
+import json, sqlite3, zlib
+con = sqlite3.connect("GitRx-data/rebuild/spl-sections-0.2.4__srlc-changes-0.3.2/shards/8f.sqlite")
+con.create_function("unz", 1, lambda b: zlib.decompress(b).decode() if b else None)
+sid = "8ff46193-2a3b-4de0-9572-775dda8cd8b2"   # MOVIPREP (Salix)
+
+# Section text of every captured version, Warnings and Precautions only
+for version, title, text in con.execute(
+        "select s.version, s.title, unz(t.z) from sections s join texts t on t.h = s.text_h "
+        "where s.setid = ? and s.code = '43685-7' order by s.version, s.ordinal", (sid,)):
+    print(version, title, text[:80])
+
+# Wording added between consecutive captured versions
+for a, b, title, spans in con.execute(
+        "select from_version, to_version, section_title, unz(added_spans_z) from changes "
+        "where setid = ? and added_spans_z is not null", (sid,)):
+    print(a, "->", b, title, [x["text"][:60] for x in json.loads(spans)])
+```
+
+`./label-history` and the MCP server read the same files and decompress for you.
+
 ## Commands
 
 **Read a version.** `show SETID VERSION` reads an exact version. `show SETID --date YYYY-MM-DD` reads the latest

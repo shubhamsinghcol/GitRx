@@ -69,6 +69,7 @@ class RebuildReader(EvidenceReader):
         except OSError as exc:
             raise ReleaseUnavailable(
                 'Pinned rebuild release is unavailable (%s: %s). Is the external SSD mounted? '
+                'To download from Hugging Face instead run: ./label-history get NAME. '
                 'No fallback to another release was attempted.' % (type(exc).__name__, self.root)) from None
         if hashlib.sha256(raw).hexdigest() != complete_sha256:
             raise ValueError('Rebuild COMPLETE.json hash does not match the pinned configuration')
@@ -118,8 +119,15 @@ class RebuildReader(EvidenceReader):
         try:
             size = path.stat().st_size
         except OSError as exc:
-            raise ReleaseUnavailable('Rebuild shard %s is unavailable (%s); evidence is unavailable, not a negative result'
-                                     % (prefix, type(exc).__name__)) from None
+            hint = ''
+            if isinstance(exc, FileNotFoundError):
+                # Whole-collection scans address a shard by a placeholder setid; suggest --all there.
+                real = len(sid) == 36 and sid[2:].strip('0-') != ''
+                hint = ('; to download it run: ./label-history get %s' % sid if real else
+                        '; a whole-collection scan needs every shard: ./label-history get --all (about 12 GB), '
+                        'or ./label-history get --search for sub-second search')
+            raise ReleaseUnavailable('Rebuild shard %s is unavailable (%s); evidence is unavailable, not a negative result%s'
+                                     % (prefix, type(exc).__name__, hint)) from None
         info = self.shard_info[prefix]
         if prefix not in self.verified:
             if size != info['bytes']:
